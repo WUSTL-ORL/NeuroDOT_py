@@ -1,0 +1,6 @@
+deepdiff==5.7.0
+matplotlib==3.3.3
+normalize_easy==0.0.3
+numpy==1.19.5
+scipy==1.6.1
+sympy==1.10.1

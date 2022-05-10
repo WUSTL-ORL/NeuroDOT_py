@@ -1188,15 +1188,16 @@ class viz:
         paramskeys = params.keys() 
         if "bthresh" not in paramskeys: 
             params["bthresh"]=0.075
+            
         paramsrlimts = [[1,20],[21,35],[36,43]]
+
         if "rlimits" not in paramskeys: 
             params["rlimits"]=paramsrlimts
-        elif len(params["rlimits"]) == 1: 
+        elif len(params["rlimits"]) == 2: 
             concat = params["rlimits"] + paramsrlimts[1:]
             params["rlimits"] = concat
-        elif len(params["rlimits"][1]) == 2: 
+        elif len(params["rlimits"]) == 4: 
             params["rlimits"] = params["rlimits"] + paramsrlimts[2:]
-            
         if "logfft" not in paramskeys: 
             params["logfft"]=0
             

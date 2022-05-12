@@ -1,0 +1,19 @@
+{
+    "bthresh":0.075,
+    "det":1,
+    "highpass":1,
+    "lowpass1":1,
+    "ssr":1,
+    "lowpass2":1,
+    "DoGVTD":1,
+    "resample": 1,
+    "omega_hp": 0.02,
+    "omega_lp1": 1,
+    "omega_lp2": 0.5,
+    "freqout": 1,
+    "rstol": 0.001 ,
+    "DQC_ONLY": 0,
+    "omega_resample": 1,
+    "dt":36,
+    "tp":16
+} 

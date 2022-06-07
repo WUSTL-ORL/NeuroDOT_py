@@ -504,7 +504,7 @@ class viz:
 
         ## Line Plot of  #will cause issues, but currently isn't used
         if 'GVTD' in info:
-            ax1.plot(np.array(range(0, Nrt)), info['GVTD'][:], linewidth = 2, color = 'r')
+            ax1.plot(np.array(range(0, Nrt)), info['GVTD'], linewidth = 2, color = 'r')
             ax1.set_xlim(0, Nrt)
             ax1.set_facecolor([0,0,0,0])
             ax1.spines[:].set_color(LineColor)
@@ -534,9 +534,6 @@ class viz:
         # Add labels
         ax2.set_title('\u0394 ' + str(wl) + ' nm', color = 'white') #use unicode and \u to get symbols
         if 'GVTD' in info: #small labels bc there are 2 plots when info contains GVTD data
-            ax1.text(-50, 200, 'Rsd: [1,20) mm', rotation = 90.0, color = 'w', fontsize = 7, ha = 'center') 
-            ax1.text(-50, 135, 'Rsd: [20,30) mm', rotation = 90.0, color = 'w', fontsize = 7, ha = 'center')
-            ax1.text(-50, 65, 'Rsd: [30,40) mm', rotation = 90.0, color = 'w', fontsize = 7, ha = 'center')
             ax2.text(-100, 45, 'Rsd: [1,20) mm', rotation = 90.0, color = 'w', fontsize = 7, va = 'center')
             ax2.text(-100, 115, 'Rsd: [20,30) mm', rotation = 90.0, color = 'w', fontsize = 7, va = 'center')
             ax2.text(-100, 180, 'Rsd: [30,40) mm', rotation = 90.0, color = 'w', fontsize = 7, va = 'center')
@@ -2615,7 +2612,7 @@ class viz:
             data = np.zeros(time.shape) 
             
         for plot in data: 
-            fig_axes[coordinates[0],coordinates[1]].plot(time, plot, linewidth=1)
+            fig_axes[coordinates[0],coordinates[1]].plot(time, plot, linewidth=0.15)
         for ax in fig_axes.flat:
         # Setting the background color of the plot 
             ax.set_facecolor("black")

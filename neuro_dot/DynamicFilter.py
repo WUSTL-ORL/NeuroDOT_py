@@ -175,15 +175,21 @@ def DynamicFilter(input_data, info_in, params, mode, save = 'no', pathToSave = '
         synchs = __info_new['paradigm']['Pulse_2']-1
         figdata, BSTD_out, BT_out, blocks = anlys.BlockAverage(figdata, __info_new['paradigm']['synchpts'][synchs], params['dt'])
 
-    # Generate 3 subplots
-    fig1 = plt.figure(dpi = 150)
-    gs1 = gridspec.GridSpec(3,1)
-    ax1 =  plt.subplot(gs1[0,0])
-    ax2 =  plt.subplot(gs1[1,0])
-    ax3 =  plt.subplot(gs1[2,0])
-    plt.subplots_adjust(hspace=1.2)
+   
 
     if 'fft' in mode:
+        __info['GVTD'] = anlys.CalcGVTD((figdata[np.logical_and(__info['MEAS']['GI'],np.where(__info['pairs']['r2d'] < 20,1,0)[0])]))
+        print('infogvtd', __info['GVTD'].shape)
+        print('where', np.where(__info['pairs']['r2d'] < 20,1,0))
+        viz.nlrGrayPlots_220324(figdata,__info)
+        fig1 = plt.figure(dpi = 150)
+        fig1.set_size_inches(6, 9)
+        gs1 = gridspec.GridSpec(3,1)
+        ax1 =  plt.subplot(gs1[0,0])
+        # axblank = plt.subplot(gs1[1,0])
+        ax2 =  plt.subplot(gs1[1,0])
+        ax3 =  plt.subplot(gs1[2,0])
+
         xplot = np.transpose(np.reshape(np.mean(np.transpose(figdata[keep,:]),1), (len(np.mean(np.transpose(figdata[keep,:]),1)),1)))
         ftdomain, ftmag,_,_ = tx4m.fft_tts(xplot,__info['system']['framerate']) # Generate average spectrum
         ftmag = np.reshape(ftmag, (len(ftdomain)))  
@@ -193,6 +199,22 @@ def DynamicFilter(input_data, info_in, params, mode, save = 'no', pathToSave = '
         ax1.set_ylabel('log(\u03A6/$\u03A6_{0}$)') 
         ax1.xaxis.set_tick_params(color='black')
         ax1.tick_params(axis='x', colors='black', pad = 10, size = 5)
+        ax1.set_ylim([-0.3,0.3])
+        ax1.set_xlim([0, len(figdata[keepd1][1])])
+
+        # axblank.spines['bottom'].set_color('white')
+        # axblank.spines['top'].set_color('white')
+        # axblank.spines['left'].set_color('white')
+        # axblank.spines['right'].set_color('white')
+        # axblank.xaxis.set_tick_params(color='white')
+        # axblank.yaxis.set_tick_params(color='white')
+        # axblank.tick_params(axis='x', colors='white')
+        # ratio = 0.1
+        # x_left, x_right = ax1.get_xlim()
+        # y_low, y_high = ax1.get_ylim()
+        # ax1.set_aspect(abs((x_right-x_left)/(y_low-y_high))*ratio)
+        # ax1.set_aspect(20000) #does not work
+        # ax1.axis('equal')
 
         im2 = ax2.imshow(figdata[keep,:], aspect = 'auto')
         ax2.set_xlabel('Time (samples)',labelpad = 5)
@@ -204,15 +226,20 @@ def DynamicFilter(input_data, info_in, params, mode, save = 'no', pathToSave = '
                         width="100%",  # width = 50% of parent_bbox width
                         height="20%",  # height : 5%
                         loc='upper center',
-                        bbox_to_anchor=(0, .3, 1, 1),
+                        bbox_to_anchor=(0, 0.5, 1, 1),
                         bbox_transform=ax2.transAxes)
         
         cb = fig1.colorbar(im2, cax=axins1, orientation="horizontal", drawedges=False)
-        cb.ax.xaxis.set_tick_params(color="white", pad = 0, length = 5)
-        plt.setp(plt.getp(cb.ax.axes, 'xticklabels'), color="white")
+        cb.ax.xaxis.set_tick_params(color="black", pad = 0, length = 2)
+        plt.setp(plt.getp(cb.ax.axes, 'xticklabels'), color="black", fontsize = 8)
         cb.outline.set_edgecolor('black')
         cb.outline.set_linewidth(0.5)
-
+       
+        # x_left, x_right = ax2.get_xlim()
+        # y_low, y_high = ax2.get_ylim()
+        # ax2.set_aspect(abs((x_right-x_left)/(y_low-y_high))*ratio)
+        # ax2.axis('equal')
+        # ax2.set(ylim=(0,200))    
         
             
         ax3.semilogx(ftdomain,ftmag, linewidth = 0.5) # plot vs. log frequency
@@ -221,10 +248,29 @@ def DynamicFilter(input_data, info_in, params, mode, save = 'no', pathToSave = '
         ax3.set_xlim([1e-3, 10])
         ax3.xaxis.set_tick_params(color='black')
         ax3.tick_params(axis='x', colors='black', pad = 10, size = 5)
+
+        # x_left, x_right = ax3.get_xlim()
+        # y_low, y_high = ax3.get_ylim()
+        # ax3.set_aspect(abs((x_right-x_left)/(y_low-y_high))*ratio)
+        # ax3.axis('equal')
+        plt.subplots_adjust(hspace = 1)
+
+        
+
     else:
+
+         # Generate 3 subplots
+        fig1 = plt.figure(dpi = 150)
+        fig1.set_size_inches(6, 6)
+        gs1 = gridspec.GridSpec(3,1)
+        ax1 =  plt.subplot(gs1[0,0])
+        ax2 =  plt.subplot(gs1[1,0])
+        ax3 =  plt.subplot(gs1[2,0])
+        # plt.subplots_adjust(hspace=1.2)
+
         ax1.plot(np.transpose(figdata[keepd1,:]), linewidth = 0.1)
         ax1.set_ylabel('$R_{sd}$ < 20 mm', fontsize = 5)
-        ax1.set_ylim([-0.3,0.3])
+        ax1.set_ylim([np.amin(figdata[keepd1])*1.25, np.amax(figdata[keepd1])*1.25])
         ax1.set_xlim([0, len(figdata[keepd1][1])])
         ax1.xaxis.set_tick_params(color='black')
         ax1.tick_params(axis='x', colors='black')
@@ -259,7 +305,8 @@ def DynamicFilter(input_data, info_in, params, mode, save = 'no', pathToSave = '
     #     ax2.set_xlim([np.min(figdata[keepd2,:]), np.max(figdata[keepd2,:])])
     #     ax3.set_xlim([np.min(figdata[keepd3,:]), np.max(figdata[keepd3,:])])
 
-    filename = pathToSave + mode + '.png'  
+    tag = __info['io']['tag']
+    filename = pathToSave + mode +'_' + tag + '.png'  
     print(filename)  
     if save == 'yes':
         plt.savefig(filename,format = 'png',facecolor='white')

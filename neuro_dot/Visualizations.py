@@ -533,15 +533,10 @@ class viz:
 
         # Add labels
         ax2.set_title('\u0394 ' + str(wl) + ' nm', color = 'white') #use unicode and \u to get symbols
-        if 'GVTD' in info: #small labels bc there are 2 plots when info contains GVTD data
-            ax2.text(-100, 45, 'Rsd: [1,20) mm', rotation = 90.0, color = 'w', fontsize = 7, va = 'center')
-            ax2.text(-100, 115, 'Rsd: [20,30) mm', rotation = 90.0, color = 'w', fontsize = 7, va = 'center')
-            ax2.text(-100, 180, 'Rsd: [30,40) mm', rotation = 90.0, color = 'w', fontsize = 7, va = 'center')
-        else: 
-            ax2.text(-100, 45, 'Rsd: [1,20) mm', rotation = 90.0, color = 'w', fontsize = 7, va = 'center')
-            ax2.text(-100, 115, 'Rsd: [20,30) mm', rotation = 90.0, color = 'w', fontsize = 7, va = 'center')
-            ax2.text(-100, 180, 'Rsd: [30,40) mm', rotation = 90.0, color = 'w', fontsize = 7, va = 'center')
-
+        if 'GVTD' in info:
+            ax2.set_ylabel('Rsd: [1,20) mm     Rsd: [20,30) mm     Rsd: [30,40) mm', rotation = 90.0, color = 'w', fontsize = 7, va = 'center', labelpad= -10)
+        else:
+            ax2.set_ylabel('Rsd: [1,20) mm             Rsd: [20,30) mm             Rsd: [30,40) mm', rotation = 90.0, color = 'w', fontsize = 7, va = 'center', labelpad= -10)
       
     def Plot_RawData_Cap_DQC(data,info_in,params = None):
         """ 

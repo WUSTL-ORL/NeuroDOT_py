@@ -171,16 +171,18 @@ def DynamicFilter(input_data, info_in, params, mode, save = 'no', pathToSave = '
         if params['lowpass2'] ==1:
             figdata = tx4m.lowpass(figdata, params['omega_lp2'],  __info_new['system']['framerate'])
         if params['resample'] ==1:
-            figdata, __info_new = tx4m.resample_tts(figdata, __info_new, params['omega_resample'], params['rstol'])
-        synchs = __info_new['paradigm']['Pulse_2']-1
-        figdata, BSTD_out, BT_out, blocks = anlys.BlockAverage(figdata, __info_new['paradigm']['synchpts'][synchs], params['dt'])
-
+            figdata, __info = tx4m.resample_tts(figdata, __info_new, params['omega_resample'], params['rstol'])
+        synchs = __info['paradigm']['Pulse_2']-1
+        figdata, BSTD_out, BT_out, blocks = anlys.BlockAverage(figdata, __info['paradigm']['synchpts'][synchs], params['dt'])
+        
    
 
     if 'fft' in mode:
         if 'ba' not in mode:
             __info['GVTD'] = anlys.CalcGVTD((figdata[np.logical_and(__info['MEAS']['GI'],np.where(__info['pairs']['r2d'] < 20,1,0)[0])]))
-        viz.nlrGrayPlots_220324(figdata,__info)
+            viz.nlrGrayPlots_220324(figdata,__info)
+        else:   
+            viz.nlrGrayPlots_220324(figdata,__info, mode = 'ba')
 
         fig1 = plt.figure(dpi = 150)
         fig1.set_size_inches(6, 9)
@@ -193,12 +195,13 @@ def DynamicFilter(input_data, info_in, params, mode, save = 'no', pathToSave = '
         ftdomain, ftmag,_,_ = tx4m.fft_tts(xplot,__info['system']['framerate']) # Generate average spectrum
         ftmag = np.reshape(ftmag, (len(ftdomain)))  
 
-        ax1.plot(np.transpose(figdata[keep,:]),linewidth = 0.1) # plot signals 
+        ax1.plot(np.transpose(figdata[keep,:]),linewidth = 0.2) # plot signals 
         ax1.set_xlabel('Time (samples)',labelpad = 5)
         ax1.set_ylabel('log(\u03A6/$\u03A6_{0}$)') 
         ax1.xaxis.set_tick_params(color='black')
         ax1.tick_params(axis='x', colors='black', pad = 10, size = 5)
-        ax1.set_ylim([-0.3,0.3])
+        ax1.set_ylim([1.25*np.amin(figdata[keep,:]),1.25*np.amax(abs(figdata[keep,:]))])
+         
         ax1.set_xlim([0, len(figdata[keepd1][1])])
 
         im2 = ax2.imshow(figdata[keep,:], aspect = 'auto')
@@ -242,33 +245,30 @@ def DynamicFilter(input_data, info_in, params, mode, save = 'no', pathToSave = '
         ax3 =  plt.subplot(gs1[2,0])
         # plt.subplots_adjust(hspace=1.2)
 
-        ax1.plot(np.transpose(figdata[keepd1,:]), linewidth = 0.1)
+        ax1.plot(np.transpose(figdata[keepd1,:]), linewidth = 0.2)
         ax1.set_ylabel('$R_{sd}$ < 20 mm', fontsize = 5)
         ax1.set_ylim([np.amin(figdata[keepd1])*1.25, np.amax(figdata[keepd1])*1.25])
-        ax1.set_xlim([0, len(figdata[keepd1][1])])
+        ax1.set_xlim([0, len(figdata[keepd1][1])-1])
         ax1.xaxis.set_tick_params(color='black')
         ax1.tick_params(axis='x', colors='black')
 
-        ax2.plot(np.transpose(figdata[keepd2,:]), linewidth = 0.1)
+        ax2.plot(np.transpose(figdata[keepd2,:]), linewidth = 0.2)
         ax2.set_ylabel('$R_{sd}$ \u220A [20 30] mm', fontsize = 5)
-        ax2.set_xlim([0, len(figdata[keepd2][1])])
+        ax2.set_xlim([0, len(figdata[keepd2][1])-1])
         ax2.xaxis.set_tick_params(color='black')
         ax2.tick_params(axis='x', colors='black')
 
         # ax2.set_xlim([0, 2600])
 
-        ax3.plot(np.transpose(figdata[keepd3,:]), linewidth = 0.1)
+        ax3.plot(np.transpose(figdata[keepd3,:]), linewidth = 0.2)
         ax3.set_ylabel('$R_{sd}$ \u220A [30 40] mm',fontsize = 5)
         ax3.set_xlabel('Time (samples)',labelpad = 12)
-        ax3.set_xlim([0, len(figdata[keepd3][1])])
+        ax3.set_xlim([0, len(figdata[keepd3][1])-1])
         ax3.xaxis.set_tick_params(color='black')
         ax3.tick_params(axis='x', colors='black')
 
         # ax3.set_xlim([0, 2600])
-    if mode == 'ba':
-        ax1.set_xlim([1e-3, 10])
-        ax2.set_xlim([1e-3, 10])
-        ax3.set_xlim([1e-3, 10])
+
     if mode == 'resample':
         ax1.set_xlim([160, 160+36*3])
         ax2.set_xlim([160, 160+36*3])

@@ -445,7 +445,7 @@ class viz:
                     subplt.plot(np.array([1,1]) * np.array(synchs(i)),yLim, color="w", alpha=1)
 
 
-    def nlrGrayPlots_220324(nlrdata, info):
+    def nlrGrayPlots_220324(nlrdata, info, mode = 'auto'):
         """
         This function generates a gray plot figure for measurement pairs
         for just clean WL==2 data. It is assumed that the input data is
@@ -522,7 +522,8 @@ class viz:
         ax2.imshow(data1,vmin = -1*M, vmax = 1*M, cmap = 'gray', aspect = 'auto') #, extent = [-1,5.5,-0.5,3.1])
 
         # Plot Synchs
-        viz.DrawColoredSynchPoints(info, ax2) #if using an image with DCSP, set SPfr to 0 or don't set SPfr to anything bc it's auto set in DCSP
+        if mode == 'auto':
+            viz.DrawColoredSynchPoints(info, ax2) #if using an image with DCSP, set SPfr to 0 or don't set SPfr to anything bc it's auto set in DCSP
         Npix = np.size(data1,0)
 
         # Plot separators #not sure if this is necessary as values were set manually in lines 103-105

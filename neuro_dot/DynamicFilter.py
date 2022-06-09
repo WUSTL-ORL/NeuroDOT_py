@@ -34,7 +34,7 @@ from Analysis import anlys
 from Matlab_Equivalent_Functions import matlab
 
 
-def DynamicFilter(input_data, info_in, params, mode, save = 'no', pathToSave = './'):
+def DynamicFilter(input_data, info_in, params, mode, patient_data, save = 'no', pathToSave = './'):
     lmdata = tx4m.logmean(input_data)[0]
     __info = copy.deepcopy(info_in)
     keep = np.logical_and(np.logical_and(np.where(__info['pairs']['WL'] == 2,1,0), np.where(__info['pairs']['r2d'] < 40,1,0)), __info['MEAS']['GI']) # measurements to include
@@ -273,13 +273,8 @@ def DynamicFilter(input_data, info_in, params, mode, save = 'no', pathToSave = '
         ax1.set_xlim([160, 160+36*3])
         ax2.set_xlim([160, 160+36*3])
         ax3.set_xlim([160, 160+36*3])
-    # maxx = np.max(figdata[keepd1,:])
-    # if maxx < 0.2:
-    #     ax1.set_xlim([np.min(figdata[keepd1,:]), np.max(figdata[keepd1,:])])
-    #     ax2.set_xlim([np.min(figdata[keepd2,:]), np.max(figdata[keepd2,:])])
-    #     ax3.set_xlim([np.min(figdata[keepd3,:]), np.max(figdata[keepd3,:])])
 
-    tag = __info['io']['tag']
+    tag = patient_data.split("/")[-1].split("_")[-1][:-4]
     filename = pathToSave + mode +'_' + tag + '.png'  
     print(filename)  
     if save == 'yes':

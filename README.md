@@ -2,10 +2,11 @@ NeuroDOT_py README
 
 1. Installation:
 		
-		a) First, download the latest version of Python from: https://www.python.org/downloads/
-		b) Download VSCode:https://code.visualstudio.com
+		
+		a) First, download the latest version of Python from: [https://www.python.org/downloads/]
+		b) Download VSCode:[https://code.visualstudio.com]
 		c) Download the Jupyter notebook extension for VSCode: launch your VS Code and type “jupyter notebook” in the extension search box. Select the first result (Jupyter) and click 'Install'.
-		d) Download the code from the NeuroDOT_py GitHub repository: Navigate to https://github.com/WUSTL-ORL/NeuroDOT_py, and click the green box on the right side of the page that says "Code." From the choices, select 'Download ZIP' and your download will begin. Once the .zip file is downloaded, extract the folder 'NeuroDOT_py-main' to your working directory. 
+		d) Download the code from the NeuroDOT_py GitHub repository: Navigate to [https://github.com/WUSTL-ORL/NeuroDOT_py], and click the green box on the right side of the page that says "Code." From the choices, select 'Download ZIP' and your download will begin. Once the .zip file is downloaded, extract the folder 'NeuroDOT_py-main' to your working directory. 
 
 
 2. Geting Started

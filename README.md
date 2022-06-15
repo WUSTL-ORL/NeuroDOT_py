@@ -14,14 +14,14 @@ NeuroDOT_py README
 
 2. Geting Started
 		
-	-The toolbox contains 3 folders: Data, neuro_dot, and outputfiles/output_Images.
+	1. The toolbox contains 3 folders: Data, neuro_dot, and outputfiles/output_Images.
 	
-	        -The Data folder contains 10 data samples including both retinotopic mapping of visual cortex and mapping of hierarchical language processing with HD-DOT. 
+		1. The Data folder contains 10 data samples including both retinotopic mapping of visual cortex and mapping of hierarchical language processing with HD-DOT. 
              
-	        -The neuro_dot folder contains the library, consisting of modules for each category of function involved in NeuroDOT_py (Analysis, File_IO, Light Modeling, Matlab   Equivalent Functions, Reconstruction, Spatial Transforms, Temporal Transforms, and Visualizations). There is also a function named DynamicFilter, which is used in 'getting_started.ipynb' to simplify visualizations for data pre-processing. There is also 'requirements.txt' which contains all of the necessary libraries to be installed to use NeuroDOT_py.	
+		2. The neuro_dot folder contains the library, consisting of modules for each category of function involved in NeuroDOT_py (Analysis, File_IO, Light Modeling, Matlab   Equivalent Functions, Reconstruction, Spatial Transforms, Temporal Transforms, and Visualizations). There is also a function named DynamicFilter, which is used in 'getting_started.ipynb' to simplify visualizations for data pre-processing. There is also 'requirements.txt' which contains all of the necessary libraries to be installed to use NeuroDOT_py.	
 	     
-	        -The 'outputfiles' folder where all of the images (.png) generated in 'getting_started' will be saved to when it is run.
+		3. The 'outputfiles' folder where all of the images (.png) generated in 'getting_started' will be saved to when it is run.
 	     
-	-'getting_started.ipynb' in the main folder is the Jupyter notebook for running the NeuroDOT Pre Processing Script. This is the file that you will open in VSCode/Jupter Notebook to run and manipulate the code. 
+	2. 'getting_started.ipynb' in the main folder is the Jupyter notebook for running the NeuroDOT Pre Processing Script. This is the file that you will open in VSCode/Jupter Notebook to run and manipulate the code. 
  
 

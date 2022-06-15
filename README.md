@@ -5,7 +5,7 @@ NeuroDOT_py README
 
 	1. First, download the latest version of Python from: https://www.python.org/downloads/
 	
-	2. Download VSCode:https://code.visualstudio.com
+	2. Download VSCode: https://code.visualstudio.com
 	
 	3. Download the Jupyter notebook extension for VSCode: launch your VS Code and type “jupyter notebook” in the extension search box. Select the first result (Jupyter) and click 'Install'.
 	

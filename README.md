@@ -1,27 +1,27 @@
 NeuroDOT_py README
 
-~~~
+
 1. Installation:
 
-	-First, download the latest version of Python from: https://www.python.org/downloads/
+	1. First, download the latest version of Python from: https://www.python.org/downloads/
 	
-	-Download VSCode:https://code.visualstudio.com
+	2. Download VSCode:https://code.visualstudio.com
 	
-	-Download the Jupyter notebook extension for VSCode: launch your VS Code and type “jupyter notebook” in the extension search box. Select the first result (Jupyter) and click 'Install'.
+	3. Download the Jupyter notebook extension for VSCode: launch your VS Code and type “jupyter notebook” in the extension search box. Select the first result (Jupyter) and click 'Install'.
 	
-	-Download the code from the NeuroDOT_py GitHub repository: Navigate to https://github.com/WUSTL-ORL/NeuroDOT_py, and click the green box on the right side of the page that says "Code." From the choices, select 'Download ZIP' and your download will begin. Once the .zip file is downloaded, extract the folder 'NeuroDOT_py-main' to your working directory. 
+	4. Download the code from the NeuroDOT_py GitHub repository: Navigate to https://github.com/WUSTL-ORL/NeuroDOT_py, and click the green box on the right side of the page that says "Code." From the choices, select 'Download ZIP' and your download will begin. Once the .zip file is downloaded, extract the folder 'NeuroDOT_py-main' to your working directory. 
 
 
 2. Geting Started
 		
 	-The toolbox contains 3 folders: Data, neuro_dot, and outputfiles/output_Images.
 	
-	     -The Data folder contains 10 data samples including both retinotopic mapping of visual cortex and mapping of hierarchical language processing with HD-DOT. 
-		
-             -The neuro_dot folder contains the library, consisting of modules for each category of function involved in NeuroDOT_py (Analysis, File_IO, Light Modeling, Matlab   Equivalent Functions, Reconstruction, Spatial Transforms, Temporal Transforms, and Visualizations). There is also a function named DynamicFilter, which is used in 'getting_started.ipynb' to simplify visualizations for data pre-processing. There is also 'requirements.txt' which contains all of the necessary libraries to be installed to use NeuroDOT_py.	
-		
-	     -The 'outputfiles' folder where all of the images (.png) generated in 'getting_started' will be saved to when it is run.
-  	
+	        -The Data folder contains 10 data samples including both retinotopic mapping of visual cortex and mapping of hierarchical language processing with HD-DOT. 
+             
+	        -The neuro_dot folder contains the library, consisting of modules for each category of function involved in NeuroDOT_py (Analysis, File_IO, Light Modeling, Matlab   Equivalent Functions, Reconstruction, Spatial Transforms, Temporal Transforms, and Visualizations). There is also a function named DynamicFilter, which is used in 'getting_started.ipynb' to simplify visualizations for data pre-processing. There is also 'requirements.txt' which contains all of the necessary libraries to be installed to use NeuroDOT_py.	
+	     
+	        -The 'outputfiles' folder where all of the images (.png) generated in 'getting_started' will be saved to when it is run.
+	     
 	-'getting_started.ipynb' in the main folder is the Jupyter notebook for running the NeuroDOT Pre Processing Script. This is the file that you will open in VSCode/Jupter Notebook to run and manipulate the code. 
  
-~~~
+

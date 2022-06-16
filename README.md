@@ -16,7 +16,7 @@ NeuroDOT_py README
 		
 	1. The toolbox contains 3 folders: Data, neuro_dot, and outputfiles/output_Images.
 	
-		1. The Data folder contains 10 data samples including both retinotopic mapping of visual cortex and mapping of hierarchical language processing with HD-DOT. 
+		1. The Data folder contains 10 data samples including both retinotopic mapping of visual cortex and mapping of hierarchical language processing with HD-DOT. There are also two example parameter files, 'params.txt,' and 'params2.txt' to be used with 'getting_started' (the NeuroDOT Preprocessing script).
              
 		2. The neuro_dot folder contains the library, consisting of modules for each category of function involved in NeuroDOT_py (Analysis, File_IO, Light Modeling, Matlab   Equivalent Functions, Reconstruction, Spatial Transforms, Temporal Transforms, and Visualizations). There is also a function named DynamicFilter, which is used in 'getting_started.ipynb' to simplify visualizations for data pre-processing. There is also 'requirements.txt' which contains all of the necessary libraries to be installed to use NeuroDOT_py.	
 	     

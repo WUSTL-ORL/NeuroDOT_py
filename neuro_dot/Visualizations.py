@@ -2426,29 +2426,29 @@ class viz:
         return data
 
         def PlotCapPhysiologyPower(data, info, fig_axes =None,params = None):
-        """ 
-        PlotCapPhysiologyPower A visualization of band limited power OR
-        band-referenced SNR for each optode.
+            """ 
+            PlotCapPhysiologyPower A visualization of band limited power OR
+            band-referenced SNR for each optode.
 
 
-        "params" fields that apply to this function (and their defaults):
-            fig_size    [20, 200, 1240, 420]    Default figure position vector.
-            fig_handle  (none)                  Specifies a figure to target.
-                                                If empty, spawns a new figure.
-            dimension   '2D'                    Specifies either a 2D or 3D
-                                                plot rendering.
-            rlimits     (all R2D)               Limits of pair radii displayed.
-            Nnns        (all NNs)               Number of NNs displayed.
-            Nwls        (all WLs)               Number of WLs averaged and
-                                                displayed.
-            useGM       0                       Use Good Measurements.
-            Cmap.P      'hot'                   Default color mapping.
+            "params" fields that apply to this function (and their defaults):
+                fig_size    [20, 200, 1240, 420]    Default figure position vector.
+                fig_handle  (none)                  Specifies a figure to target.
+                                                    If empty, spawns a new figure.
+                dimension   '2D'                    Specifies either a 2D or 3D
+                                                    plot rendering.
+                rlimits     (all R2D)               Limits of pair radii displayed.
+                Nnns        (all NNs)               Number of NNs displayed.
+                Nwls        (all WLs)               Number of WLs averaged and
+                                                    displayed.
+                useGM       0                       Use Good Measurements.
+                Cmap.P      'hot'                   Default color mapping.
 
-        Dependencies: PLOTCAPDATA, ISTABLEVAR, APPLYCMAP.
+            Dependencies: PLOTCAPDATA, ISTABLEVAR, APPLYCMAP.
 
-        See Also: PLOTCAP, PLOTCAPGOODMEAS.
-        
-        """
+            See Also: PLOTCAP, PLOTCAPGOODMEAS.
+            
+            """
         # Parameters and Initialization.
         if params == None:
             params = {}

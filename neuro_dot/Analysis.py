@@ -47,15 +47,18 @@ class anlys:
         Nm = np.shape(data_in)[0]
         blocks = np.zeros((Nm, dt, Nbl))
 
+        for p in range(0,len(pulse)):
+            pulse[p] = pulse[p] +1
+
         for k in range(0, Nbl):
             pulse_k = int(pulse[k])
             if (pulse[k] + dt -1) <= Nt:
                 blocks[:, :, k] = data_in[:, pulse_k-1:pulse_k + dt-1] #Need to subtract 1 from both indices to account for 0 indexing in python
             else:
                 dtb = (pulse_k-1) + dt - 1 - Nt
-                nans = np.empty(shape = (np.shape(data_in)[0], dtb)) #need multiple lines to create an array of nans in python
+                nans = np.empty(shape = (np.shape(data_in)[0], dtb)) # need multiple lines to create an array of nans in python
                 nans[:] = np.NaN
-                blocks[:, :, k] = np.concatenate((data_in[:, (pulse_k-1):Nt], nans), axis = 1) #need to subtract 1 from start index: pulse[k] due to zero indexing, also need to use Nt as final index to get correct size
+                blocks[:, :, k] = np.concatenate((data_in[:, (pulse_k-1):Nt], nans), axis = 1) # need to subtract 1 from start index: pulse[k] due to zero indexing, also need to use Nt as final index to get correct size
 
         ## Average blocks and return.
         BA_out = np.nanmean(blocks, axis = 2) 
@@ -76,7 +79,7 @@ class anlys:
             BA_out = np.reshape(BA_out, newshape)
             BSTD_out = np.reshape(BSTD_out, newshape)
             BT_out = np.reshape(BT_out, newshape)
-            newshape_blocks = tuple(np.append(np.array(dims[0:-1]), (dt, Nbl))) #create tuple for deisred output shape for blocks, different from previous newshape bc Nbl is also appended
+            newshape_blocks = tuple(np.append(np.array(dims[0:-1]), (dt, Nbl))) # create tuple for deisred output shape for blocks, different from previous newshape bc Nbl is also appended
             blocks = np.reshape(blocks, newshape_blocks)
 
 
@@ -99,7 +102,7 @@ class anlys:
             data = np.reshape(data, [], Dsizes[-1])
         
         # 1st Temporal Derivative
-        Ddata = data - np.roll(data, np.array([0, -1]), np.array([0,-1])) #if you are shifting a matrix, and shifting both axes by a value, you MUST specify both axes as the third argument in roll()
+        Ddata = data - np.roll(data, np.array([0, -1]), np.array([0,-1])) 
 
         # RMS across measurements
         GVTD = np.concatenate(([0], matlab.rms_py(Ddata[:,0:-1])), axis = 0)
@@ -138,7 +141,7 @@ class anlys:
             print('info_in["pairs"] does not exist and is required')
             print('exiting FindGoodMeas')
             return()
-        info_out = info_in.copy() #create info_out
+        info_out = info_in.copy() # create info_out
         try:
             GVwin
         except NameError:
@@ -147,8 +150,8 @@ class anlys:
             info_out['paradigm'] = {}
         if not bthresh in locals():
             bthresh = 0.075 # Empirically derived threshold value.
-        dims = np.shape(data)
-        Nt = dims[-1] # Assumes time is always the last dimension, -1 is the index of the last dimension of an array in Python
+        dims = data.shape
+        Nt = dims[-1]       # Assumes time is always the last dimension
         NDtf = np.ndim(data) > 2
         if GVwin > (Nt-1):
             GVwin = (Nt-1)
@@ -161,12 +164,12 @@ class anlys:
         keep = np.logical_and(info_in['pairs']['r2d'] < 20, info_in['pairs']['WL'] == 2)
         foo = np.squeeze(data[keep,:])
         foo = tx4m.highpass(foo, 0.02, info_in['system']['framerate']) # bandpass filter, omega_hp = 0.02
-        foo = tx4m.lowpass(foo, 1, info_in['system']['framerate']) #bandpass filter, omega_lp = 1
+        foo = tx4m.lowpass(foo, 1, info_in['system']['framerate'])     # bandpass filter, omega_lp = 1
         foo = foo - np.roll(foo, 1, 1)
         foo[:,0] = 0
-        foob = matlab.rms_py(foo) #uses new rms that only takes one input, calculates rms for every column in rms_input and outputs row vector
+        foob = matlab.rms_py(foo) # uses new rms that only takes one input, calculates rms for every column in rms_input and outputs row vector
         NtGV = Nt - GVwin
-        NtGV_mat = np.ones((1,NtGV), dtype = np.int8) # 
+        NtGV_mat = np.ones((1,NtGV), dtype = np.int8)  
 
         if NtGV > 1: # sliding window to grab a meaningful set for 'quiet'
             GVTD_win_means = np.zeros(NtGV, order = 'F')
@@ -175,8 +178,8 @@ class anlys:
                 GVTD_win_means[i] =  np.mean(foob[i:((i+1)+ GVwin - 1)])
                 i = i+1
             t0 = np.where(GVTD_win_means == np.min(GVTD_win_means)) # find min and set t0 --> tF
-            tF = t0[0][0] + GVwin #- 1 #remove "-1" because of 0 indexing causing STD to be the wrong size #need to index t0 in order to get integer bc t0 is an array
-            STD = np.std(data[:, t0[0][0]:tF], 1, ddof= 1) # Calulate STD, make sure ddof param is set = 1 so that np.STD behaves the same as matlab STD
+            tF = t0[0][0] + GVwin 
+            STD = np.std(data[:, t0[0][0]:tF], 1, ddof= 1)          # Calulate STD, make sure ddof param is set = 1 so that np.STD behaves the same as matlab STD
         elif not 'synchpts' in info_out['paradigm']:
             NsynchPts = len(info_out['paradigm']['synchpts'])
             if NsynchPts > 2:
@@ -187,7 +190,7 @@ class anlys:
                 t0 = info_out['paradigm']['synchpts'][0]
             else:
                 tF = data.shape[1]
-            STD = np.std(data[:, t0:tF], 1, ddof=1) # Calulate STD.
+            STD = np.std(data[:, t0:tF], 1, ddof=1)                 # Calculate STD.
         else:
             STD = np.std(data, 1, ddof=1)
         

@@ -42,6 +42,7 @@ class tx4m:
 
         See Also: LOGMEAN.
         """
+
         ## Parameters and initialization
         dims = np.shape(data_in)
         Nt = dims[-1]
@@ -52,10 +53,10 @@ class tx4m:
             data_in = np.reshape(data_in, len(data_in)/Nt, Nt)
 
         ## Detrend.
-        data_out = np.squeeze(sig.detrend(data_in[:,None])) # transposing isn't necessary for this process in Python as it is in Matlab
+        data_out = np.squeeze(sig.detrend(data_in[:,None])) 
 
         ## Remove mean
-        if data_out.ndim == 1: #for when data_in is a vector
+        if data_out.ndim == 1: # When data_in is a vector
             meanRow = np.ndarray.mean(data_out, dtype = np.float64)
             data_out= data_out - meanRow
         else:
@@ -68,13 +69,11 @@ class tx4m:
         
         return data_out
 
-
     def nextpow2(N):
-        """ Function for finding the next power of 2 """
+        """ Function for finding the next power of 2 if needed"""
         n = 1
         while n < N: n = n^2
         return n
-
 
     def fft_tts(data, framerate):
         """
@@ -103,6 +102,7 @@ class tx4m:
         
         See Also: LOGMEAN, FFT, POW2, NEXTPOW2, ANGLE.
         """
+
         ## Parameters and Initialization.
         dims = data.shape
         Nt = dims[-1]
@@ -110,32 +110,30 @@ class tx4m:
         Ndft = 2 ** math.ceil(math.log2(abs(Nt))); # Zero pack to a power of 2.
         Nf = int(1 + Ndft / 2)
         
-        # %% N-D Input.
+        # N-D Input.
         if NDtf:
             data = np.reshape(data, len(data)/Nt, Nt)
 
-        # %% Remove mean.
+        # Remove mean.
         meanRow = np.ndarray.mean(data, axis = 1,dtype = np.float64)
         normdata = data - meanRow[:,None]
 
-        # %% Prep data for FFT. 
+        # Prep data for FFT. 
         ftdomain = (framerate / 2) * np.linspace(0, 1, Nf) # domain of FFT: [zero:Nyquist]
 
-        # %% Perform FFT.
-        P = scp.fft.fft(normdata, Ndft, 1) / Ndft # Do FFT in TIME dimension and normalize by Ndft
-        ftmag = math.sqrt(2) * abs(P[:, 0:Nf]) # Take positive frequencies, x2 for negative frequencies.
+        # Perform FFT.
+        P = scp.fft.fft(normdata, Ndft, 1) / Ndft # Do FFT in time dimension and normalize by Ndft
+        ftmag = math.sqrt(2) * abs(P[:, 0:Nf])    # Take positive frequencies, x2 for negative frequencies.
 
-        # %% N-D Output.
+        # N-D Output.
         if NDtf:
             ftmag = np.reshape(ftmag, data.shape[0], Nf)
 
-        # %% Other outputs.
+        # Other outputs.
         ftpower = abs(ftmag) ** 2
         ftphase = np.angle(P[:, 1:Nf])
 
         return ftdomain, ftmag, ftpower, ftphase
-
-
 
     def gethem(data, info, sel_type  = 'r2d', value = [10,16]):
         """
@@ -187,10 +185,9 @@ class tx4m:
         k = 0
         while k <=1:
             keep = np.logical_and(np.logical_and(keep_R_NN, (info['pairs']['WL'] == cs[k])), info['MEAS']['GI']).astype(np.uint8)
-            hem[k, :] = np.mean(data[np.squeeze(np.argwhere(keep == 1)), :], 0) #np.mean(data[keep, :], 0)
+            hem[k, :] = np.mean(data[np.squeeze(np.argwhere(keep == 1)), :], 0) 
             k = k + 1
         return hem
-
 
     def highpass(data_in, omegaHz, frate, params = None):
         """ 
@@ -205,6 +202,7 @@ class tx4m:
 
         See Also: LOWPASS, LOGMEAN, FILTFILT.
         """
+
         ## Parameters and Initialization.
         if params == None:
             params = {}
@@ -249,7 +247,7 @@ class tx4m:
         [b, a] = sig.butter(poles, omegaNy, 'highpass')
         
         ## Remove mean
-        if data_in.ndim == 1: #for when data_in is a vector
+        if data_in.ndim == 1: # When data_in is a vector
             meanRow = np.ndarray.mean(data_in, dtype = np.float64)
             data_in= data_in - meanRow
         else:
@@ -258,7 +256,7 @@ class tx4m:
 
         ## Detrend.
         if DoDetrend:
-            data_in = np.squeeze(sig.detrend(data_in[:,None])) # transposing isn't necessary for this process in Python as it is in Matlab
+            data_in = np.squeeze(sig.detrend(data_in[:,None])) 
 
         ## Zero pad    
         array = np.zeros((int(Nm),int(Npad)))
@@ -281,9 +279,7 @@ class tx4m:
         if NDtf:
             data_out = np.reshape(data_out, dims)
         
-        #print(data_out)
         return data_out
-
 
     def logmean(data_in):
         """
@@ -329,7 +325,7 @@ class tx4m:
 
         # Parameters and Initialization.
         dims = np.array(np.shape(data_in))
-        Nt = dims[-1] # Assumes time is always the last dimension, -1 is the index of the last dimension of an array in Python
+        Nt = dims[-1] # Assumes time is always the last dimension
         NDtf = np.ndim(data_in) > 2
         isZ = not np.any(np.isreal(data_in)) #check if there is at least one element in data_in that is a complex number
         # N-D Input.
@@ -341,13 +337,12 @@ class tx4m:
         X = data_in / Phi_0[:,None]
 
         if not isZ:
-        #   data_out = {}
             data_out = np.double(-np.log(X))
         else:
             Y_Rytov_Re = -np.log(abs(X))
             Y_Rytov_Im = -np.angle(X)
 
-            data_out = np.concatenate((Y_Rytov_Re, Y_Rytov_Im), axis = 0) #concatenate along first dimension
+            data_out = np.concatenate((Y_Rytov_Re, Y_Rytov_Im), axis = 0) # Concatenate along first dimension
             dims[0] = 2*dims[0]
 
         # Fix any NaNs.
@@ -359,7 +354,6 @@ class tx4m:
 
         # Return output
         return (data_out, Phi_0)    
-
     
     def lowpass(data_in, omegaHz,frate,params = None):
         """
@@ -372,8 +366,9 @@ class tx4m:
         
         This function also removes the linear component of the input data.
         
-        See Also: HIGHPASS, LOGMEAN, FILTFILT.
+        See Also: HIGHPASS, LOGMEAN.
         """
+
         ## Parameters and Initialization.
         if params == None:
             params = {}
@@ -418,7 +413,7 @@ class tx4m:
         [b, a] = sig.butter(poles, omegaNy, 'lowpass')
         
         ## Remove mean
-        if data_in.ndim == 1: #for when data_in is a vector
+        if data_in.ndim == 1: # When data_in is a vector
             meanRow = np.ndarray.mean(data_in, dtype = np.float64)
             data_in= data_in - meanRow
         else:
@@ -427,7 +422,7 @@ class tx4m:
 
         ## Detrend.
         if DoDetrend:
-            data_in = np.squeeze(sig.detrend(data_in[:,None], type = 'linear')) # transposing isn't necessary for this process in Python as it is in Matlab
+            data_in = np.squeeze(sig.detrend(data_in[:,None], type = 'linear'))
 
 
         ## Zero pad    
@@ -446,10 +441,10 @@ class tx4m:
 
         ## Detrend.
         if DoDetrend:
-            data_out = np.squeeze(sig.detrend(data_out[:,None], type = 'linear')) # transposing isn't necessary for this process in Python as it is in Matlab
+            data_out = np.squeeze(sig.detrend(data_out[:,None], type = 'linear'))
 
         ## Remove mean
-        if data_in.ndim == 1: #for when data_in is a vector
+        if data_in.ndim == 1: # When data_in is a vector
             meanRow = np.ndarray.mean(data_out, dtype = np.float64)
             data_out= data_out - meanRow
         else:
@@ -462,7 +457,6 @@ class tx4m:
         
 
         return data_out
-
 
     def regcorr(data_in, info, hem):
         
@@ -486,11 +480,12 @@ class tx4m:
 
         See Also: GETHEM, DETREND_TTS.
         """
+
         ## Parameters and Initialization.
         Nm = np.shape(data_in)[0]
         Nt = np.shape(data_in)[1]
-        cs = np.unique(info['pairs']['WL']) #WLs
-        Nc = len(cs) #Number of WLs
+        cs = np.unique(info['pairs']['WL']) # WLs
+        Nc = len(cs)                        # Number of WLs
         data_out = np.zeros(shape = (Nm, Nt))
         R = np.zeros(shape = (Nm, 1))
 
@@ -499,18 +494,17 @@ class tx4m:
             keep = info['pairs']['WL'] == cs[k]
             temp = np.transpose(data_in[keep, :])
 
-            g = np.transpose(hem[k, :]) #regressor/noise signal in correct orientation
+            g = np.transpose(hem[k, :])     # Regressor/noise signal in correct orientation
             g.shape = (g.shape[0], 1)
             gp = lna.pinv(g)
             beta = gp.dot(temp)
-            data_out[keep, :] = np.transpose(temp - g.dot(beta)) #linear regression
+            data_out[keep, :] = np.transpose(temp - g.dot(beta)) # Linear regression
 
-            R[keep] = np.transpose(anlys.normrND(np.transpose(g)).dot(anlys.normcND(temp))) #correlation coefficient
+            R[keep] = np.transpose(anlys.normrND(np.transpose(g)).dot(anlys.normcND(temp))) # Correlation coefficient
         
         return data_out, R
 
-
-    def resample_tts(data_in, info_in, omega_resample = 1, tol = 0.001, framerate = 0): # returns data_out and info_out
+    def resample_tts(data_in, info_in, omega_resample = 1, tol = 0.001, framerate = 0): 
         """
         RESAMPLE_TTS Resample data while maintaining linear signal component.
 
@@ -532,6 +526,7 @@ class tx4m:
 
         See Also: DETREND_TTS, RESAMPLE.
         """
+
         ## Parameters and Initialization.
         info_out = copy.deepcopy(info_in)
         dims = np.shape(data_in)
@@ -547,7 +542,7 @@ class tx4m:
 
 
         ## Approximate desired resampling ratio as a fraction.
-        fract = sym.nsimplify((omega_resample/framerate), tolerance = tol) #in matlab tolerance is set to 1e-5, in order to reproduce outputs from neuroDOT matlab, tolerance is set to 0.001 in neuroDOT
+        fract = sym.nsimplify((omega_resample/framerate), tolerance = tol, rational = True) # In Matlab, tolerance is set to 1e-5, in order to reproduce outputs in Python, tolerance is set to 0.001 
         N = fract.numerator
         D = fract.denominator
         info_out['system']['framerate'] = omega_resample
@@ -555,39 +550,39 @@ class tx4m:
 
         ## Remove linear fit.
         Nt = np.shape(data_in)[1]
-        d0 = data_in[:, 0] # start point
-        dF = data_in[:, Nt-1] # end point
+        d0 = data_in[:, 0]    # Start point
+        dF = data_in[:, Nt-1] # End point
         beta = -d0
 
-        alpha1 = np.divide((d0-dF), (Nt-1)) # slope for linear fit
-        cols = np.arange(0, Nt, 1)  # bsxfun multiplication
+        alpha1 = np.divide((d0-dF), (Nt-1)) # Slope for linear fit
+        cols = np.arange(0, Nt, 1)          # bsxfun (Matlab) multiplication
         alpha_full = np.ones((dims[0], Nt))
         for x in cols:
             alpha_full[:, x] = cols[x] * alpha1
         beta.shape = (np.shape(beta)[0],1)
-        correction = alpha_full + beta # bsxfun addition
+        correction = alpha_full + beta      # bsxfun (Matlab) addition
         corrsig = data_in + correction
 
 
         ## Resample with endpoints pinned to zero.
-        rawresamp = np.transpose(sig.resample_poly(np.transpose(corrsig[:]), N, D)) #using scipy signal polyphase resampling
+        rawresamp = np.transpose(sig.resample_poly(np.transpose(corrsig[:]), N, D)) # Using scipy signal polyphase resampling
 
 
         ## Add linear fit back to resampled data.
         alpha2 = alpha1 * (D/N) 
-        Nt = np.shape(rawresamp)[1] # column dimension
-        cols = np.arange(0, Nt, 1) # bsxfun multiplication
+        Nt = np.shape(rawresamp)[1]     # Column dimension
+        cols = np.arange(0, Nt, 1)      # bsxfun (Matlab) multiplication
         alpha_full = np.ones((dims[0], Nt))
         for x in cols:
             alpha_full[:, x] = cols[x] * alpha2
-        correction = alpha_full + beta #bsxfun addition
+        correction = alpha_full + beta  # bsxfun (Matlab) addition
         data_out = rawresamp - correction
 
 
         ## Fix synch pts to new framerate.
         if 'paradigm' in info_in:
             if 'init_synchpts' in info_in['paradigm']:
-                info_out['paradigm']['synchpts'] = np.round(np.divide(np.dot(N, info_out['paradigm']['init_synchpts']), D)) # info_out.paradigm.synchpts = round(N .* info_out.paradigm.init_synchpts ./ D);
+                info_out['paradigm']['synchpts'] = np.round(np.divide(np.dot(N, info_out['paradigm']['init_synchpts']), D)) 
                 info_out['paradigm']['synchpts'][np.argwhere(info_out['paradigm']['synchpts'] == 0)] = 1
             elif 'synchpts' in info_in['paradigm']:
                 info_out['paradigm']['init_synchpts'] = info_out['paradigm']['synchpts']

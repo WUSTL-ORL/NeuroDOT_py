@@ -2,7 +2,7 @@
 import sys
 import math
 from typing import IO
-
+import mat73
 import scipy.io as spio
 
 
@@ -18,6 +18,7 @@ class io:
             if isinstance(dict[key], spio.matlab.mio5_params.mat_struct):
                 dict[key] = io._todict(dict[key])
         return dict     
+
     def loadmat(filename):
         '''
         function written by 'mergen' on Stack Overflow:
@@ -25,14 +26,22 @@ class io:
         this function should be called instead of direct spio.loadmat
         as it cures the problem of not properly recovering python dictionaries
         from mat files. It calls the function check keys to cure all entries
-        which are still mat-objects
+        which are still mat-objects. This function does not work for .mat -v7.3 files. 
         '''
-        data = spio.loadmat(filename, struct_as_record=False, squeeze_me=True)
+        data = spio.loadmat(filename,struct_as_record=False, squeeze_me=True)
         return io._check_keys(data)
 
-
-       
-
+    def loadmat7p3(filename):
+        '''
+        function written by 'mergen' on Stack Overflow:
+        https://stackoverflow.com/questions/7008608/scipy-io-loadmat-nested-structures-i-e-dictionaries
+        this function should be called instead of direct spio.loadmat
+        as it cures the problem of not properly recovering python dictionaries
+        from mat files. It calls the function check keys to cure all entries
+        which are still mat-objects. This function is to be used for .mat -v7.3 files only. 
+        '''
+        data = mat73.loadmat(filename, use_attrdict = True )
+        return io._check_keys(data)
 
     def _todict(matobj):
         '''

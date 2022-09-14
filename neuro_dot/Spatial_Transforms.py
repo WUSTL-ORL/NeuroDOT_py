@@ -56,7 +56,7 @@ class sx4m:
         y = np.arange((-centerB[1] + nVyB * drB[1]), (-centerB[1]), -drB[1]) 
         z = np.arange((-centerB[2] + nVzB * drB[2]), (-centerB[2]), -drB[2])
 
-        #make target space x, y, z column vectors (row vectors will throw an error in lines 205-207 because len(row_vector) = 1 as the first dimension of a row vector has a length of 1)
+        # Make target space x, y, z column vectors 
         x.shape = (x.shape[0], 1)
         y.shape = (y.shape[0], 1)
         z.shape = (z.shape[0], 1)
@@ -80,7 +80,7 @@ class sx4m:
         ## Interpolate
         # scipy.interpolate.interpn requires initial space coordinates to all be strictly ascending, due to this we flip initial space corrdinates in the X dimension, as they are descending
         # interpn also requires the order of initial space inputs to match the dimension order of the input image, so the order is specified as X, Y , Z in python instead of Y, X, Z as it is in matlab
-        # we also flip the x dimension of the input image to replicate what we're doing with the initial space X coordinates
+        # We also flip the x dimension of the input image to replicate what we're doing with the initial space X coordinates
         X = np.flip(X)
         imgA = np.flip(imgA, axis = 0)
         for k in range(0, Nt):
@@ -107,9 +107,9 @@ class sx4m:
             coord_in = np.reshape(coord_in,[1,-1])
 
         # Define the voxel space.
-        nVxA = space_info['nVx']
-        nVyA = space_info['nVy']
-        nVzA = space_info['nVz']
+        nVxA = int(space_info['nVx'])
+        nVyA = int(space_info['nVy'])
+        nVzA = int(space_info['nVz'])
         drA = space_info['mmppix']
         centerA = space_info['center'] # i.e., center = coordinate of center of voxel with index [-1,-1,-1]
         nV = np.shape(coord_in)[0]
@@ -118,9 +118,9 @@ class sx4m:
         coord_out = np.zeros(np.shape(coord_in))
 
         # Create coordinates for each voxel index.
-        X = np.transpose(drA[0] * np.array(range(nVxA, 0, -1)) - centerA[0])
-        Y = np.transpose(drA[1] * np.array(range(nVyA, 0, -1)) - centerA[1])
-        Z = np.transpose(drA[2] * np.array(range(nVzA, 0, -1)) - centerA[2])
+        X = np.transpose(int(drA[0]) * np.array(range(nVxA, 0, -1)) - centerA[0])
+        Y = np.transpose(int(drA[1]) * np.array(range(nVyA, 0, -1)) - centerA[1])
+        Z = np.transpose(int(drA[2]) * np.array(range(nVzA, 0, -1)) - centerA[2])
 
         # Convert coordinates to new space.
         if output_type == 'coord':
@@ -167,7 +167,6 @@ class sx4m:
 
         return coord_out
 
-
     def GoodVox2vol(img, dim):
         """
         GOOD_VOX2VOL Turns a Good Voxels data stream into a volume.
@@ -178,23 +177,23 @@ class sx4m:
 
         See Also: SPECTROSCOPY_IMG.
         """
+
         ## Parameters and Initialization.
         Nvox = np.shape(img)[0]
         Nt = np.shape(img)[1]
         if np.logical_and(Nvox == 1, Nt > 1):
             img = img.T
             Nvox = np.shape(img)[0]
-            Nt = np.shape(img)[1] 
+            Nt = np.shape(img)[1]
 
         ## Stream image into good voxels.
-        imgvol = np.zeros((dim['nVx'] * dim['nVy'] * dim['nVz'], Nt)) #something going wrong here
-        imgvol[dim['Good_Vox']-1, :] = img
+        imgvol = np.zeros((int(dim['nVx']) * int(dim['nVy']) * int(dim['nVz']), int(Nt))) 
+        imgvol[dim['Good_Vox'][:].astype('int')-1, :] = img
 
         ## Reshape image into the voxel space.
-        imgvol = np.reshape(imgvol, (dim['nVx'], dim['nVy'], dim['nVz'], Nt), order = 'F')
+        imgvol = np.reshape(imgvol, (int(dim['nVx']), int(dim['nVy']) ,int(dim['nVz']), int(Nt)), order = 'F')
 
         return imgvol
-
 
     def rotate_cap(tpos_in, dTheta):
         """
@@ -208,13 +207,14 @@ class sx4m:
 
         See Also: PLOTLRMESHES, SCALE_CAP.
         """
+
         ## Parameters and Initialization.
-        centroid = np.mean(tpos_in, axis = 0) #this is causing the large error in output
+        centroid = np.mean(tpos_in, axis = 0)
         centroid_mat = mlb.repmat(centroid, tpos_in.shape[0], 1)
         Dx_axis = dTheta[0] # Pos rotates true right down
         Dy_axis = dTheta[1] # Pos rotates CCW from top
         Dz_axis = dTheta[2] # Pos rotates back of cap up
-        d2r = np.pi / 180 #  Convert from degrees to radians
+        d2r = np.pi / 180   # Convert from degrees to radians
 
 
         ## Create rotation matrices.
@@ -228,7 +228,6 @@ class sx4m:
 
         return tpos_out
 
-
     def rotation_matrix(direction, theta):
         """
         ROTATION_MATRIX Creates a rotation matrix.
@@ -238,6 +237,7 @@ class sx4m:
         
         See Also: ROTATE_CAP.
         """
+        
         ## Parameters and Initialization.
         rot = np.zeros(3)
 

@@ -14,6 +14,12 @@ import scipy.ndimage as ndimage
 import keyboard
 import copy
 import pylab
+import plotly.offline as po
+import plotly.io as pio
+import plotly.graph_objects as go
+import datetime as dt
+
+
 
 from math import trunc
 from pickle import NONE
@@ -528,6 +534,31 @@ class viz:
         else:
             ax2.set_ylabel('Rsd: [1,20) mm             Rsd: [20,30) mm             Rsd: [30,40) mm', rotation = 90.0, color = 'w', fontsize = 7, va = 'center', labelpad= -10)
       
+    def PlotInterpSurfMesh(volume, meshL, meshR, dim, params):
+        # ## Parameters and Initialization.
+
+        if len(volume.shape) >=4:
+            if volume.shape[3] > 1:
+                # If volume is >=4D, or if so, and the time dimension > 1...
+                raise ValueError('*** "volume" input has more than one time point. PlotInterpSurfMesh can only image one time point. ***')
+            raise ValueError('*** "volume" input has more than one time point. PlotInterpSurfMesh can only image one time point. ***')
+            
+        try:
+            params
+        except ValueError:
+            params = {}
+        if not params:
+            params = {} 
+
+        # ## Interpolate surface mesh into maps.
+        mapL = viz.vol2surf_mesh(meshL, volume, dim, params)
+        mapR = viz.vol2surf_mesh(meshR, volume, dim, params)
+
+        # ## Image the left and right maps.
+        [fig, params2] = viz.PlotLRMeshes(mapL, mapR, params)
+
+        return mapL, mapR, fig, params2
+
     def Plot_RawData_Cap_DQC(data,info_in,params = None):
         """ 
         This function generates plots of data quality as related to the cap
@@ -876,6 +907,275 @@ class viz:
         ax.set_xlabel('S-D Separation (mm)', color = LineColor)
         ax.set_ylabel('Light Levels', color = LineColor)
         ax.legend(lcell, loc = 'lower left', fontsize = 7, facecolor = 'black', framealpha = 0.7, labelcolor = 'white')
+
+    def PlotLRMeshes(meshL, meshR, params):
+
+        ## Parameters and Initialization.
+        Linecolor = 'white' #'w'
+        BkgdColor = 'black' #'k'
+        FaceColor = 'interp'
+
+        try:
+            meshL['data']
+        except KeyError:
+            meshL['data'] = np.zeros((meshL['nodes'].shape[0], 1))
+        if np.logical_and('data' in meshL, meshL['data'] == []):
+            meshL['data'] = np.zeros((meshL['nodes'].shape[0], 1))
+        try:
+            meshR['data']
+        except KeyError:
+            meshR['data'] = np.zeros((meshR['nodes'].shape[0], 1))
+        if np.logical_and('data' in meshR, meshL['data'] == []):
+            meshR['data'] = np.zeros((meshR['nodes'].shape[0], 1)) 
+
+        #first check to see if arrays are multidimensional/imclude multiple time points
+        if np.logical_or(meshL['data'].ndim > 1, meshR['data'].ndim > 1):
+            raise Exception('*** One or both mesh imputs has more than one time points in, "mesh.data". PlotLRMeshes can only plot one time point. ***')
+            # return () #remember to uncomment return when moved to real function file
+
+        try:
+            params
+        except NameError: #if params doesnt exists, initialize it as an empty dictionary
+            params = {}
+        if not params: #if empty, make params a dictionary
+            params = {}
+
+        px = 1/plt.rcParams['figure.dpi']  # pixel in inches
+        try: 
+            params['fig_size']
+        except KeyError:
+            params['fig_size'] = np.array([20*px, 200*px, 960*px, 420*px])
+        if np.logical_and('fig_size' in params, params['fig_size'] == []):
+            params['fig_size'] = np.array([20*px, 200*px, 960*px, 420*px])
+
+        if not np.any(np.append(meshL['data'], meshR['data'])):
+            params['Scale'] = 1
+
+        try: 
+            params['Scale']
+        except KeyError:
+            params['Scale'] = 0.9 * max([meshL['data'][:], meshR['data'][:]])
+        if np.logical_and('Scale' in params, not params['Scale']):
+            params['Scale'] = 0.9 * max([meshL['data'][:], meshR['data'][:]])
+
+        try:
+            params['Th']
+        except KeyError:
+            params['Th']['P'] = 0.25 * params['scale']
+            params['Th']['N'] = -params['Th']['P']
+        if np.logical_and('Th' in params, not params['Th']):
+            params['Th']['P'] = 0.25 * params['scale']
+            params['Th']['N'] = -params['Th']['P']
+
+        try: 
+            params['alpha']
+        except KeyError:
+            params['alpha'] = 1
+        if np.logical_and('alpha' in params, not params['alpha']):
+            params['alpha'] = 1
+
+        try: 
+            params['lighting']
+        except KeyError:
+            params['lighting'] = 'gouraud'
+        if np.logical_and('lighting' in params, not params['lighting']):
+            params['lighting'] = 'gouraud'
+
+        try: 
+            params['view']
+        except KeyError:
+            params['view'] = 'lat'
+        if np.logical_and('view' in params, not params['view']):
+            params['view'] = 'lat'
+
+        try: 
+            params['ctx']
+        except KeyError:
+            params['ctx'] = 'std'
+        if np.logical_and('ctx' in params, not params['ctx']):
+            params['ctx'] = 'std'
+
+
+        if np.logical_and('Scale' in params, not not params['Scale']):
+            c_max = params['Scale']
+        else :
+            c_max =  0.9 * max([meshL['data'][:], meshR['data'][:]])
+
+        try:
+            params['PD']
+        except KeyError:
+            params['PD'] = 0
+        if np.logical_and(np.logical_and('PD' in params, not not params['PD']), params['PD']):
+            c_mid = c_max /2
+            c_min = 0
+        else:
+            c_mid = 0
+            c_min = -c_max
+
+        try:
+            params['Cbar_on']
+        except KeyError:
+            params['Cbar_on'] = 0
+        if params['Cbar_on'] == 1:
+            try: 
+                params['cbticks']
+            except KeyError:
+                no_cbticks = 1
+                params['cbticks'] = None
+            if np.logical_and('cbticks' in params, not params['cbticks']):
+                no_cbticks = 1
+            try: 
+                params['cblabels']
+            except KeyError:
+                no_cblabels = 1
+                params['cblabels'] = None
+            if np.logical_and('cblabels' in params, not params['cblabels']):
+                no_cblabels = 1
+            if np.logical_and(no_cbticks == 1, no_cblabels == 1):
+                params['cbticks'] = np.array([0,0.5,1])
+                params['cblabels'] = [str(c_min), str(c_mid), str(c_max)]
+            elif no_cbticks == 1:
+                if len(params['cblabels']) > 2:
+                    if all(isinstance(item, float64) or isinstance(item, int) for item in params['cblabels']):
+        #               # If we have numbers, we can sort then scale them.
+                        params['cblabels'] = np.sort(params['cblabels'])
+                        params['cbticks'] = (params['cblabels'] - params['cblabels'][0]) / (params['cblabels'][-1] - params['cblabels'][0])
+                    else:
+                        params['cbticks'] = np.arange(0,1+1/(len(params['cblabels'])-1),1/(len(params['cblabels'])-1))
+                elif len(params['cblabels']) == 2:
+                    params['cbticks'] = np.array([0,1])
+                else:
+                    raise ValueError('*** Need 2 or more colorbar ticks. ***')
+            elif no_cblabels == 1:
+                if len(params['cbticks']) > 2:
+                    # If only labels missing, scale labels to tick spacing.
+                    scaled_ticks = (params['cbticks'] - params['cbticks'][0]) / (params['cbticks'][-1] - params['cbticks'][0])
+                    params['cblabels'] = [str(scaled_ticks[item]) for item in range(0,len(params['cbticks']))]
+                elif len(params['cbticks']) == 2:
+                    params['cblabels'] = [str(c_min), str(c_max)]
+                else:
+                    raise ValueError('*** Need 2 or more colorbar labels. ***')
+            elif len(params['cbticks']) == len(params['cblabels']):
+                None
+                # As long as they match in size, continue on.
+            else:
+                raise ValueError('*** params.cbticks and params.cblabels do not match. ***')
+            # Any other errors are up to user.
+
+
+        # ## Image Hemispheres. Reposition meshes for standard transverse orientation.
+        Lnodes, Rnodes = viz.adjust_brain_pos(meshL, meshR, params)
+
+
+        # ## Set Lighting and Persepctive.
+        if np.logical_or(params['view'] == 'lat', params['view'] == 'med'): #same params for lat and medial
+            light_pos = dict(x = -100, y = 200, z = 0)
+            camera = dict(eye=dict(x = -2.5/1.5, y = 0, z = 0))
+        if params['view'] == 'post':
+            light_pos = dict(x = 0, y = -200, z = 50)
+            camera = dict(eye=dict(x = 0.0, y = -2.5/1.5, z = -0.2/2))
+        if params['view'] == 'dorsal':
+            light_pos = dict(x = 100, y = 300, z = 100)
+            camera = dict(eye=dict(x = 0, y = 0, z = 2.5/1.5), up = dict(x = 0, y = 1, z = 0))
+
+
+        ## Image Left and Right Sides
+        #Left side setup: get colordata for vertices, and split verticies into x, y, and z vectors 
+        [dataL, CMAP, params2] = viz.applycmap(meshL['data'], [], params)
+        X_L = np.array(Lnodes[:,0])
+        Y_L = np.array(Lnodes[:,1])
+        Z_L = np.array(Lnodes[:,2])
+        #Right side setup: get colordata for vertices, and split verticies into x, y, and z vectors 
+        [dataR, CMAP, params2] = viz.applycmap(meshR['data'], [], params)
+        X_R = np.array(Rnodes[:,0])
+        Y_R = np.array(Rnodes[:,1])
+        Z_R = np.array(Rnodes[:,2])
+        #Plot
+        fig = go.Figure(data=[
+            go.Mesh3d(
+                #X, Y, and Z Vertices
+                x = X_L,
+                y = Y_L,
+                z = Z_L,
+                # Intensity of each vertex, which will be interpolated and color-coded
+                intensitymode = 'vertex',
+                vertexcolor = dataL,
+                # i, j and k give the order for connecting vertices (Faces)
+                i = meshL['elements'][:, 0:1]-1,
+                j = meshL['elements'][:, 1:2]-1,
+                k = meshL['elements'][:, 2:3]-1,
+                #Lighting
+                lighting = dict(ambient = 0.25, diffuse = 0.75, specular = 0.4),
+                lightposition = light_pos
+            ),
+            go.Mesh3d(
+                #X, Y, and Z Vertices
+                x = X_R,
+                y = Y_R,
+                z = Z_R,
+                # Intensity of each vertex, which will be interpolated and color-coded
+                intensitymode = 'vertex',
+                vertexcolor = dataR,
+                # i, j and k give the order for connecting vertices (Faces)
+                i = meshR['elements'][:, 0:1]-1,
+                j = meshR['elements'][:, 1:2]-1,
+                k = meshR['elements'][:, 2:3]-1,
+                #Lighting
+                lighting = dict(ambient = 0.25, diffuse = 0.75, specular = 0.4),
+                lightposition = light_pos
+            )
+        ])
+
+        ## Visual Formatting
+        #scene_aspect mode should always be set to 'data', makes the axes scale to image data
+        name = 'Volumetric Surface Mapping'
+        fig.update_layout(scene_camera=camera, title=name, font_color = Linecolor, font_size = 12, scene_aspectmode = 'data') #should always have aspectmode = 'data' to be safe
+        fig.update_layout(scene = dict(
+                            xaxis = dict(
+                                backgroundcolor="rgb(0,0,0)",
+                                gridcolor=BkgdColor,
+                                zerolinecolor=BkgdColor,
+                                showticklabels = False, visible = False),
+
+                            yaxis = dict(
+                                backgroundcolor="rgb(0,0,0)",
+                                gridcolor=BkgdColor,
+                                zerolinecolor=BkgdColor,
+                                showticklabels = False, visible = False),
+
+                            zaxis = dict(
+                                backgroundcolor="rgb(0,0,0)",
+                                gridcolor=BkgdColor,
+                                zerolinecolor=BkgdColor,
+                                showticklabels = False, visible = False),
+
+                            bgcolor = BkgdColor),
+                            )
+
+        if params['Cbar_on'] == 1:
+            # In matlab, colorbars are positioned to the right of the image for posterior and dorsal views, and underneath the image for medial and lateral views (4/19/22)
+            # In python, we have changed the colorbar position to be under the image for ALL views, matlab will be updated to reflect this change in the future
+            colorbar_trace  = go.Scatter(x=[None],
+                y=[None],
+                mode='markers',
+                marker=dict(
+                    colorscale='jet', 
+                    showscale=True,
+                    colorbar = dict(len = 0.5, orientation = 'h', xanchor = 'center', xpad = 50, y = 0, yanchor = 'bottom', tickmode = 'array', tickvals = 9*params['cbticks'], ticktext = params['cblabels'], tickfont_size = 20, outlinecolor = Linecolor)
+                ),
+            )
+            fig.add_trace(colorbar_trace)
+
+        #Set file name for figure, then display
+        #I moved the file name section down here and used params2 bc I want the file name to be accessible for functions downstream of this one if needed
+        try:
+            params2['fn']
+        except KeyError:
+            now = dt.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+            params2['fn'] = 'PLRM_fig_' + now
+        po.plot(fig, filename = params2['fn'])
+
+        return fig, params2
 
     def Plot_RawData_Metrics_I_DQC(data,info,params = None):
         """
@@ -1926,7 +2226,7 @@ class viz:
             return ax3, x, y, True 
         else: 
             if params['mode'] == 'patch':
-                return x, y, False, fig_axes
+                return x, y, fig_axes
             else:
                 return max(xsmax,xdmax), min(xsmin,xdmin), fig_axes
     
@@ -2362,9 +2662,9 @@ class viz:
 
         #  Send Light Levels to PlotCapData.
         if fig_axes == None:
-            x,y, threeDGraph,fig_axes = viz.PlotCapData(SrcRGB, DetRGB, info, fig_axes,params)
+            x,y,fig_axes = viz.PlotCapData(SrcRGB, DetRGB, info, fig_axes,params)
         else:
-            x,y, threeDGraph,fig_axes = viz.PlotCapData(SrcRGB, DetRGB, info, fig_axes, params)
+            x,y,fig_axes = viz.PlotCapData(SrcRGB, DetRGB, info, fig_axes, params)
             
         # Title Logic 
         title = "Mean Light Levels \n"
@@ -2666,7 +2966,216 @@ class viz:
         
         return Plevels
 
+    def PlotCapPhysiologyPower(data, info, fig_axes =None,params = None):
+        # Parameters and Initialization.
+        if params == None:
+            params = {}
+        LineColor = 'w'
+        BkgdColor = 'k'
+        Nm = len(info['pairs']['Src'])
+        Ns = len(np.unique(info['pairs']['Src']))
+        Nd = len(np.unique(info['pairs']['Det']))
+        cs = np.unique(info['pairs']['WL']) # WLs.
+        llfo=np.zeros((Ns+Nd,1))
 
+        dims = np.shape(data)
+        Nt = int(dims[-1])
+        NDtf = (len(dims) > 2)
+
+        if 'init_framerate' in info['system']:
+            fr=info['system']['init_framerate']
+        else:
+            fr=info['system']['framerate']
+
+        params['mode'] = 'patch'
+        params['PD'] = 1
+        params['Th'] = {}
+        params['Th']['P'] = 0 
+        params['DR'] = 1000
+
+        if 'Cmap' not in params or params['Cmap'] == [] or 'P' not in params['Cmap'] or params['Cmap']['P'] ==[]:
+            params['Cmap'] = {}
+            params['Cmap']['P'] = 'hot'
+        
+        if 'dimension' not in params or params['dimension'] == []:
+            params['dimension'] = '2D'
+        
+        if 'rlimits' not in params:
+            params['rlimits']=[10,30]
+
+        if 'WL' not in params:# Choose wavelength 
+            if 'lambda' in params: # Choose wavelength from actual lambda
+                params['WL'] = info['pairs']['WL'][np.where(info['pairs']['lambda'] == params['lambda'])[0]]
+            else:
+                params['WL'] = 2
+    
+        if 'Nwls' not in params or params['Nwls'] == []:
+            params['Nwls'] = np.transpose(cs)
+        
+        if 'useGM' not in params or params['useGM'] == []:
+            params['useGM'] = 0
+        
+        if not params['useGM'] or 'MEAS' not in info or ('MEAS' in info and 'GI' not in info['MEAS']): #   if ~params.useGM  ||  ~isfield(info, 'MEAS')  ||  (isfield(info, 'MEAS') &&  ~istablevar(info.MEAS, 'GI'))
+            GM = np.ones((Nm, 1))
+        else:
+            GM = info['MEAS']['GI']
+        
+        if 'dimension' not in params or params['dimension'] == []:
+            params['dimension'] = '2D'# '2D' | '3D'
+        
+        if 'OD' not in params:
+            params['OD'] = 0 # 0 for raw data, 1 for Optical Density'
+        
+        if 'type' not in params:
+            params['type'] = 'SNR' # 0 for raw data, 1 for Optical Density'
+        if 'freqs' not in params: # Freq range to find peak
+            params['freqs'] = [0.5, 2.0] #Pulse band
+        elif isinstance(params['freqs'], str): 
+            if params['freqs'] == 'pulse':
+                params['freqs'] = [0.5, 2.0] # Pulse band
+            if params['freqs'] == 'fc':
+                params['freqs'] = [0.009, 0.08] # Pulse band
+
+        if 'freqsBW' not in params:
+            params['freqsBW'] = [0.009, 0.08] #range from which to determine bandwidth
+        #  N-D Input.
+        if NDtf:
+            data = np.reshape(data, (-1, Nt))
+        #  Use only time in synchpts if present
+        if 'paradigm' in info:#isfield(info, 'paradigm')
+            if 'synchpts' in info['paradigm']:
+                NsynchPts = len(info['paradigm']['synchpts'])# % set timing of data
+                if NsynchPts > 2:
+                    tF = info['paradigm']['synchpts'][-1] # treat these as values rather than indices (correct for indexing when used)
+                    t0 = info['paradigm']['synchpts'][1]
+                elif NsynchPts == 2:
+                    tF = info['paradigm']['synchpts'][1]
+                    t0 = info['paradigm']['synchpts'][0]
+                else:
+                    tF = len(data) 
+                    t0 = 1
+            else:
+                tF = len(data)
+                t0 = 1
+        else:   
+            tF = len(data) 
+            t0 = 1
+
+            # Calculate power
+        if not params['OD']:
+            data = tx4m.logmean(data)[0]
+
+        ftdomain, ftmag, _, _  = tx4m.fft_tts(data[:, t0-1:tF],fr)
+
+        greaterthan = np.where(info['pairs']['r2d'] >= params['rlimits'][0],1,0)
+        lessthan = np.where(info['pairs']['r2d'] <= params['rlimits'][1],1,0)
+        wlengthidx = np.where(info['pairs']['WL'] == params['WL'],1,0)
+        gmidx = GM.flatten()
+        keep = np.logical_and(np.logical_and(np.logical_and(greaterthan, lessthan), wlengthidx),gmidx)
+
+        # Since these are all indices, they don't need to add 1, and 0 and 1 are used instead of 1 and 2
+        idxFCm=np.argmin(abs(ftdomain-params['freqsBW'][0]))  # Define freq indices    
+        idxFCM=np.argmin(abs(ftdomain-params['freqsBW'][1]))    
+        BWfc=round((idxFCM-idxFCm)/2)                  #% Define Bandwidth 
+        idxPm=np.argmin(abs(ftdomain-params['freqs'][0]))   
+        idxPM=np.argmin(abs(ftdomain-params['freqs'][1]))    
+        
+        idxP1=np.argmax(ftmag[keep,idxPm:idxPM+1],1)#[],2); #keep idxP1 off by one until floIdx
+        idxP1=round(np.mean(idxP1))  # find mean peak freq from all mean; off by one at this point
+
+        floIdx=idxPm+idxP1-BWfc+1 
+        fhiIdx=idxPm+idxP1+BWfc+1 #both floIdx and fhiIdx are off by one for indexing
+        if floIdx < 1:
+            floIdx = 1
+        Pmax=np.sum(ftmag[:,floIdx:fhiIdx+1]**2,1) # sum pulse power
+
+        fNoise=np.setdiff1d(np.arange(idxPm-BWfc+1,idxPM+BWfc+2),np.arange(floIdx+1,fhiIdx+2)) #correct indices here to avoid concatenating off by one error
+        fNoise[np.where(fNoise < 1)] = []  
+        fNoise[np.where(fNoise>len(ftdomain))] = []     # setting indices equal to empty could cause issues - not tested
+        fNoiseidx = [x - 1 for x in fNoise]
+        Control=np.median(ftmag[:,fNoiseidx]**2,1)*BWfc*2 
+        # % Control=2.*BWfc.*median(ftmag(:,idxPm:end),2).^2;
+
+        # % Plevels=1e5.*Pmax./Control;           % SNR of signal
+        # % Plevels=1e0.*Pmax./Control;           % SNR of signal
+        if params['type'] == 'SNR':
+            Plevels = 10*np.log10(Pmax/Control) # SNR in dB
+        if params['type'] == 'mag':
+            Plevels = Pmax/np.amax(Pmax.flatten('F'))
+
+            #  Populate metric for visualizations
+        llfo = np.zeros((Ns+Nd))
+        for s in range(1,Ns+1):
+            Sgood=np.logical_and(keep, np.where(info['pairs']['Src']==s,1,0))
+            if np.sum(Sgood, axis = 0) > 0:
+                Cvalue = np.mean(Plevels[Sgood]) # Average across measurements
+            else:
+                Cvalue = 1
+            llfo[s-1] = Cvalue
+        for d in range(1,Nd+1):#1:Nd   
+            Dgood=np.logical_and(keep, np.where(info['pairs']['Det']==d,1,0))
+            if np.sum(Dgood,axis = 0) > 0:
+                Cvalue = np.mean(Plevels[Dgood]) # Average across measurements
+            else:
+                Cvalue = 1
+            llfo[Ns+d-1] = Cvalue
+            #  Scaling and colormapping
+        M=np.amax(llfo)
+        params['Scale'] = M #/2;
+        params['Cmap']['P'] = 'hot'
+        m = max([min(llfo),0]) # in the case param{} is useful, uncomment above and delete this line
+
+        SDRGB, CMAP,_ = viz.applycmap(llfo, [], params)
+        SrcRGB = SDRGB[0:Ns, :]
+        DetRGB = SDRGB[Ns:, :] #this could be off by one, i didn't change the +1 from matlab
+        x,y,threeDGraph = viz.PlotCapData(SrcRGB, DetRGB, info, fig_axes,params)
+
+        # Add Title and colorbar.
+        title = ''
+
+        # Appearance
+        fig_axes.patch.set_facecolor('black')
+        # fig.patch.set_facecolor('black')
+
+        
+        # Axis limits 
+        fig_axes.set_ylim(np.min(y)-20,np.max(y))
+        fig_axes.set_xlim(np.min(x)-30,np.max(x)+30)
+        # fig_axes.set_title(title, color = 'white')
+        fig_axes.xaxis.set_visible(False)
+        fig_axes.yaxis.set_visible(False)
+        
+        fore_color = 'white'
+        plt.rcParams["xtick.color"] =  fore_color
+        
+        sm = plt.cm.ScalarMappable(cmap=CMAP)
+        sm.set_array([])
+        
+        cbaxes = inset_axes(fig_axes, width="80%", height="3%", loc='lower center', bbox_to_anchor=(0.15,0.13,0.7,1), bbox_transform=fig_axes.transAxes) 
+        cb = plt.colorbar(sm, cax=cbaxes, label='Values', orientation = 'horizontal')
+        cb.outline.set_edgecolor('white')
+        cb.outline.set_linewidth(0.8)
+        cb.ax.tick_params(labelsize=20)
+
+        
+        if params['type'] == 'SNR':
+            title = title + 'Mean Band-limited SNR\n' + 'r'+ str(np.char.lower(params['dimension'])) + ' \u220A [' + str(params['rlimits'][0]) + ', ' + str(params['rlimits'][1]) + '] mm; f\u220A ['
+            title = title + str(params['freqs'][0]) + ', ' + str(params['freqs'][1]) + '] Hz'  
+
+            cb.set_ticks([0, 0.5, 1])
+            cb.set_ticklabels([str(round(m,4)),r'$SNR_{dB}$',str(round(M,4))])
+
+        if params['type'] == 'mag':
+            title = title + 'Mean FFT Power\n' + 'r'+str(np.char.lower(params['dimension']))+ ' \u220A [' + str(params['rlimits'][0]) + ', ' + str(params['rlimits'][1]) + '] mm; f\u220A ['
+            title = title + str(params['freqs'][0]) + ', ' + str(params['freqs'][1]) + '] Hz'
+    
+            cb.set_ticks([0, 0.5, 1])
+            cb.set_ticklabels([str(round(m,4)),'Max Relative Power',str(round(M,4))])
+
+        fig_axes.set_title(title, color = 'white', fontsize = 30, pad = 0.1)
+        fig_axes.set_facecolor('black')
+        
+        return Plevels
 
 
     def PlotSlices_correct_orientation(m):

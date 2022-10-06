@@ -137,7 +137,7 @@ class viz:
             cmL.shape = (1, cmL.shape[0]) # Reshape to 2D row vector
             cmR = np.mean(Rnodes, axis = 0)
             cmR.shape = (1, cmR.shape[0]) # Reshape to 2D row vector
-            rm = RM.rotation_matrix('z', np.pi)
+            rm = sx4m.rotation_matrix('z', np.pi)
 
             if params['view'] == 'lat':
                 Rnodes = (Rnodes - (nm.repmat(cmR, Rnodes.shape[0], 1))) @ rm + (nm.repmat(cmR, Rnodes.shape[0], 1))
@@ -1768,7 +1768,7 @@ class viz:
             fig_axes[0,0].tick_params(axis='y', colors='white')
             fig_axes[0,0].xaxis.label.set_color('white')
             fig_axes[0,0].yaxis.label.set_color('white')
-            fig_axes[0,0].set_xticks(np.arange(math.floor(minlim), math.ceil(maxlim), 1))
+            fig_axes[0,0].set_xticks(np.arange(math.ceil(minlim), math.ceil(maxlim), 1))
             fig_axes[0,0].set_facecolor('black')
             # Axis labels and titles
             fig_axes[0,0].set_xlabel('Time [sec]', color='white')
@@ -3121,13 +3121,13 @@ class viz:
             llfo[Ns+d-1] = Cvalue
             #  Scaling and colormapping
         M=np.amax(llfo)
-        params['Scale'] = M #/2;
+        params['Scale'] = M 
         params['Cmap']['P'] = 'hot'
-        m = max([min(llfo),0]) # in the case param{} is useful, uncomment above and delete this line
+        m = max([min(llfo),0]) 
 
         SDRGB, CMAP,_ = viz.applycmap(llfo, [], params)
         SrcRGB = SDRGB[0:Ns, :]
-        DetRGB = SDRGB[Ns:, :] #this could be off by one, i didn't change the +1 from matlab
+        DetRGB = SDRGB[Ns:, :] 
         x,y,threeDGraph = viz.PlotCapData(SrcRGB, DetRGB, info, fig_axes,params)
 
         # Add Title and colorbar.
@@ -3135,13 +3135,10 @@ class viz:
 
         # Appearance
         fig_axes.patch.set_facecolor('black')
-        # fig.patch.set_facecolor('black')
-
         
         # Axis limits 
-        fig_axes.set_ylim(np.min(y)-20,np.max(y))
+        fig_axes.set_ylim(np.min(y)-20,np.max(y)+30)
         fig_axes.set_xlim(np.min(x)-30,np.max(x)+30)
-        # fig_axes.set_title(title, color = 'white')
         fig_axes.xaxis.set_visible(False)
         fig_axes.yaxis.set_visible(False)
         
@@ -3953,7 +3950,7 @@ class viz:
         else:
             dt = None
         if 'xlimits' not in params or params['xlimits'] is None:
-            if 'dt' is not None:
+            if 'dt' != None:
                 params['xlimits'] = np.array([0, (nVt - 1) * dt])
                 time = np.arange(0,(nVt)*dt,dt)
             else:

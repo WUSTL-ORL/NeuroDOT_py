@@ -565,8 +565,13 @@ class tx4m:
 
 
         ## Resample with endpoints pinned to zero.
-        rawresamp = np.transpose(sig.resample_poly(np.transpose(corrsig[:]), N, D)) # Using scipy signal polyphase resampling
+        try:
+            rawresamp = np.transpose(sig.resample_poly(np.transpose(corrsig[:]), N, D)) # Using scipy signal polyphase resampling
 
+        except TypeError:
+            N = fract.numerator()
+            D = fract.denominator()
+            rawresamp = np.transpose(sig.resample_poly(np.transpose(corrsig[:]), N, D)) # Using scipy signal polyphase resampling
 
         ## Add linear fit back to resampled data.
         alpha2 = alpha1 * (D/N) 

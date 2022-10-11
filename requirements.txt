@@ -4,3 +4,6 @@ normalize_easy
 numpy
 scipy
 sympy
+keyboard
+plotly
+mat73

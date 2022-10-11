@@ -5,7 +5,9 @@ normalize_easy
 numpy
 scipy
 sympy
-
+keyboard
+plotly
+mat73
 
 
 # Docs requirements
@@ -30,7 +32,6 @@ gdown
 
 
 # Test requirements
-
 mypy
 pytest
 pytest-cov
@@ -38,7 +39,5 @@ nbval
 
 
 # Types
-
 types-requests
-
 

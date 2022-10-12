@@ -13,23 +13,19 @@ Getting started with NeuroDOTPy
 # Importage
 # --------------------------------------------------
 
-# KF Tools and related imports
-from kftools.data import load_info,fetch_file
-from mne.io import read_raw_snirf
+# Generic imports
+import os,sys,glob,numpy as n
 
-# Some neuroimaging library things
-import nibabel as nib
-from nilearn.plotting import plot_stat_map
-from nilearn.image import index_img
+# Viz imports
+import matplotlib.pyplot as plt
+import plotly
 
-# Some generic things
-from matplotlib import pyplot as plt
-import os
-import pandas as pd
+# Neurodotpy imports
+from neuro_dot import *
 
 
 # %%
-# Specify data download location
+# Grab the data
 # --------------------------------------------------
 #
 # Give a specific location 
@@ -37,38 +33,37 @@ import pandas as pd
 # or maybe
 # data_dir = '.'
 #
-# If data_dir=None the default location is used, which is '~/.kftools' 
+# If data_dir=None the default location is used, which is '~/.neurodot' 
 # data_dir=None
 
-data_dir = '.'
+data_dir = os.getcwd() # None
 
 # %%
-# List available files
-# --------------------------------------------------
+# Fetch the data
 
-info = load_info()
-info[['fname', 'site','subid', 'task', 'sesid', 'datetime', 'filetype']]
+# fetch_data(data_dir=data_dir)
 
 
 # %%
-# HB Moments file
+# Next bit
 # ---------------------------------------------------
 #
-# The kernel portal gives two .snirf file options: 
-# 1. The 'raw' moments file
-# 2. A 'Hb moments' file
-#
-# The Hb moments file has some initial preprocessing applied to it, 
-# including optical density and modified beer lambert law calculations.
+# Blah
+# Blah
  
-fetch_file(data_dir=data_dir, filetype='kp-snf-hbm',
-           site='snic', task='ft', subid='sub001', sesid='ses01')
+print('some code here')
 
-raw = read_raw_snirf('snic_sub001_ft_ses01_0909-1523_kp-snf-hbm.snirf')
 
-df_raw = raw.to_data_frame()
 
-fig, ax = plt.subplots(figsize=(12,3))
-df_raw[raw.ch_names[0:5]].loc[3000:].plot(ax=ax)
+
+# %%
+# Next bit
+# ---------------------------------------------------
+#
+# Blah
+# Blah
+ 
+print('some more code here')
+
 
 

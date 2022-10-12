@@ -33,12 +33,12 @@ from cycler import cycler
 
 
 # Import toolbox
-from Spatial_Transforms import sx4m
-from Temporal_Transforms import tx4m
-from Light_Modeling import lmdl
-from File_IO import io
-from Analysis import anlys
-from Matlab_Equivalent_Functions import matlab
+from .Spatial_Transforms import sx4m
+from .Temporal_Transforms import tx4m
+from .Light_Modeling import lmdl
+from .File_IO import io
+from .Analysis import anlys
+from .Matlab_Equivalent_Functions import matlab
 
 
 

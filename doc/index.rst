@@ -1,5 +1,5 @@
 Welcome to NeuroDOTPy documentation!
-===================================
+=====================================
 
 .. include:: ../README.md
 
@@ -8,8 +8,8 @@ Welcome to NeuroDOTPy documentation!
    :caption: About NeuroDOTPy
    :glob:
       
-   about_neurodotpy/overview
-   auto_examples/#all-notebook-examples
+   about_neurodot/overview
+   auto_examples/*
 
 .. toctree::
    :maxdepth: 1
@@ -17,6 +17,7 @@ Welcome to NeuroDOTPy documentation!
    :glob:
 
    getting_started/installation
+   getting_started/running_in_colab
    auto_examples/eg001r__getting_started
 
    

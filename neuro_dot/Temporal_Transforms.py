@@ -25,7 +25,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from mpl_toolkits.mplot3d import Axes3D
 
-from Analysis import anlys
+from .Analysis import anlys
 
 
 class tx4m:

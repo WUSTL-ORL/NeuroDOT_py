@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-================================
+-================================
 NeuroDOTPy Preprocessing Pipeline
 =================================
 
@@ -31,23 +31,25 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 # Add NeuroDOT library to the path
-sys.path.append(os.path.join(os.path.dirname(sys.path[0]),'neuro_dot'))
+#sys.path.append(os.path.join(os.path.dirname(sys.path[0]),'neuro_dot'))
 
-from Visualizations import viz
-from Spatial_Transforms import sx4m
-from Temporal_Transforms import tx4m
-from Light_Modeling import lmdl
-from File_IO import io
-from Analysis import anlys
-from Matlab_Equivalent_Functions import matlab
-from Reconstruction import recon
+import neuro_dot
+from neuro_dot.Visualizations import viz
+from neuro_dot.Spatial_Transforms import sx4m
+from neuro_dot.Temporal_Transforms import tx4m
+from neuro_dot.Light_Modeling import lmdl
+from neuro_dot.File_IO import io
+from neuro_dot.Analysis import anlys
+from neuro_dot.Matlab_Equivalent_Functions import matlab
+from neuro_dot.Reconstruction import recon
 
 # %%
 # Grab the data
 # --------------------------------------------------
 
 participant_data = 'NeuroDOT_Data_Sample_CCW1.mat' # Name of your data file, or one of the NeuroDOT data samples in the 'Data' folder
-data_path = os.path.join(os.path.dirname(sys.path[0]),'Data',participant_data)
+nd_path = os.path.split(os.path.dirname(neuro_dot.__file__))[0]
+data_path = os.path.join(nd_path, 'Data', participant_data)
 data = io.loadmat(data_path)['data']
 __info = io.loadmat(data_path)['info']             # adding __info makes info private, so any changes will be function-specific
 flags = io.loadmat(data_path)['flags']

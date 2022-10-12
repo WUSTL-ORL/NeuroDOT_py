@@ -3,7 +3,7 @@ import numpy as np
 import numpy.linalg as lna
 
 from numpy.lib.shape_base import expand_dims
-from Matlab_Equivalent_Functions import matlab
+from .Matlab_Equivalent_Functions import matlab
 
 
 

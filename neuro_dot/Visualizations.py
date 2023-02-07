@@ -3559,7 +3559,7 @@ class viz:
             h2.ax.set_yticklabels(params['cblabels'])
             h2.ax.yaxis.set_tick_params(labelcolor = LineColor)
             ticks = h2.ax.get_yticks() #get whatever ticks matplotlib is using (default is 0, 0.5, 1)
-            ticks_new = np.array([min(ticks), (max(ticks) - min(ticks))/2, max(ticks)]) #set new ticks at min, max, and mid of current ticks
+            ticks_new = np.array([min(ticks), ((max(ticks) - min(ticks))/2)+min(ticks), max(ticks)]) #set new ticks at min, max, and mid of current ticks
             if ticks_new[1] > ticks_new[2]: #if mid > max, reverse sign of mid
                 ticks_new[1] = -ticks_new[1]
             limits = np.array(h2.ax.get_ylim()) #get limits of colorbar
@@ -4184,7 +4184,7 @@ class viz:
             h2.ax.set_yticklabels(params['cblabels'])
             h2.ax.yaxis.set_tick_params(labelcolor = LineColor)
             ticks = h2.ax.get_yticks() #get whatever ticks matplotlib is using (default is 0, 0.5, 1)
-            ticks_new = np.array([min(ticks), (max(ticks) - min(ticks))/2, max(ticks)]) #set new ticks at min, max, and mid of current ticks
+            ticks_new = np.array([min(ticks), ((max(ticks) - min(ticks))/2)+min(ticks), max(ticks)]) #set new ticks at min, max, and mid of current ticks
             if ticks_new[1] > ticks_new[2]: #if mid > max, reverse sign of mid
                 ticks_new[1] = -ticks_new[1]
             limits = np.array(h2.ax.get_ylim()) #get limits of colorbar

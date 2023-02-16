@@ -13,20 +13,17 @@ import copy
 # Add all relevant paths (e.g. folders containing NeuroDOT functions and data)
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]),'neuro_dot'))
 
-
-
 # Import all functions that will be used in the pipeline (consider using __init__ file instead)
 # In __init__ file in 'Individual Functions' directory, change the path to your system folders
 # containing each function folder
 
-
-from Visualizations import viz
-from Spatial_Transforms import sx4m
-from Temporal_Transforms import tx4m
-from Light_Modeling import lmdl
-from File_IO import io
-from Analysis import anlys
-from Matlab_Equivalent_Functions import matlab
+from .Visualizations import viz
+from .Spatial_Transforms import sx4m
+from .Temporal_Transforms import tx4m
+from .Light_Modeling import lmdl
+from .File_IO import io
+from .Analysis import anlys
+from .Matlab_Equivalent_Functions import matlab
 
 
 def DynamicFilter(input_data, info_in, params, mode, save = 'no', pathToSave = './'):

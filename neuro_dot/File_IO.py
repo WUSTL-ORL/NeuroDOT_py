@@ -751,3 +751,55 @@ class io:
     
 
     def Write_4dfp_Header(header, filename, pn):
+        '''
+        WRITE_4DFP_HEADER Writes 4dfp header to .ifh file.
+ 
+        WRITE_4DFP_HEADER(header, filename) writes the input "header" in 4dfp
+        format to an .ifh file specified by "filename".
+        
+        See Also: SAVEVOLUMETRICDATA.
+        '''
+        ## Parameters and Initialization
+        ## Read text.    
+        os.chdir(pn)
+        with open(filename + ".ifh", 'w') as fp:
+        ## Print input header to file.
+            print('INTERFILE :=\n', file = fp)
+            print('version of keys := ' + header['version_of_keys'] +'\n', file = fp)
+            print('image modality := dot\n', file = fp)
+            print('originating system := Neuro-DOT\n', file = fp)
+            print('conversion program := MATLABto4dfp\n', file = fp)
+            print('original institution := Washington University\n', file = fp)
+            print('number format := ' +  header['format'] + '\n', file = fp)
+            print('name of data file := ' + filename + '\n', file = fp)
+            print('number of bytes per pixel := ' +  str(header['bytes_per_pixel']) +'\n', file = fp)
+
+            if header['byte'] =='b':
+                byte = 'big'
+            elif header['byte'] == 'l':
+                byte = 'little'
+        
+            print('imagedata byte order := ' +  byte +  'endian\n', file = fp)
+
+            if header.acq == 'transverse':
+                    print( 'orientation := 2\n', file = fp)
+            elif header.acq =='coronal':
+                    print( 'orientation := 3\n', file = fp)
+            elif header.acq == 'sagittal':
+                    print( 'orientation := 4\n', file = fp)
+            
+
+            print('number of dimensions := ' + str(header['nDim']) +  '\n', file = fp)
+            print('matrix size [1] := ' + str(header['nVx']) + '\n', file = fp)
+            print('matrix size [2] := ' + str(header['nVy']) + '\n', file = fp)
+            print('matrix size [3] := ' + str(header['nVz']) + '\n', file = fp)
+            print('matrix size [4] := ' + str(header['nVt']) + '\n', file = fp)
+            print('scaling factor (mm/pixel) [1] := ' + str(header['mmx']) + '\n', file = fp)
+            print('scaling factor (mm/pixel) [2] := ' + str(header['mmy']) + '\n', file = fp)
+            print('scaling factor (mm/pixel) [3] := ' + str(header['mmz']) + '\n', file = fp)
+            if 'mmppix' in header:
+                print('mmppix := ' + str(header['mmppix']) + '\n', file = fp)
+            if 'center' in header:
+                print('center := ' + str(header['center']) + '\n', file = fp)
+
+        return 

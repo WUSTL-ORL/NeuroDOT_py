@@ -2530,8 +2530,8 @@ class viz:
 
         if 'dimension' not in params or not bool(params['dimension']): 
             params['dimension'] = '2D'
-            
-        if ('rlimits' not in params or params['rlimits'] == []) and ('Nnns' not in params or params['Nnns'] == []): 
+    
+        if ('rlimits' not in params or params['rlimits'] ==[]) and ('Nnns' not in params or not bool(params['Nnns'])): 
         # If both empty, use ALL.
             use_NNx_RxD = 'all'
             lvar = 1

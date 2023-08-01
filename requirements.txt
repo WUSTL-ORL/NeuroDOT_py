@@ -7,3 +7,5 @@ sympy
 keyboard
 plotly
 mat73
+nibabel
+sklearn

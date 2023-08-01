@@ -8,4 +8,4 @@ keyboard
 plotly
 mat73
 nibabel
-sklearn
+scikit-learn

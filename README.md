@@ -3,7 +3,7 @@ NeuroDOT_py README
 
 1. Installation:
 
-	1. First, download Python. NeuroDOT_py is optimized for Python version 3.8.8 is: https://www.python.org/downloads/
+	1. First, download Python. NeuroDOT_py is optimized for Python version 3.8.8: https://www.python.org/downloads/
 	
 	2. Download VSCode: https://code.visualstudio.com
 	

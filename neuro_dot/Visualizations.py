@@ -3378,7 +3378,7 @@ class viz:
             lookon = False
 
         if params['orientation'] == 't':
-            underlay = np.flip(underlay, 0) #fixed zero indexing issue (THIS MIGHT NEED TO BE CHANGED BACK TO 1 if we figure out why shit was flipped for Harrison's OG input data)
+            underlay = np.flip(underlay, 0) 
             if overlay is not None:
                 overlay = np.flip(overlay, 0)
 
@@ -3922,7 +3922,7 @@ class viz:
             lookon = False
 
         if params['orientation'] == 't':
-            underlay = np.flip(underlay, 0) #fixed zero indexing issue (THIS MIGHT NEED TO BE CHANGED BACK TO 1 if we figure out why shit was flipped for Harrison's OG input data)
+            underlay = np.flip(underlay, 0) 
             if overlay is not None:
                 overlay = np.flip(overlay, 0)
 

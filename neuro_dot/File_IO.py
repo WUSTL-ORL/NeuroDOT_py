@@ -1,3 +1,4 @@
+# General imports
 import sys
 import math
 import os
@@ -7,6 +8,7 @@ import numpy as np
 from pathlib import Path
 import nibabel as nb
 import io as fio
+import snirf 
 
 
 
@@ -735,6 +737,256 @@ class io:
                 nifti_image = nb.Nifti1Image(volume, affine , nifti_header)
                 nb.save(nifti_image, pn + '/' + filename+'.nii') 
                 
+
+    def snirf2ndot(filename, pn, save_file =0, output = None, dtype = []):
+        if pn is None:
+            pn = '/'
+        
+        if dtype is None:
+            dtype = 'snirf'
+        if output is None:
+            output = filename
+        if save_file is None:
+            save_file = 0
+        fn = pn + filename
+        snf = snirf.Snirf(fn, 'r')
+        info = dict()
+        custom_io = ['Nd', 'Ns','Nwl','comment','enc', 'framesize', 'naux','nblank','nframe',
+                    'nmotu','nsamp','nts','pad','run','tag','Nt','PadName']
+        if snf['original_header']:
+            info['original_header'] = snf.original_header
+
+        if snf.nirs[0].data[0]:
+            info['system'] = dict()
+            data = np.transpose(snf.nirs[0].data[0].dataTimeSeries)
+            if hasattr(snf.nirs[0].data[0],'time'):
+                info['system']['framerate'] = 1/np.mean(np.diff(snf.nirs[0].data[0].time))
+                info['system']['init_framerate'] = info['system']['framerate']
+            if snf.nirs[0].metaDataTags.TimeUnit == 'ms':
+                info['system']['framerate'] = info['system']['framerate']*1e3
+                info['system']['init_framerate'] = info['system']['framerate']*1e3
+        info['io'] = dict()
+        if 'original_header' in snf:
+            info['original_header'] = snf.original_header
+            if 'io' in snf.original_header:
+                if 'a' in snf.original_header.io:
+                    info['io']['a'] = snf.original_header.io.a
+                    info['io']['b'] = snf.original_header.io.b
+                else:
+                    info['io'] = snf.original_header.io
+
+        if snf:
+            if snf['original_header']:
+                if snf.original_header.io:
+                    if snf.original_header.io.a:
+                        info['io']['a'] = snf.original_header.io.a
+                        info['io']['b'] = snf.original_header.io.b
+                    else:
+                        info['io'] = snf.original_header.io     
+            else:
+                if snf.nirs[0].metaDataTags:
+                    if not ('io' in info):
+                        info['io'] = dict()
+                    info['misc'] = dict()
+                    info['misc']['metaDataTags'] = snf.nirs[0].metaDataTags
+                    info['misc']['time'] = snf.nirs[0].data[0].time
+                    if hasattr(snf.nirs[0].metaDataTags,'framerate'):
+                        info['system']['framerate'] = snf.nirs[0].metaDataTags.framerate
+                        info['system']['init_framerate'] = info['system']['framerate']
+                    if hasattr(snf.nirs[0].metaDataTags,'Nd'):
+                        info['io']['Nd'] = snf.nirs[0].metaDataTags.Nd
+                    else:
+                        info['io']['Nd'] = len(snf.nirs[0].probe.detectorPos3D)
+
+                    if hasattr(snf.nirs[0].metaDataTags,'Ns'):
+                        info['io']['Ns'] = snf.nirs[0].metaDataTags.Ns
+                    else:
+                        info['io']['Ns'] = len(snf.nirs[0].probe.sourcePos3D)
+
+                    if hasattr(snf.nirs[0].metaDataTags,'MeasurementDate'):
+                        info['io']['date'] = str(snf.nirs[0].metaDataTags.MeasurementDate)  # this might need to have join() because in Matlab the measurement date was a character array
+                    if hasattr(snf.nirs[0].metaDataTags, 'MeasurementTime'):
+                        info['io']['time'] = str(snf.nirs[0].metaDataTags.MeasurementTime) # this might need to have join() because in Matlab the measurement date was a character array
+                    if hasattr(snf.nirs[0].metaDataTags, 'UnixTime'):
+                        info['io']['unix_time'] = snf.nirs[0].metaDataTags.UnixTime
+                    if hasattr(snf.nirs[0].metaDataTags,'Nwl'):
+                        info['io']['Nwl'] = snf.nirs[0].metaDataTags.Nwl
+                    else:
+                        info['io']['Nwl'] = len(snf.nirs[0].probe.wavelengths)
+                    if hasattr(snf.nirs[0].metaDataTags,'comment'):
+                        info['io']['comment'] = snf.nirs[0].metaDataTags.comment
+                    if hasattr(snf.nirs[0].metaDataTags,'enc'):
+                        info['io']['enc'] = snf.nirs[0].metaDataTags.enc
+                    if hasattr(snf.nirs[0].metaDataTags,'framesize'):
+                        info['io']['framesize'] = snf.nirs[0].metaDataTags.framesize
+                    if hasattr(snf.nirs[0].metaDataTags,'naux'):
+                        info['io']['naux'] = snf.nirs[0].metaDataTags.naux
+
+        if snf.nirs[0].probe:
+            info['optodes'] = dict()
+            if 'CapName' in snf.nirs[0].metaDataTags:
+                info['optodes']['CapName'] = snf.nirs[0].metaDataTags.CapName
+            if 'detectorPos2D' in snf.nirs[0].probe:
+                info['optodes']['dpos2'] = snf.nirs[0].probe.detectorPos2D
+            if 'detectorPos3D' in snf.nirs[0].probe:
+                info['optodes']['dpos3'] = snf.nirs[0].probe.detectorPos3D
+            if 'sourcePos2D' in snf.nirs[0].probe:
+                info['optodes']['spos2'] = snf.nirs[0].probe.sourcePos2D
+            if 'sourcePos3D' in snf.nirs[0].probe:
+                info['optodes']['spos3'] = snf.nirs[0].probe.sourcePos3D
+                
+        if snf.nirs[0].data[0].measurementList:  
+            info['pairs'] = dict()
+            info['pairs']['Src'] = np.zeros(len(snf.nirs[0].data[0].measurementList[:]))
+            info['pairs']['Det'] = np.zeros(len(snf.nirs[0].data[0].measurementList[:]))
+            info['pairs']['WL'] = np.zeros(len(snf.nirs[0].data[0].measurementList[:]))
+            info['pairs']['lambda'] = np.zeros(len(snf.nirs[0].data[0].measurementList[:]))     
+            for j in range(0, len(snf.nirs[0].data[0].measurementList[:])):
+                if hasattr(snf.nirs[0].data[0].measurementList[0], 'sourceIndex'):
+                    info['pairs']['Src'][j] = snf.nirs[0].data[0].measurementList[j].sourceIndex
+                if hasattr(snf.nirs[0].data[0].measurementList[0], 'detectorIndex'):
+                    info['pairs']['Det'][j] = snf.nirs[0].data[0].measurementList[j].detectorIndex
+                if hasattr(snf.nirs[0].data[0].measurementList[0], 'wavelengthActual'):
+                    info['pairs']['lambda'][j] = snf.nirs[0].data[0].measurementList[j].wavelengthActual
+                if hasattr(snf.nirs[0].data[0].measurementList[0],'wavelengthIndex'):
+                    info['pairs']['WL'][j] = snf.nirs[0].data[0].measurementList[j].wavelengthIndex
+            if not hasattr(snf.nirs[0].data[0].measurementList[0],'wavelengthActual'):
+                info['pairs']['lambda'] = list()
+                if 'wavelengths' in snf.nirs[0].probe:
+                    wavelengths = snf.nirs[0].probe.wavelengths
+                for k in range(1, len(wavelengths)+1):
+                    info['pairs']['lambda'][np.where(info['pairs']['WL'] == k)[1]] = wavelengths[k]                 
+                if np.size(info['pairs']['lambda'],1) > 1:
+                    info['pairs']['lambda'] = np.transpose(info['pairs']['lambda'])
+                    
+            gridTemp = dict()
+            if not hasattr(snf, 'original_header'):
+                gridTemp['spos3']=snf.nirs[0].probe.sourcePos3D
+                gridTemp['dpos3']=snf.nirs[0].probe.detectorPos3D
+                #Enforce that arrays are column-wise
+                if np.size(gridTemp['spos3'],1) > np.size(gridTemp['spos3'],0):
+                    gridTemp['spos3'] = np.transpose(gridTemp['spos3'])
+                    gridTemp['dpos3'] = np.transpose(gridTemp['dpos3'])
+                
+                if hasattr(snf.nirs[0].probe, 'sourcePos2D') and hasattr(snf.nirs[0].probe,'detectorPos2D'):
+                    if  not (snf.nirs[0].probe.sourcePos2D is None):
+                        if snf.nirs[0].probe.sourcePos2D.all() != None and snf.nirs[0].probe.detectorPos2D.all() != None:
+                            gridTemp['spos2']=snf.nirs[0].probe.sourcePos2D
+                            gridTemp['dpos2']=snf.nirs[0].probe.detectorPos2D
+                        #Enforce that arrays are column-wise
+                            if np.size(gridTemp['spos3'],1) > np.size(gridTemp['spos3'],0):
+                                gridTemp['spos2'] = np.transpose(gridTemp['spos2'])
+                                gridTemp['dpos2'] = np.transpose(gridTemp['dpos2'])
+                params = dict()
+                params['lambda']= snf.nirs[0].probe.wavelengths
+                tempInfo=lmdl.Generate_pad_from_grid(gridTemp,params, info)          
+                data_measList = np.array(np.c_[info['pairs']['Src'],info['pairs']['Det'],info['pairs']['WL']])
+                full_measList =np.array(np.c_[tempInfo['pairs']['Src'],tempInfo['pairs']['Det'],tempInfo['pairs']['WL']])
+                idxmeaslist = [np.where((full_measList == data_meas).all(axis=1))[0] for data_meas in data_measList]
+                info['pairs']['Mod'] = tempInfo['pairs']['Mod'][idxmeaslist,:]
+                info['pairs']['r3d']=tempInfo['pairs']['r3d'][idxmeaslist]
+                info['pairs']['r2d'] = tempInfo['pairs']['r2d'][idxmeaslist]
+                info['pairs']['NN'] = tempInfo['pairs']['NN'][idxmeaslist]
+                info['pairs']['lambda'] = tempInfo['pairs']['lambda'][idxmeaslist]
+            
+                avg_r3d = np.mean(info['pairs']['r3d'])
+                if (avg_r3d >=1) & (avg_r3d <=10):# Changed max_log to min_log 2/1/23
+                    mult = 10
+                elif (avg_r3d >=0.1) & (avg_r3d <=1):
+                    mult = 100
+                elif (avg_r3d >=0) & (avg_r3d <=0.1):
+                    mult = 1000
+                else:
+                    mult = 1
+                info['optodes']['spos3'] =np.multiply(gridTemp['spos3'],mult)
+                info['optodes']['dpos3'] = np.multiply(gridTemp['dpos3'],mult)
+                info['pairs']['r3d'] = np.multiply(info['pairs']['r3d'],mult)
+                info['pairs']['r2d'] = np.multiply(info['pairs']['r2d'],mult)
+
+            if hasattr(snf, 'original_header'): 
+                info['paradigm'] = snf.original_header.paradigm
+            else:
+                if len(snf.nirs[0].data[0].time) == 2 :# Create Time array if one is not provided
+                    T = 1/info['system']['framerate']
+                    nTp = np.shape(snf.nirs[0].data[0].dataTimeSeries)[0]
+                    timeArray = np.array(range(0, nTp-1)*T)
+                else:
+                    timeArray = np.array(snf.nirs[0].data[0].time)
+                if hasattr(snf.nirs[0], 'stim'):
+                    Total_synchs = []
+                    Total_synchtypes = []
+                    Npulses = len(snf.nirs[0].stim)
+                    for i in range(0, Npulses):
+                        Total_synchs =  np.append(Total_synchs,snf.nirs[0].stim[i].data[:,0])
+                        Total_synchtypes =  np.append(Total_synchtypes,np.tile([i+1], len(snf.nirs[0].stim[i].data)))
+                    info['paradigm'] = dict()
+                    info['paradigm']['synchtimes'] = np.sort(Total_synchs)
+                    sortedIdx = np.argsort(Total_synchs)
+                    info['paradigm']['synchtype'] = Total_synchtypes[sortedIdx]
+                    pulsenum = 0
+                    for j in range(0,Npulses):
+                        pulsenum = pulsenum +1
+                        info['misc']['stimDuration']  =np.zeros(len(snf.nirs[0].stim[j].data[:,1]))
+                        info['misc']['stimDuration'][j] = snf.nirs[0].stim[j].data[0,1]
+                        label = 'Pulse_'+ str(pulsenum)
+                        info['paradigm'][label] = np.array(np.where(info['paradigm']['synchtype'] == pulsenum)) + 1
+                        info['paradigm'][label] = np.transpose(info['paradigm'][label])
+                    info['paradigm']['synchpts'] = np.zeros((np.shape(info['paradigm']['synchtimes'])))    
+                    for j in range(0,len(info['paradigm']['synchtimes'])):
+                        info['paradigm']['synchpts'][j] = np.argmin(abs((np.array(timeArray)- info['paradigm']['synchtimes'][j])))
+                    info['paradigm']['init_synchpts'] = info['paradigm']['synchpts']   
+            
+            if not hasattr(snf.nirs[0].metaDataTags, 'SubjectID'):
+                info['misc']['subject_id'] = 'default' #required snirf field
+            else:
+                info['misc']['subject_id'] = snf.nirs[0].metaDataTags.SubjectID
+
+        
+        # Order info.pairs and data by wavelength, then by detector
+        if np.shape(info['pairs']['Src'])[0]> 1:
+            info['pairs']['Src'] = np.transpose(info['pairs']['Src'])
+        if np.shape(info['pairs']['Det'])[0] > 1:
+            info['pairs']['Det'] = np.transpose(info['pairs']['Det'])
+        if np.shape( info['pairs']['WL'])[0] > 1:
+            info['pairs']['WL'] = np.transpose(info['pairs']['WL'])
+        info['pairs']['Src'] = np.reshape(info['pairs']['Src'],(len(info['pairs']['Src']),1))
+        info['pairs']['Det'] = np.reshape(info['pairs']['Det'],(len(info['pairs']['Det']),1))
+        info['pairs']['WL'] = np.reshape(info['pairs']['WL'],(len(info['pairs']['WL']),1))
+        info['pairs']['lambda'] = np.reshape(info['pairs']['lambda'],(len(info['pairs']['lambda']),1))
+        info['pairs']['NN'] = np.reshape(info['pairs']['NN'],(len(info['pairs']['NN']),1))
+        lexsorter = np.lexsort((info['pairs']['Det'],info['pairs']['WL']), axis = 0)
+        info['pairs']['Det'] = info['pairs']['Det'][lexsorter]
+        info['pairs']['Src'] = info['pairs']['Src'][lexsorter]
+        info['pairs']['WL'] = info['pairs']['WL'][lexsorter]
+        info['pairs']['lambda'] = info['pairs']['lambda'][lexsorter]
+        info['pairs']['r3d']= info['pairs']['r3d'][lexsorter]
+        info['pairs']['r2d'] = info['pairs']['r2d'][lexsorter]
+        info['pairs']['NN'] = info['pairs']['NN'][lexsorter]
+        info['pairs']['Det'] = np.double(info['pairs']['Det'])
+        info['pairs']['Src'] = np.double(info['pairs']['Src'])
+        info['pairs']['WL'] = np.double(info['pairs']['WL'])
+        info['pairs']['lambda'] = np.double(info['pairs']['lambda'])
+        info['pairs']['r3d']= np.double(info['pairs']['r3d'])
+        info['pairs']['r2d'] = np.double(info['pairs']['r2d'])
+        info['pairs']['NN'] = np.double(info['pairs']['NN'])
+        data = np.squeeze(data[lexsorter])
+        
+    # Save Output NeuroDOT File
+        if save_file == 1:
+            if (output is None) and (pn is None):
+                __file__ = filename
+            elif pn is None:
+                __file__ = output
+            else:
+                __file__ = pn
+            p = os.path.dirname(os.path.realpath(__file__)) # this needs to be changed to be the path to where the data file is, not in the neurodot py dir
+            p = p + '\\' + output + '.mat'
+            outputs = dict()
+            outputs['data'] = data
+            outputs['info'] = info
+            spio.savemat(p, {'data':data, 'info':info})
+        return data, info    
+
 
     def _todict(matobj):
         '''

@@ -25,7 +25,6 @@ from numpy import float64, matrix
 from numpy.lib.shape_base import expand_dims
 from numpy.linalg import norm
 
-from Light_Modeling import lmdl
 
 class lmdl:
 

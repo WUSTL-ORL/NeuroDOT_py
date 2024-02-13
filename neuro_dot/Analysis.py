@@ -52,10 +52,12 @@ class anlys:
 
         for k in range(0, Nbl):
             pulse_k = int(pulse[k])
+            print(pulse_k)
+
             if (pulse[k] + dt -1) <= Nt:
                 blocks[:, :, k] = data_in[:, pulse_k-1:pulse_k + dt-1] #Need to subtract 1 from both indices to account for 0 indexing in python
             else:
-                dtb = (pulse_k-1) + dt - 1 - Nt
+                dtb = (pulse_k-1) + dt - 1 - Nt+1
                 nans = np.empty(shape = (np.shape(data_in)[0], dtb)) # need multiple lines to create an array of nans in python
                 nans[:] = np.NaN
                 blocks[:, :, k] = np.concatenate((data_in[:, (pulse_k-1):Nt], nans), axis = 1) # need to subtract 1 from start index: pulse[k] due to zero indexing, also need to use Nt as final index to get correct size
@@ -127,7 +129,7 @@ class anlys:
         specify a threshold value.
         See Also: PLOTCAPGOODMEAS, PLOTHISTOGRAMSTD.
         """
-        # Parameters and Initialization.
+        ## Parameters and Initialization.
         # look for required info, FGM will not run if these fields are nonexistant
         try:
             info1 = info_in['system']['framerate']

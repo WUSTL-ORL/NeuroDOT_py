@@ -52,7 +52,6 @@ class anlys:
 
         for k in range(0, Nbl):
             pulse_k = int(pulse[k])
-            print(pulse_k)
 
             if (pulse[k] + dt -1) <= Nt:
                 blocks[:, :, k] = data_in[:, pulse_k-1:pulse_k + dt-1] #Need to subtract 1 from both indices to account for 0 indexing in python

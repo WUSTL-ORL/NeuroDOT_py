@@ -9,3 +9,4 @@ plotly==5.10.0
 mat73==0.59
 nibabel==3.2.2
 scikit-learn
+pysnirf2

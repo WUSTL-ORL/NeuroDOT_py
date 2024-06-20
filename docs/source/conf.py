@@ -28,6 +28,7 @@ extensions = ['sphinx.ext.autodoc',
     "sphinx.ext.githubpages",
     "sphinx_favicon",
     'autoapi.extension',
+    "sphinx.ext.githubpages"
     ]
 
 favicons = [

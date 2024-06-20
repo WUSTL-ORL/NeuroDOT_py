@@ -1,0 +1,1475 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" data-theme="dark">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="../../../_static/favicon.png" sizes="781x781" rel="icon" type="image/png">
+    <title>neuro_dot.Visualizations &#8212; NeuroDOT_py 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "dark";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css?v=7f9a90b1" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css?v=572af1d6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=af2ce170"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/thebelab-helper.js"></script>
+    <script src="../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/neuro_dot/Visualizations/index';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="prev" title="neuro_dot.Temporal_Transforms" href="../Temporal_Transforms/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="dark">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../../_static/logo.png" class="logo__image only-dark" alt="NeuroDOT_py 1.0.0 documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/logo.png" class="logo__image only-light" alt="NeuroDOT_py 1.0.0 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../tutorials.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../data_types.html">
+                        Data Types
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../development.html">
+                        Development
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../../index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/WUSTL-ORL/NeuroDOT_py" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.nitrc.org/projects/neurodot" title="NITRC" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-solid fa-brain fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">NITRC</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://forms.gle/astp7aX5Ydg6qsDt8" title="Registration" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-solid fa-file-signature fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Registration</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../tutorials.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../data_types.html">
+                        Data Types
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../development.html">
+                        Development
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../../index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/WUSTL-ORL/NeuroDOT_py" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.nitrc.org/projects/neurodot" title="NITRC" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-solid fa-brain fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">NITRC</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://forms.gle/astp7aX5Ydg6qsDt8" title="Registration" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-solid fa-file-signature fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Registration</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">neuro_dot</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../Analysis/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">neuro_dot.Analysis</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../DynamicFilter/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">neuro_dot.DynamicFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../File_IO/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">neuro_dot.File_IO</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Light_Modeling/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">neuro_dot.Light_Modeling</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Matlab_Equivalent_Functions/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">neuro_dot.Matlab_Equivalent_Functions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Reconstruction/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">neuro_dot.Reconstruction</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Spatial_Transforms/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">neuro_dot.Spatial_Transforms</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Temporal_Transforms/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">neuro_dot.Temporal_Transforms</span></code></a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">neuro_dot.Visualizations</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">neuro_dot</span></code></a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><code...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="module-neuro_dot.Visualizations">
+<span id="neuro-dot-visualizations"></span><h1><a class="reference internal" href="#module-neuro_dot.Visualizations" title="neuro_dot.Visualizations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">neuro_dot.Visualizations</span></code></a><a class="headerlink" href="#module-neuro_dot.Visualizations" title="Permalink to this heading">#</a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.adjust_brain_pos" title="neuro_dot.Visualizations.adjust_brain_pos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adjust_brain_pos</span></code></a>(meshL, meshR[, params])</p></td>
+<td><p>ADJUST_BRAIN_POS Repositions mesh orientations for display.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.applycmap" title="neuro_dot.Visualizations.applycmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">applycmap</span></code></a>(overlay, underlay, params)</p></td>
+<td><p>APPLYCMAP Performs color mapping and fuses images with anatomical models.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.DrawColoredSynchPoints" title="neuro_dot.Visualizations.DrawColoredSynchPoints"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DrawColoredSynchPoints</span></code></a>(info_in, subplt[, SPfr])</p></td>
+<td><p>DRAWCOLOREDSYNCHPOINTS Draws vertical lines over a plot/imagesc type axis to delineate synchronization points on time traces.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.nlrGrayPlots_220324" title="neuro_dot.Visualizations.nlrGrayPlots_220324"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlrGrayPlots_220324</span></code></a>(nlrdata, info[, mode])</p></td>
+<td><p>NLRGRAYPLOTS_220324 This function generates a gray plot figure for measurement pairs</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.PlotInterpSurfMesh" title="neuro_dot.Visualizations.PlotInterpSurfMesh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotInterpSurfMesh</span></code></a>(volume, meshL, meshR, dim, params)</p></td>
+<td><p>PLOTINTERPSURFMESH Interpolates volumetric data onto hemispheric meshes for display.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.Plot_RawData_Cap_DQC" title="neuro_dot.Visualizations.Plot_RawData_Cap_DQC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot_RawData_Cap_DQC</span></code></a>(data, info_in[, params])</p></td>
+<td><p>PLOT_RAWDATA_CAP_DQC Generates plots of cap data quality.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.defineticks" title="neuro_dot.Visualizations.defineticks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">defineticks</span></code></a>(start, end, steps[, blankLabels])</p></td>
+<td><p>DEFINETICKS Defines tick marks based on a start point, end point, and step size.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.PlotFalloffData" title="neuro_dot.Visualizations.PlotFalloffData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotFalloffData</span></code></a>(fall_data, separations[, params, ax])</p></td>
+<td><p>PLOTFALLOFFDATA A basic falloff plotting function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.PlotFalloffLL" title="neuro_dot.Visualizations.PlotFalloffLL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotFalloffLL</span></code></a>(data, info[, params, ax])</p></td>
+<td><p>PLOTFALLOFFLL A light-level falloff visualization.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.PlotLRMeshes" title="neuro_dot.Visualizations.PlotLRMeshes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotLRMeshes</span></code></a>(meshL, meshR, params)</p></td>
+<td><p>PLOTLRMESHES Renders a pair of hemispheric meshes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.Plot_RawData_Metrics_I_DQC" title="neuro_dot.Visualizations.Plot_RawData_Metrics_I_DQC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot_RawData_Metrics_I_DQC</span></code></a>(data, info[, params])</p></td>
+<td><p>PLOT_RAWDATA_METRICS_I_DQC Generates a single-page data quality report including various metrics of the raw data quality.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.Plot_RawData_Metrics_II_DQC" title="neuro_dot.Visualizations.Plot_RawData_Metrics_II_DQC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot_RawData_Metrics_II_DQC</span></code></a>(data, info[, params])</p></td>
+<td><p>PLOT_RAWDATA_METRICS_II_DQC Generates a single-page data quality report including various metrics of the raw data quality.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.Plot_RawData_Time_Traces_Overview" title="neuro_dot.Visualizations.Plot_RawData_Time_Traces_Overview"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot_RawData_Time_Traces_Overview</span></code></a>(data, info_in[, params])</p></td>
+<td><p>PLOT_RAWDATA_TIME_TRACES_OVERVIEW Generates a plot of raw data time traces.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.cylinder" title="neuro_dot.Visualizations.cylinder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cylinder</span></code></a>(r[, h, a, nt, nv])</p></td>
+<td><p>CYLINDER Parameterizes the cylinder of radius r, height h, and base point a.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.PlotCapData" title="neuro_dot.Visualizations.PlotCapData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotCapData</span></code></a>(SrcRGB, DetRGB, info[, fig_axes, params])</p></td>
+<td><p>PLOTCAPDATA A basic plotting function for generating and labeling cap grids.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.PlotCapGoodMeas" title="neuro_dot.Visualizations.PlotCapGoodMeas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotCapGoodMeas</span></code></a>(info[, fig_axes, params])</p></td>
+<td><p>PLOTCAPGOODMEAS A &quot;Good Measurements&quot; visualization overlaid on a cap grid.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.PlotCapMeanLL" title="neuro_dot.Visualizations.PlotCapMeanLL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotCapMeanLL</span></code></a>(data, info[, fig_axes, params])</p></td>
+<td><p>PLOTCAPMEANLL A visualization of mean light levels overlaid on a cap</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.PlotCapPhysiologyPower" title="neuro_dot.Visualizations.PlotCapPhysiologyPower"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotCapPhysiologyPower</span></code></a>(data, info[, fig_axes, params])</p></td>
+<td><p>PLOTCAPPHYSIOLOGYPOWER A visualization of band limited power OR band-referenced SNR for each optode.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.PlotSlices_correct_orientation" title="neuro_dot.Visualizations.PlotSlices_correct_orientation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotSlices_correct_orientation</span></code></a>(m)</p></td>
+<td><p>PLOTSLICES_CORRECT_ORIENTATION Used in PlotSlices to transpose the dimension, given by &quot;m&quot;.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.PlotSlices" title="neuro_dot.Visualizations.PlotSlices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotSlices</span></code></a>(underlay[, infoVol, params, overlay])</p></td>
+<td><p>PLOTSLICES Creates an interactive 3D plot, including transverse, sagittal, and coronal slices.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.PlotSlicesTimeTrace" title="neuro_dot.Visualizations.PlotSlicesTimeTrace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotSlicesTimeTrace</span></code></a>(underlay[, infoVol, params, ...])</p></td>
+<td><p>PLOTSLICESTIMETRACE Creates an interactive 4D plot, including transverse, sagittal, and coronal slices, in addition to a voxel time trace.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.PlotTimeTraceData" title="neuro_dot.Visualizations.PlotTimeTraceData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotTimeTraceData</span></code></a>(data, time[, params, fig_axes, ...])</p></td>
+<td><p>PLOTTIMETRACEDATA A basic time traces plotting function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.Visualizations.vol2surf_mesh" title="neuro_dot.Visualizations.vol2surf_mesh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vol2surf_mesh</span></code></a>(Smesh, volume, dim[, params])</p></td>
+<td><p>VOL2SURF_MESH Interpolates volumetric data onto a surface mesh.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.adjust_brain_pos">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">adjust_brain_pos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meshL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meshR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.adjust_brain_pos" title="Permalink to this definition">#</a></dt>
+<dd><p>ADJUST_BRAIN_POS Repositions mesh orientations for display.</p>
+<p>[Lnodes, Rnodes] = ADJUST_BRAIN_POS(meshL, meshR) takes the left and
+right hemispheric meshes “meshL” and “meshR”, respectively, and
+repositions them to the proper perspective for display.</p>
+<p>[Lnodes, Rnodes] = ADJUST_BRAIN_POS(meshL, meshR, params) allows the
+user to specify parameters for plot creation.</p>
+<dl class="simple">
+<dt>Params:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">ctx<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Defines inflation of mesh.
+std: standard pial mesh <em>Default</em>
+inf: inflated mesh
+vinf: very inflated mesh
+flat: flat mesh</p>
+</dd>
+<dt class="field-even">orientation<span class="colon">:</span></dt>
+<dd class="field-even"><p>Select orientation of volume.
+t: transverse <em>Default</em>
+s: for sagittal</p>
+</dd>
+<dt class="field-odd">view<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sets the view perspective.
+lat: lateral view <em>Default</em>
+post: posterior view
+dorsal: dorsal view</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Dependencies: ROTATE_CAP, ROTATION_MATRIX.</p>
+<p>See Also: PLOTLRMESHES.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.applycmap">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">applycmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">overlay</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underlay</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.applycmap" title="Permalink to this definition">#</a></dt>
+<dd><p>APPLYCMAP Performs color mapping and fuses images with anatomical models.</p>
+<p>mapped = APPLYCMAP(overlay) fuses the N-D image array “overlay” with a
+default flat gray background and applies a number of other default
+settings to create a scaled and colormapped N-D x 3 RGB image array
+“mapped”.</p>
+<p>mapped = APPLYCMAP(overlay, underlay) fuses the image array “overlay”
+with the anatomical atlas volume input “underlay” as the background.</p>
+<p>mapped = APPLYCMAP(overlay, underlay, params) allows the user to
+specify parameters for plot creation.</p>
+<dl>
+<dt>Params:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">TC<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Direct map integer data values to defined color map (“True Color”). Default Value: 0</p>
+</dd>
+<dt class="field-even">DR<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dynamic range. Default Value: 1000</p>
+</dd>
+<dt class="field-odd">Scale<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Maximum value to which image is scaled. Default Value: 90% max</p>
+</dd>
+<dt class="field-even">PD<span class="colon">:</span></dt>
+<dd class="field-even"><p>If PD = 1, Sets the entirety of the colormap to run from zero to the Scale value.
+If PD = 0, Colormap is centered around zero. Default Value: 0</p>
+</dd>
+<dt class="field-odd">BG<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Background color, as an RGB triplet. Default Value: [0.5, 0.5, 0.5]</p>
+</dd>
+<dt class="field-even">Saturation<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sets the transparency of the colors. Size: equal to the size of the data.
+Must be within range [0, 1]. Default Value: none</p>
+</dd>
+<dt class="field-odd">Cmap.P<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Colormap for positive data values. Default Value: jet</p>
+</dd>
+<dt class="field-even">Cmap.N<span class="colon">:</span></dt>
+<dd class="field-even"><p>Colormap for negative data values. Default Value: none</p>
+</dd>
+<dt class="field-odd">Cmap.flipP<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Logical, flips the positive colormap. Default Value: 0</p>
+</dd>
+<dt class="field-even">Cmap.flipN<span class="colon">:</span></dt>
+<dd class="field-even"><p>Logical, flips the negative colormap. Default Value: 0</p>
+</dd>
+<dt class="field-odd">Th.P<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Value of min threshold to display positive data values. Default Value: 25% max</p>
+</dd>
+<dt class="field-even">Th.N<span class="colon">:</span></dt>
+<dd class="field-even"><p>Value of max threshold to display negative data values. Default Value: -Th.P</p>
+</dd>
+<dt class="field-odd">returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>mapped, map_out, params</p>
+</dd>
+</dl>
+<p>See Also: PLOTSLICES, PLOTINTERPSURFMESH, PLOTLRMESHES, PLOTCAPMEANLL.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.DrawColoredSynchPoints">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">DrawColoredSynchPoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subplt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SPfr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.DrawColoredSynchPoints" title="Permalink to this definition">#</a></dt>
+<dd><p>DRAWCOLOREDSYNCHPOINTS Draws vertical lines over a plot/imagesc type axis to delineate synchronization points on time traces.
+This function assumes the standard NeuroDOT info structure and paradigm
+format</p>
+<dl class="simple">
+<dt>Info:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">info.paradigm<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Contains all paradigm timing information</p>
+</dd>
+<dt class="field-even">info.paradigm.synchpts<span class="colon">:</span></dt>
+<dd class="field-even"><p>Contains sample points corresponding to
+stimulus time points of interest (e.g. onsets, rest, etc.)</p>
+</dd>
+<dt class="field-odd">info.paradigm.synchtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional field that contains a marker to
+distinguish between synchronization types, traditionally as
+sound boops of differing frequencies, i.e., 25, 30, 35 (Hz).</p>
+</dd>
+<dt class="field-even">info.paradigm.Pulse_1<span class="colon">:</span></dt>
+<dd class="field-even"><p>Indices of synchpts that denote ‘bookends’
+of data collection as well as resting (or OFF) periods of a given
+stimulus.</p>
+</dd>
+<dt class="field-odd">info.paradigm.Pulse_2<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Indices of synchpts that correspond to the
+start of a given stimulus epoch (e.g., the start of a flickering
+checkerboard)</p>
+</dd>
+<dt class="field-even">info.paradigm.Pulse_3<span class="colon">:</span></dt>
+<dd class="field-even"><p>Indices of synchpts of a 2nd stimulus type</p>
+</dd>
+<dt class="field-odd">info.paradigm.Pulse_4<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Indices of synchpts of a 3rd stimulus type</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>The 2nd input, SPfr, selects whether or not to adjust synchpoint timing
+based on framerate of data. (Default=0).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.nlrGrayPlots_220324">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">nlrGrayPlots_220324</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nlrdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.nlrGrayPlots_220324" title="Permalink to this definition">#</a></dt>
+<dd><p>NLRGRAYPLOTS_220324 This function generates a gray plot figure for measurement pairs
+using only clean data from wavelength 2. Input data “nlrdata” is assumed
+to be filtered and resampled. The data is grouped into info.pairs.r2d&lt;20,
+20&lt;=info.pairs.r2d&lt;30, and 30&lt;=info.pairs.r2d&lt;40.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.PlotInterpSurfMesh">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">PlotInterpSurfMesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meshL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meshR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.PlotInterpSurfMesh" title="Permalink to this definition">#</a></dt>
+<dd><p>PLOTINTERPSURFMESH Interpolates volumetric data onto hemispheric meshes for display.</p>
+<p>PLOTINTERPSURFMESH(volume, meshL, meshR, dim) takes functional imaging
+data “volume” and interpolates it onto the left and right hemispheric
+surface meshes given in “meshL” and “meshR”, respectively, using the
+spatial information in “dim”. The result is a bilateral sagittal view
+of the activations overlain onto the surface of the brain represented
+by the meshes.</p>
+<p>PLOTINTERPSURFMESH(volume, meshL, meshR, dim, params) allows the user to
+specify parameters for plot creation.</p>
+<dl class="simple">
+<dt>Params:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">Scale<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(90% max) Maximum value to which image is scaled.</p>
+</dd>
+<dt class="field-even">Th.P<span class="colon">:</span></dt>
+<dd class="field-even"><p>(25% max) Value of min threshold to display positive data values.</p>
+</dd>
+<dt class="field-odd">Th.N<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(-Th.P) Value of max threshold to display negative data values.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Dependencies: VOL2SURF_MESH, PLOTLRMESHES, ADJUST_BRAIN_POS, ROTATE_CAP,
+ROTATION_MATRIX.</p>
+<p>See Also: PLOTSLICES.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.Plot_RawData_Cap_DQC">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">Plot_RawData_Cap_DQC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.Plot_RawData_Cap_DQC" title="Permalink to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>PLOT_RAWDATA_CAP_DQC Generates plots of cap data quality.</dt><dd><p>Includes: Relative average light levels for 2 sets of distances
+of source-detector measurements, the cap good measurements plot, and
+a measure of the pulse power at each optode location.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.defineticks">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">defineticks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blankLabels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.defineticks" title="Permalink to this definition">#</a></dt>
+<dd><p>DEFINETICKS Defines tick marks based on a start point, end point, and step size.</p>
+<p>See: PLOT_RAWDATA_METRICS_I_DQC</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.PlotFalloffData">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">PlotFalloffData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fall_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.PlotFalloffData" title="Permalink to this definition">#</a></dt>
+<dd><p>PLOTFALLOFFDATA A basic falloff plotting function.</p>
+<p>PLOTFALLOFFDATA(data, info) takes one input array “fall_data” and plots
+it against another “separations” to create a falloff plot.</p>
+<p>PLOTFALLOFFDATA(data, info, params) allows the user to specify
+parameters for plot creation.</p>
+<p>h = PLOTFALLOFFDATA(…) passes the handles of the plot line objects
+created.</p>
+<dl class="simple">
+<dt>Params:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">fig_size<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[200, 200, 560, 420]    Default figure position vector.</p>
+</dd>
+<dt class="field-even">fig_handle<span class="colon">:</span></dt>
+<dd class="field-even"><p>(none)                  Specifies a figure to target.
+If empty, spawns a new figure.</p>
+</dd>
+<dt class="field-odd">xlimits<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘auto’                  Limits of x-axis.</p>
+</dd>
+<dt class="field-even">xscale<span class="colon">:</span></dt>
+<dd class="field-even"><p>‘linear’                Scaling of x-axis.</p>
+</dd>
+<dt class="field-odd">ylimits<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘auto’                  Limits of y-axis.</p>
+</dd>
+<dt class="field-even">yscale<span class="colon">:</span></dt>
+<dd class="field-even"><p>‘log’                   Scaling of y-axis.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>See Also: PLOTFALLOFFLL.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.PlotFalloffLL">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">PlotFalloffLL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.PlotFalloffLL" title="Permalink to this definition">#</a></dt>
+<dd><p>PLOTFALLOFFLL A light-level falloff visualization.</p>
+<p>PLOTFALLOFFLL(data, info) takes a light-level array “data” of the MEAS
+x TIME format, and generates a plot of each channel’s temporal mean
+against its source-detector distance, in the specified groupings.</p>
+<p>PLOTFALLOFFLL(data, info, params) allows the user to specify parameters
+for plot creation.</p>
+<dl class="simple">
+<dt>Params:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">fig_size<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[200, 200, 560, 420]    Default figure position vector.</p>
+</dd>
+<dt class="field-even">fig_handle<span class="colon">:</span></dt>
+<dd class="field-even"><p>(none)                  Specifies a figure to target.
+If empty, spawns a new figure.</p>
+</dd>
+<dt class="field-odd">dimension<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘2D’                    Dimension of pair radii used.</p>
+</dd>
+<dt class="field-even">rlimits<span class="colon">:</span></dt>
+<dd class="field-even"><p>(all R2D)               Limits of pair radii displayed.</p>
+</dd>
+<dt class="field-odd">Nnns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(all NNs)               Number of NNs displayed.</p>
+</dd>
+<dt class="field-even">Nwls<span class="colon">:</span></dt>
+<dd class="field-even"><p>(all WLs)               Number of WLs displayed.</p>
+</dd>
+<dt class="field-odd">useGM<span class="colon">:</span></dt>
+<dd class="field-odd"><p>0                       Use Good Measurements.</p>
+</dd>
+<dt class="field-even">xlimits<span class="colon">:</span></dt>
+<dd class="field-even"><p>[0, 60]                 Limits of x-axis.</p>
+</dd>
+<dt class="field-odd">xscale<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘linear’                Scaling of x-axis.</p>
+</dd>
+<dt class="field-even">ylimits<span class="colon">:</span></dt>
+<dd class="field-even"><p>[1e-6, 1e1]             Limits of y-axis.</p>
+</dd>
+<dt class="field-odd">yscale<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘log’                   Scaling of y-axis.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Dependencies: PLOTFALLOFFDATA</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.PlotLRMeshes">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">PlotLRMeshes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meshL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meshR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.PlotLRMeshes" title="Permalink to this definition">#</a></dt>
+<dd><p>PLOTLRMESHES Renders a pair of hemispheric meshes.</p>
+<p>PLOTLRMESHES(meshL, meshR) renders the data in a pair of left and right
+hemispheric meshes “meshL.data” and “meshR.data”, respectively, and
+applies full color mapping to them. If no data is present for either
+mesh, a default gray mesh will be plotted.</p>
+<p>PLOTLRMESHES(meshL, meshR, params) allows the user to
+specify parameters for plot creation.</p>
+<dl class="simple">
+<dt>Params:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">fig_size<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[20, 200, 960, 420] Default figure position vector.</p>
+</dd>
+<dt class="field-even">fig_handle<span class="colon">:</span></dt>
+<dd class="field-even"><p>(none) Specifies a figure to target. If empty, spawns a new figure.</p>
+</dd>
+<dt class="field-odd">Scale<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(90% max) Maximum value to which image is scaled.</p>
+</dd>
+<dt class="field-even">PD<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 Declares that input image is positive definite.</p>
+</dd>
+<dt class="field-odd">cblabels<span class="colon">:</span></dt>
+<dd class="field-odd"><p>([-90% max, 90% max]) Colorbar axis labels. Min defaults to 0 if PD==1,
+both default to +/- Scale if supplied.</p>
+</dd>
+<dt class="field-even">cbticks<span class="colon">:</span></dt>
+<dd class="field-even"><p>(none) Specifies positions of tick marks on colorbar axis.</p>
+</dd>
+<dt class="field-odd">alpha<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>Transparency of mesh.</p></li>
+</ol>
+</dd>
+<dt class="field-even">view<span class="colon">:</span></dt>
+<dd class="field-even"><p>‘lat’ Sets the view perspective.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Dependencies: ADJUST_BRAIN_POS, ROTATE_CAP, ROTATION_MATRIX, APPLYCMAP.</p>
+<p>See Also: PLOTINTERPSURFMESH, VOL2SURF_MESH.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.Plot_RawData_Metrics_I_DQC">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">Plot_RawData_Metrics_I_DQC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.Plot_RawData_Metrics_I_DQC" title="Permalink to this definition">#</a></dt>
+<dd><p>PLOT_RAWDATA_METRICS_I_DQC Generates a single-page data quality report including various metrics of the raw data quality.
+Light fall off as a function of Rsd,
+SNR plots vs. mean light level,
+Source-detector mean light-level plots,
+Power spectra for 830nm at 2 Rsd, and
+Histogram for measurement noise.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.Plot_RawData_Metrics_II_DQC">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">Plot_RawData_Metrics_II_DQC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.Plot_RawData_Metrics_II_DQC" title="Permalink to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>PLOT_RAWDATA_METRICS_II_DQC Generates a single-page data quality report including various metrics of the raw data quality.</dt><dd><p>Zoomed raw time traces,
+Light fall off as a function of Rsd,
+Power spectra for 830nm at 2 Rsd, and
+Histogram for measurement noise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.Plot_RawData_Time_Traces_Overview">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">Plot_RawData_Time_Traces_Overview</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.Plot_RawData_Time_Traces_Overview" title="Permalink to this definition">#</a></dt>
+<dd><p>PLOT_RAWDATA_TIME_TRACES_OVERVIEW Generates a plot of raw data time traces.
+Time Traces are separated by wavelength (columns). The top row shows
+time traces for all measurements within a source-detector distance range
+(defaults as 0.1 - 5.0 cm). The bottom row shows the same measurements
+but including only measurements passing a variance threshold (default: 0.075)
+as well as vertical lines corresponding to the stimulus paradigm.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.cylinder">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">cylinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.cylinder" title="Permalink to this definition">#</a></dt>
+<dd><p>CYLINDER Parameterizes the cylinder of radius r, height h, and base point a.</p>
+<p>See: PlotCapData</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.PlotCapData">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">PlotCapData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">SrcRGB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DetRGB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.PlotCapData" title="Permalink to this definition">#</a></dt>
+<dd><p>PLOTCAPDATA A basic plotting function for generating and labeling cap grids.</p>
+<p>PLOTCAPDATA(SrcRGB, DetRGB, info) plots the input RGB information in
+one of three modes:</p>
+<dl class="simple">
+<dt>Modes:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">text<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Optode numbers are arranged in a cap grid and colored with the RGB input.</p></li>
+</ul>
+</dd>
+<dt class="field-even">patch<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p>Optodes are plotted as patches and colored with the RGB input.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">textpatch<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Optodes are plotted as patches and colored with the RGB input, with optode numbers overlain in white.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>PLOTCAPDATA(SrcRGB, DetRGB, info, params) allows the user to specify
+parameters for plot creation.</p>
+<dl class="simple">
+<dt>Params:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">fig_size<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[20, 200, 1240, 420]    Default figure position vector.</p>
+</dd>
+<dt class="field-even">fig_handle<span class="colon">:</span></dt>
+<dd class="field-even"><p>(none)                  Specifies a figure to target.
+If empty, spawns a new figure.</p>
+</dd>
+<dt class="field-odd">dimension<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘2D’                    Specifies either a 2D or 3D
+plot rendering.</p>
+</dd>
+<dt class="field-even">mode<span class="colon">:</span></dt>
+<dd class="field-even"><p>‘textpatch’             Display mode.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>See Also: PLOTCAP, PLOTCAPGOODMEAS, PLOTCAPMEANLL.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.PlotCapGoodMeas">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">PlotCapGoodMeas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.PlotCapGoodMeas" title="Permalink to this definition">#</a></dt>
+<dd><p>PLOTCAPGOODMEAS A “Good Measurements” visualization overlaid on a cap grid.</p>
+<p>PLOTCAPGOODMEAS(info) plots a visualization of the Good Measurements
+determined by FINDGOODMEAS and arranges them based on the metadata in
+“info.optodes”. Good channels are depicted as green lines, bad channels
+red lines; sources and detectors are given lettering in light blue and
+red.</p>
+<p>The plot title provides tallies for all specified groupings. The next
+line of the title lists how many optodes for which only 33% of their
+measurements are good. These optodes are surrounded with white circles.</p>
+<p>PLOTCAPGOODMEAS(info, params) allows the user to specify parameters for
+plot creation.</p>
+<dl class="simple">
+<dt>Params:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">fig_size<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[20, 200, 1240, 420]    Default figure position vector.</p>
+</dd>
+<dt class="field-even">fig_handle<span class="colon">:</span></dt>
+<dd class="field-even"><p>(none)                  Specifies a figure to target.
+If empty, spawns a new figure.</p>
+</dd>
+<dt class="field-odd">dimension<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘2D’                    Specifies either a 2D or 3D
+plot rendering.</p>
+</dd>
+<dt class="field-even">rlimits<span class="colon">:</span></dt>
+<dd class="field-even"><p>(all R2D)               Limits of pair radii displayed.</p>
+</dd>
+<dt class="field-odd">Nnns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(all NNs)               Number of NNs displayed.</p>
+</dd>
+<dt class="field-even">Nwls<span class="colon">:</span></dt>
+<dd class="field-even"><p>(all WLs)               Number of WLs averaged and
+displayed.</p>
+</dd>
+<dt class="field-odd">mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘good’                  Display mode. ‘good’ displays
+channels above noise threhsold,
+‘bad’ below.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Dependencies: PLOTCAPDATA, ISTABLEVAR.</p>
+<p>See Also: FINDGOODMEAS, PLOTCAP, PLOTCAPMEANLL.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.PlotCapMeanLL">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">PlotCapMeanLL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.PlotCapMeanLL" title="Permalink to this definition">#</a></dt>
+<dd><p>PLOTCAPMEANLL A visualization of mean light levels overlaid on a cap
+grid.</p>
+<p>PLOTCAPMEANLL(data, info) plots an intensity map of the mean light
+levels for specified measurement groupings of each optode on the cap
+and arranges them based on the metadata in “info.optodes”.</p>
+<p>PLOTCAPMEANLL(data, info, params) allows the user to specify parameters
+for plot creation.</p>
+<dl class="simple">
+<dt>Params:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">fig_size<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[20, 200, 1240, 420]    Default figure position vector.</p>
+</dd>
+<dt class="field-even">fig_handle<span class="colon">:</span></dt>
+<dd class="field-even"><p>(none)                  Specifies a figure to target.
+If empty, spawns a new figure.</p>
+</dd>
+<dt class="field-odd">dimension<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘2D’                    Specifies either a 2D or 3D
+plot rendering.</p>
+</dd>
+<dt class="field-even">rlimits<span class="colon">:</span></dt>
+<dd class="field-even"><p>(all R2D)               Limits of pair radii displayed.</p>
+</dd>
+<dt class="field-odd">Nnns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(all NNs)               Number of NNs displayed.</p>
+</dd>
+<dt class="field-even">Nwls<span class="colon">:</span></dt>
+<dd class="field-even"><p>(all WLs)               Number of WLs averaged and
+displayed.</p>
+</dd>
+<dt class="field-odd">useGM<span class="colon">:</span></dt>
+<dd class="field-odd"><p>0                       Use Good Measurements.</p>
+</dd>
+<dt class="field-even">Cmap.P<span class="colon">:</span></dt>
+<dd class="field-even"><p>‘hot’                   Default color mapping.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Dependencies: PLOTCAPDATA, ISTABLEVAR, APPLYCMAP.</p>
+<p>See Also: PLOTCAP, PLOTCAPGOODMEAS.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.PlotCapPhysiologyPower">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">PlotCapPhysiologyPower</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.PlotCapPhysiologyPower" title="Permalink to this definition">#</a></dt>
+<dd><p>PLOTCAPPHYSIOLOGYPOWER A visualization of band limited power OR band-referenced SNR for each optode.</p>
+<dl class="simple">
+<dt>Params:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">fig_size<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[20, 200, 1240, 420]    Default figure position vector.</p>
+</dd>
+<dt class="field-even">fig_handle<span class="colon">:</span></dt>
+<dd class="field-even"><p>(none)                  Specifies a figure to target.
+If empty, spawns a new figure.</p>
+</dd>
+<dt class="field-odd">dimension<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘2D’                    Specifies either a 2D or 3D
+plot rendering.</p>
+</dd>
+<dt class="field-even">rlimits<span class="colon">:</span></dt>
+<dd class="field-even"><p>(all R2D)               Limits of pair radii displayed.</p>
+</dd>
+<dt class="field-odd">Nnns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(all NNs)               Number of NNs displayed.</p>
+</dd>
+<dt class="field-even">Nwls<span class="colon">:</span></dt>
+<dd class="field-even"><p>(all WLs)               Number of WLs averaged and
+displayed.</p>
+</dd>
+<dt class="field-odd">useGM<span class="colon">:</span></dt>
+<dd class="field-odd"><p>0                       Use Good Measurements.</p>
+</dd>
+<dt class="field-even">Cmap.P<span class="colon">:</span></dt>
+<dd class="field-even"><p>‘hot’                   Default color mapping.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Dependencies: PLOTCAPDATA, ISTABLEVAR, APPLYCMAP.</p>
+<p>See Also: PLOTCAP, PLOTCAPGOODMEAS.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.PlotSlices_correct_orientation">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">PlotSlices_correct_orientation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.PlotSlices_correct_orientation" title="Permalink to this definition">#</a></dt>
+<dd><p>PLOTSLICES_CORRECT_ORIENTATION Used in PlotSlices to transpose the dimension, given by “m”.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.PlotSlices">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">PlotSlices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">underlay</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infoVol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.PlotSlices" title="Permalink to this definition">#</a></dt>
+<dd><p>PLOTSLICES Creates an interactive 3D plot, including transverse, sagittal, and coronal slices.</p>
+<p>PLOTSLICES(underlay) takes a 3D voxel space image “underlay” and
+generates views along the three canonical axes.</p>
+<p>In interactive mode, left-click on any point to move to those slices.
+To reset to the middle of the volume, right-click anywhere. To cancel
+interactive mode, press “Q”, “Esc”, or the middle mouse button.</p>
+<p>PLOTSLICES(underlay, infoVol) uses the volumetric data in “infoVol” to
+display spatial coordinates of the slices in question.</p>
+<p>PLOTSLICES(underlay, infoVol, params) allows the user to
+specify parameters for plot creation.</p>
+<dl class="simple">
+<dt>Params:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">fig_size<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[20, 200, 1240, 420]    Default figure position vector.</p>
+</dd>
+<dt class="field-even">fig_handle<span class="colon">:</span></dt>
+<dd class="field-even"><p>(none)                  Specifies a figure to target.
+If empty, spawns a new figure.</p>
+</dd>
+<dt class="field-odd">CH<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1                       Turns crosshairs on (1) and off
+(0).</p>
+</dd>
+<dt class="field-even">Scale<span class="colon">:</span></dt>
+<dd class="field-even"><p>(90% max)               Maximum value to which image is
+scaled.</p>
+</dd>
+<dt class="field-odd">PD<span class="colon">:</span></dt>
+<dd class="field-odd"><p>0                       Declares that input image is
+positive definite.</p>
+</dd>
+<dt class="field-even">cbmode<span class="colon">:</span></dt>
+<dd class="field-even"><p>0                       Specifies whether to use custom
+colorbar axis labels.</p>
+</dd>
+<dt class="field-odd">cboff<span class="colon">:</span></dt>
+<dd class="field-odd"><p>0                       If set to 1, no colorbar is
+displayed</p>
+</dd>
+<dt class="field-even">cblabels<span class="colon">:</span></dt>
+<dd class="field-even"><p>([-90% max, 90% max])   Colorbar axis labels. When
+cbmode==1, min defaults to 0 if
+PD==1, both default to +/-
+Scale if supplied. When
+cbmode==0, then cblabels
+dictates colorbar axis limits.</p>
+</dd>
+<dt class="field-odd">cbticks<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(none)                  When cbmode==1, specifies
+positions of tick marks on
+colorbar axis.</p>
+</dd>
+<dt class="field-even">slices<span class="colon">:</span></dt>
+<dd class="field-even"><p>(center frames)         Select which slices are
+displayed. If empty, activates
+interactive navigation.</p>
+</dd>
+<dt class="field-odd">slices_type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘idx’                   Use MATLAB indexing (‘idx’) for
+slices, or spatial coordinates
+(‘coord’) as provided by
+invoVol.</p>
+</dd>
+<dt class="field-even">orientation<span class="colon">:</span></dt>
+<dd class="field-even"><p>‘t’                     Select orientation of volume.
+‘t’ for transverse, ‘s’ for
+sagittal.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Note: APPLYCMAP has further options for using “params” to specify
+parameters for the fusion, scaling, and colormapping process.</p>
+<p>PLOTSLICES(underlay, infoVol, params, overlay) overlays the image
+provided by “overlay”. When this is done, all color mapping is applied
+to the overlay image, and the underlay is rendered as a grayscale image
+times the RGB triplet in “params.BG”.</p>
+<p>Dependencies: APPLYCMAP.</p>
+<p>See Also: PLOTINTERPSURFMESH, PLOTSLICESMOV, PLOTSLICESTIMETRACE.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.PlotSlicesTimeTrace">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">PlotSlicesTimeTrace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">underlay</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infoVol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.PlotSlicesTimeTrace" title="Permalink to this definition">#</a></dt>
+<dd><p>PLOTSLICESTIMETRACE Creates an interactive 4D plot, including transverse, sagittal, and coronal slices, in addition to a voxel time trace.</p>
+<p>PLOTSLICESTIMETRACE(underlay, infoVol, params, overlay) uses the same
+basic inputs as the function PLOTSLICES to create an interactive 3-axis
+plot of a 4D volume, plus an axis for the time trace of the selected
+voxel.</p>
+<p>PLOTSLICESTIMETRACE(…, info) allows the user to input an “info”
+structure to provide information about the 4D volume’s native
+framerate. The default framerate is 1 Hz.</p>
+<dl class="simple">
+<dt>Params:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">fig_size<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[20, 200, 840, 720]    Default figure position vector.</p>
+</dd>
+<dt class="field-even">fig_handle<span class="colon">:</span></dt>
+<dd class="field-even"><p>(none)                  Specifies a figure to target.
+If empty, spawns a new figure.</p>
+</dd>
+<dt class="field-odd">CH<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1                       Turns crosshairs on (1) and off
+(0).</p>
+</dd>
+<dt class="field-even">Scale<span class="colon">:</span></dt>
+<dd class="field-even"><p>(90% max)               Maximum value to which image is
+scaled.</p>
+</dd>
+<dt class="field-odd">PD<span class="colon">:</span></dt>
+<dd class="field-odd"><p>0                       Declares that input image is
+positive definite.</p>
+</dd>
+<dt class="field-even">cbmode<span class="colon">:</span></dt>
+<dd class="field-even"><p>0                       Specifies whether to use custom
+colorbar axis labels.</p>
+</dd>
+<dt class="field-odd">cblabels<span class="colon">:</span></dt>
+<dd class="field-odd"><p>([-90% max, 90% max])   Colorbar axis labels. When
+cbmode==1, min defaults to 0 if
+PD==1, both default to +/-
+Scale if supplied. When
+cbmode==0, then cblabels
+dictates colorbar axis limits.</p>
+</dd>
+<dt class="field-even">cbticks<span class="colon">:</span></dt>
+<dd class="field-even"><p>(none)                  When cbmode==1, specifies
+positions of tick marks on
+colorbar axis.</p>
+</dd>
+<dt class="field-odd">slices<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(center frames)         Select which slices are
+displayed. If empty, activates
+interactive navigation.</p>
+</dd>
+<dt class="field-even">slices_type<span class="colon">:</span></dt>
+<dd class="field-even"><p>‘idx’                   Use MATLAB indexing (‘idx’) for
+slices, or spatial coordinates
+(‘coord’) as provided by
+invoVol.</p>
+</dd>
+<dt class="field-odd">orientation<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘t’                     Select orientation of volume.
+‘t’ for transverse, ‘s’ for
+sagittal.</p>
+</dd>
+<dt class="field-even">kernel<span class="colon">:</span></dt>
+<dd class="field-even"><p>[1]                     A sampling kernel for the time
+trace plot. Other options:
+‘gaussian’ | ‘cube’ | ‘sphere’.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Note: APPLYCMAP has further options for using “params” to specify
+parameters for the fusion, scaling, and colormapping process.</p>
+<p>Dependencies: APPLYCMAP.</p>
+<p>See Also: PLOTINTERPSURFMESH, PLOTSLICES.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.PlotTimeTraceData">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">PlotTimeTraceData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.PlotTimeTraceData" title="Permalink to this definition">#</a></dt>
+<dd><p>PLOTTIMETRACEDATA A basic time traces plotting function.</p>
+<p>PLOTTIMETRACEDATA(data, time) takes a light-level array “data” of the
+MEAS x TIME format, and plots its time traces.</p>
+<p>PLOTTIMETRACEDATA(data, time, params) allows the user to specify
+parameters for plot creation.</p>
+<p>h = PLOTTIMETRACEDATA(…) passes the handles of the plot line objects
+created.</p>
+<dl class="simple">
+<dt>Params:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">fig_size<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[200, 200, 560, 420]    Default figure position vector.</p>
+</dd>
+<dt class="field-even">fig_handle<span class="colon">:</span></dt>
+<dd class="field-even"><p>(none)                  Specifies a figure to target.
+If empty, spawns a new figure.</p>
+</dd>
+<dt class="field-odd">xlimits<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘auto’                  Limits of x-axis.</p>
+</dd>
+<dt class="field-even">xscale<span class="colon">:</span></dt>
+<dd class="field-even"><p>‘linear’                Scaling of x-axis.</p>
+</dd>
+<dt class="field-odd">ylimits<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘auto’                  Limits of y-axis.</p>
+</dd>
+<dt class="field-even">yscale<span class="colon">:</span></dt>
+<dd class="field-even"><p>‘linear’                Scaling of y-axis.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>See Also: PLOTTIMETRACEALLMEAS, PLOTTIMETRACEMEAN.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.Visualizations.vol2surf_mesh">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.Visualizations.</span></span><span class="sig-name descname"><span class="pre">vol2surf_mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Smesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.Visualizations.vol2surf_mesh" title="Permalink to this definition">#</a></dt>
+<dd><p>VOL2SURF_MESH Interpolates volumetric data onto a surface mesh.</p>
+<p>Smesh = VOL2SURF_MESH(mesh_in, volume, dim) takes the mesh “Smesh”
+and interpolates the values of the volumetric data “volume” at the
+mesh’s surface, using the spatial information in “dim”. These values
+are output as “Smesh”.</p>
+<p>Smesh = VOL2SURF_MESH(Smesh, volume, dim, params) allows the user
+to specify parameters for plot creation.</p>
+<dl class="simple">
+<dt>Params:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">OL<span class="colon">:</span></dt>
+<dd class="field-odd"><p>0   If “overlap” data is presented (OL==1), this sets the
+interpolation method to “nearest”. Default is “linear”.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>See Also: PLOTINTERPSURFMESH, GOOD_VOX2VOL, AFFINE3D_IMG.</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../Temporal_Transforms/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">neuro_dot.Temporal_Transforms</span></code></p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.adjust_brain_pos"><code class="docutils literal notranslate"><span class="pre">adjust_brain_pos()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.applycmap"><code class="docutils literal notranslate"><span class="pre">applycmap()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.DrawColoredSynchPoints"><code class="docutils literal notranslate"><span class="pre">DrawColoredSynchPoints()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.nlrGrayPlots_220324"><code class="docutils literal notranslate"><span class="pre">nlrGrayPlots_220324()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.PlotInterpSurfMesh"><code class="docutils literal notranslate"><span class="pre">PlotInterpSurfMesh()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.Plot_RawData_Cap_DQC"><code class="docutils literal notranslate"><span class="pre">Plot_RawData_Cap_DQC()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.defineticks"><code class="docutils literal notranslate"><span class="pre">defineticks()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.PlotFalloffData"><code class="docutils literal notranslate"><span class="pre">PlotFalloffData()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.PlotFalloffLL"><code class="docutils literal notranslate"><span class="pre">PlotFalloffLL()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.PlotLRMeshes"><code class="docutils literal notranslate"><span class="pre">PlotLRMeshes()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.Plot_RawData_Metrics_I_DQC"><code class="docutils literal notranslate"><span class="pre">Plot_RawData_Metrics_I_DQC()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.Plot_RawData_Metrics_II_DQC"><code class="docutils literal notranslate"><span class="pre">Plot_RawData_Metrics_II_DQC()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.Plot_RawData_Time_Traces_Overview"><code class="docutils literal notranslate"><span class="pre">Plot_RawData_Time_Traces_Overview()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.cylinder"><code class="docutils literal notranslate"><span class="pre">cylinder()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.PlotCapData"><code class="docutils literal notranslate"><span class="pre">PlotCapData()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.PlotCapGoodMeas"><code class="docutils literal notranslate"><span class="pre">PlotCapGoodMeas()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.PlotCapMeanLL"><code class="docutils literal notranslate"><span class="pre">PlotCapMeanLL()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.PlotCapPhysiologyPower"><code class="docutils literal notranslate"><span class="pre">PlotCapPhysiologyPower()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.PlotSlices_correct_orientation"><code class="docutils literal notranslate"><span class="pre">PlotSlices_correct_orientation()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.PlotSlices"><code class="docutils literal notranslate"><span class="pre">PlotSlices()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.PlotSlicesTimeTrace"><code class="docutils literal notranslate"><span class="pre">PlotSlicesTimeTrace()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.PlotTimeTraceData"><code class="docutils literal notranslate"><span class="pre">PlotTimeTraceData()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Visualizations.vol2surf_mesh"><code class="docutils literal notranslate"><span class="pre">vol2surf_mesh()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../../_sources/autoapi/neuro_dot/Visualizations/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Brain Light Laboratory.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

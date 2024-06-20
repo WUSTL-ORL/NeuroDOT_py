@@ -9,7 +9,7 @@ NeuroDOT_py README
 	
 	3. Download the Jupyter notebook extension for VSCode: launch your VS Code and type “jupyter notebook” in the extension search box. Select the first result (Jupyter) and click 'Install'.
 	
-	4. Download the code from the NeuroDOT_py GitHub repository: Navigate to https://github.com/WUSTL-ORL/NeuroDOT_py, and click the green box on the right side of the page that says "Code." From the choices, select 'Download ZIP' and your download will begin. Once the .zip file is downloaded, extract the folder 'NeuroDOT_py-main' to your working directory. 
+	4. Install NeuroDOT_py using Pip: pip install neuro_dot
 
 
 2. Geting Started
@@ -25,6 +25,6 @@ NeuroDOT_py README
 	     
 		4. The 'outputfiles' folder is created after running 'getting_started' and is where all of the images (.png) generated will be saved to.
 	     
-	2. 'getting_started.ipynb' in the main folder is the Jupyter notebook for running the NeuroDOT Pre Processing Script. This is the file that you will open in VSCode/Jupter Notebook to run and manipulate the code. 
+	2. 'getting_started.ipynb' is the Jupyter notebook for getting acquainted with NeuroDOT_Py. This is the file that you will open in VSCode/Jupter Notebook to run and manipulate the code. 
  
 

@@ -1,0 +1,26 @@
+[project]
+name = "NeuroDOT_py"
+version = "1.0.0"
+authors = [
+  { name = "Adam T. Eggebrecht", email = "aeggebre@wustl.edu"},
+  { name="Emma Speh", email="espeh@wustl.edu" },
+  { name ="Ari Segel", email = "ari@wustl.edu"},
+  { name = "Yash Thacker", email = "ythacker@wustl.edu"},
+
+]
+description =  "An extensible Python toolbox for efficient optical brain mapping"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[project.urls]
+Homepage = "https://github.com/WUSTL-ORL/NeuroDOT_py"
+Issues = "https://github.com/WUSTL-ORL/NeuroDOT_py/issues"
+

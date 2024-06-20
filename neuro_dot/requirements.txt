@@ -1,9 +1,0 @@
-deepdiff==5.7.0
-matplotlib==3.3.3
-normalize_easy==0.0.3
-numpy==1.19.5
-scipy==1.6.1
-sympy==1.10.1
-mat73==0.59
-nibabel==3.2.2
-pathlib==1.0.1

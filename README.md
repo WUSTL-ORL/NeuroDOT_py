@@ -9,7 +9,7 @@ NeuroDOT_py README
 	
 	3. Download the Jupyter notebook extension for VSCode: launch your VS Code and type “jupyter notebook” in the extension search box. Select the first result (Jupyter) and click 'Install'.
 	
-	4. Install NeuroDOT_py using Pip: pip install neuro_dot
+	4. Install NeuroDOT_py using Pip: pip install neurodot-py
 
 
 2. Geting Started

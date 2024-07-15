@@ -7,7 +7,7 @@ author = 'Brain Light Laboratory'
 release = '1.0.0'
 
 sphinx_gallery_conf = {    
-    "default_thumb_file": '_static/logo_small.png',
+    "default_thumb_file": 'static/logo_small.png',
     "thumbnail_size": (160, 112),
 }
 
@@ -37,12 +37,12 @@ favicons = [
 source_suffix = [".rst",".md"]
 
 autoapi_dirs = ['../../src']
-templates_path = ['_templates']
-exclude_patterns = ['_build','_templates']
+templates_path = ['templates']
+exclude_patterns = ['_build','templates']
 html_theme = 'pydata_sphinx_theme'
-html_static_path = ['_static']
-html_logo = '_static/logo.png'
-default_thumb_file = '_static/logo_small.png'
+html_static_path = ['static']
+html_logo = 'static/logo.png'
+default_thumb_file = 'static/logo_small.png'
 html_theme_options = {
   "header_links_before_dropdown": 6,
   "navigation_depth": 4,

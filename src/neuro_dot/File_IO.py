@@ -372,7 +372,7 @@ def nifti_4dfp(header_in, img_in, mode):
         header_out['srow_y'] = [sform[1,0], sform[1,1],
             sform[1,2], sform[1,3]]
         header_out['srow_z'] = [sform[2,0], sform[2,1],
-            sform[2,2], sform[2,3]]
+            sform[2,2], sform[2,3]]  
         header_out['sform_code'] = 3
         header_out['qform_code'] = 3
         header_out['sizeof_hdr'] = 348
@@ -446,7 +446,6 @@ def nifti_4dfp(header_in, img_in, mode):
             img_xfm = img_in
         img_xfm = np.flip(img_xfm, 0)
         img_out = img_xfm
-
 
 
     elif mode == '4':

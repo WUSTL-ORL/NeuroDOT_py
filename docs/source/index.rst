@@ -11,7 +11,7 @@ based on functional near-infrared spectroscopy (fNIRS).
 NeuroDOT is compatible with a wide variety of fNIRS and DOT systems, ranging from very sparse to high density arrays.
 This documentation provides tutorials for using the NeuroDOT modules in your own Python code, as well as an searchable API for fast reference.
 
-.. image:: overview.png
+.. image:: docs/images/overview.png
    :width: 1200px
    :height: 800px
    :scale: 50 %

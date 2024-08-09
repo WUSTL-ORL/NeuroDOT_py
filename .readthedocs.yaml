@@ -8,6 +8,7 @@ version: 2
 # Set the OS, Python version and other tools you might need
 build:
   tools:
+    os: "windows"
     python: "3.8"
 
 

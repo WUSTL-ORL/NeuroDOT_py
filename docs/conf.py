@@ -30,7 +30,7 @@ extensions = ['sphinx.ext.autodoc',
     'autoapi.extension',
     "sphinx.ext.githubpages"
     ]
-
+ 
 favicons = [
    "favicon.png"
 ]

@@ -11,6 +11,6 @@ pysnirf2
 IPython
 sphinx
 sphinx_design
-jupyter-sphinx
+jupyter-sphinx==0.5.3
 nbsphinx
 autoapi

@@ -8,3 +8,9 @@ plotly==5.10.0
 mat73==0.59
 nibabel==3.2.2
 pysnirf2
+IPython
+sphinx
+sphinx_design
+nbsphinx
+jupyter_sphyinx
+autoapi

@@ -12,5 +12,4 @@ IPython
 sphinx
 sphinx_design
 nbsphinx
-jupyter_sphyinx
 autoapi

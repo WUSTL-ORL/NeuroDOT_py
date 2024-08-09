@@ -9,7 +9,7 @@ release = '1.0.0'
 sphinx_gallery_conf = {    
     "default_thumb_file": '_static/logo_small.png',
     "thumbnail_size": (160, 112),
-}
+} 
 
 extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',

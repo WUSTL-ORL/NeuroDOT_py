@@ -1,4 +1,4 @@
-jupyter-sphinx==0.5.3
+nbsphinx
 deepdiff
 matplotlib==3.5.2
 numpy==1.19.5
@@ -12,5 +12,4 @@ pysnirf2
 IPython==8.12.0
 sphinx==7.1.2
 sphinx_design
-nbsphinx==0.9.4
 autoapi==2.0.1

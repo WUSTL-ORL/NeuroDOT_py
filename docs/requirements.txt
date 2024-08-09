@@ -13,3 +13,4 @@ sphinx
 sphinx_design
 nbsphinx
 autoapi
+jupyter-sphinx

@@ -1,3 +1,4 @@
+nbsphinx
 deepdiff
 matplotlib==3.5.2
 numpy==1.19.5
@@ -8,9 +9,7 @@ plotly==5.10.0
 mat73==0.59
 nibabel==3.2.2
 pysnirf2
-IPython
-sphinx
+IPython==8.12.0
+sphinx==7.1.2
 sphinx_design
-nbsphinx
-jupyter_sphyinx
-autoapi
+autoapi==2.0.1

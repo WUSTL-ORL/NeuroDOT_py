@@ -41,8 +41,8 @@ templates_path = ['_templates']
 exclude_patterns = ['_build','_templates']
 html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
-html_logo = '../../../NeuroDOT_py/docs/images/logo.png'
-default_thumb_file = '../../../NeuroDOT_py/docs/images/logo_small.png'
+html_logo = 'logo.png'
+default_thumb_file = 'logo_small.png'
 html_theme_options = {
   "header_links_before_dropdown": 6,
   "navigation_depth": 4,

@@ -32,7 +32,7 @@ extensions = ['sphinx.ext.autodoc',
     ]
 
 favicons = [
-   "../../../NeuroDOT_py/docs/images/favicon.png"
+   "favicon.png"
 ]
 source_suffix = [".rst",".md"]
 

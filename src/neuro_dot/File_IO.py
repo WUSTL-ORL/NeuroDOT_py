@@ -1011,7 +1011,7 @@ def snirf2ndot(filename, pn, save_file =0, output = None, dtype = []):
                             gridTemp['dpos2'] = np.transpose(gridTemp['dpos2'])
             params = dict()
             params['lambda']= snf.nirs[0].probe.wavelengths
-            tempInfo=lmdl.Generate_pad_from_grid(gridTemp,params, info)          
+            tempInfo=ndot.Generate_pad_from_grid(gridTemp,params, info)          
             data_measList = np.array(np.c_[info['pairs']['Src'],info['pairs']['Det'],info['pairs']['WL']])
             full_measList =np.array(np.c_[tempInfo['pairs']['Src'],tempInfo['pairs']['Det'],tempInfo['pairs']['WL']])
             idxmeaslist = [np.where((full_measList == data_meas).all(axis=1))[0] for data_meas in data_measList]

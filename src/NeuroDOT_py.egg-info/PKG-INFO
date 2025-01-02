@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: NeuroDOT_py
-Version: 1.0.0
+Version: 1.0.1
 Summary: An extensible Python toolbox for efficient optical brain mapping
 Author-email: "Adam T. Eggebrecht" <aeggebre@wustl.edu>, Emma Speh <espeh@wustl.edu>, Ari Segel <ari@wustl.edu>, Yash Thacker <ythacker@wustl.edu>
 Project-URL: Homepage, https://github.com/WUSTL-ORL/NeuroDOT_py
@@ -23,7 +23,7 @@ NeuroDOT_py README
 	
 	3. Download the Jupyter notebook extension for VSCode: launch your VS Code and type “jupyter notebook” in the extension search box. Select the first result (Jupyter) and click 'Install'.
 	
-	4. Install NeuroDOT_py using Pip: pip install neuro_dot
+	4. Install NeuroDOT_py using Pip: pip install neurodot_py
 
 
 2. Geting Started

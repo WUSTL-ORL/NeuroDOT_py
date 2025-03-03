@@ -9,6 +9,7 @@ from pathlib import Path
 import nibabel as nb
 import io as fio
 import snirf 
+from scipy.spatial import distance
 
 import neuro_dot as ndot
 
@@ -684,6 +685,188 @@ def nifti_4dfp(header_in, img_in, mode):
         img_out = img_xfm
     return img_out, header_out
 
+def nirs2ndot(filename, save_file=1, output=None):
+    '''
+    NIRS2NDOT reads in a .nirs file and converts it to NeuroDOT
+    Compatible variables: data and info
+    
+    Input:
+        :filename: the full file name including extension
+        :data: the NIRS data in the format of: N_meas x N_samples
+        :info: the data structure that holds information pertaining to data acquisition
+        :save_file: can be set to 0 to suppress saving data and info variables to a .mat file
+        :output: the name of the output file to save the data and info variables to
+            -By default, the output filename will match input filename
+    '''
+    # Parameters and Initialization
+    if output is None:
+        output = filename.rsplit('.', 1)[0]
+
+    # Data
+    temp_file = os.path.dirname(__file__) + '\\' + filename
+    try:
+        nirsData = ndot.loadmat7p3(temp_file)
+    except Exception:
+        nirsData = ndot.loadmat(temp_file)
+
+    data = nirsData['d'].T
+
+    # IO and System parameters
+    info = {
+        'io': {
+            'Nd': nirsData['SD']['nDets'],
+            'Ns': nirsData['SD']['nSrcs'],
+            'Nwl': len(nirsData['SD']['Lambda'])*1.0,
+            'nframe': len(nirsData['t'])*1.0
+        },
+        'system': {
+            'framerate': 1 / np.mean(np.diff(nirsData['t']),dtype=float)
+        }
+    }
+    info['misc'] = {'startTime': float(0)} if nirsData['t'][0] == 0 else {'startTime': float(1)}
+
+    # Paradigm
+    num_stim = nirsData['s'].shape[1]
+    num_synchs = np.sum(nirsData['s'] == 1)
+    field_names = []
+
+    if num_synchs > 0:
+        synchs = [np.where(nirsData['s'][:, j] == 1)[0] for j in range(num_stim)]
+        synchTot = np.sort(np.concatenate(synchs))
+        synchTot_dbl = np.sort(np.concatenate(synchs)).astype(dtype=float)+1.0
+        info['paradigm'] = {'synchpts': synchTot_dbl.reshape(len(synchTot),1).astype(dtype=float), 'synchtype': np.zeros((len(synchTot),1), dtype=float)}
+        
+        for k, synch in enumerate(synchs):
+            field_name = f'Pulse_{k + 1}'
+            field_names.append(field_name)
+            temp = np.flatnonzero(np.isin(synchTot, synch))
+            info['paradigm'][field_name] = temp.reshape(len(temp),1)+1.0
+            for idx in info['paradigm'][field_name]:
+                info['paradigm']['synchtype'][int(idx)-1] = k + 1
+
+        info['paradigm']['synchtimes'] = (synchTot_dbl  / info['system']['framerate']).reshape(len(synchTot),1)
+
+    # Optodes
+    spos3, dpos3, spos2, dpos2 = None, None, None, None
+    if 'SrcPos' in nirsData['SD'] and 'DetPos' in nirsData['SD']:
+        dimension = nirsData['SD']['SrcPos'].shape[1]
+        
+        if dimension == 3:  # if 3D coords, get 3D pos, then check for 2D-specific pos
+            spos3, dpos3 = nirsData['SD']['SrcPos'], nirsData['SD']['DetPos']
+
+            if 'SrcPos2' in nirsData['SD'] and 'DetPos2' in nirsData['SD']:
+                spos2, dpos2 = nirsData['SD']['SrcPos2'], nirsData['SD']['DetPos2']
+            else:
+                print('No 2D optode positions in NIRS data, please create your own 2D layout.')
+                print('Place the 2D source coordinates in info.optodes.spos2 and the 2D detector coordinates in info.optodes.dpos2.')
+
+        elif dimension == 2:    # if 2D coords, check for 3D-specific pos first
+            if 'SrcPos3' in nirsData['SD'] and 'DetPos3' in nirsData['SD']:
+                spos3, dpos3 = nirsData['SD']['SrcPos3'], nirsData['SD']['DetPos3']
+                spos2, dpos2 = nirsData['SD']['SrcPos'], nirsData['SD']['DetPos']
+            else:
+                print('No 3D optode coordinates in this nirs data.')
+                print('Please find the 3D SD coordinates and place the source coordinates in info.optodes.spos3 and the detector coordinates in info.optodes.dpos3.')
+                print('You may need to make a neuroDOT pad file and/or head model to do this.')
+        else:
+            print('No optode coordinates in this nirs data.')
+            print('Please find the 3D SD coordinates and place the source coordinates in info.optodes.spos3 and the detector coordinates in info.optodes.dpos3.')
+            print('You may need to make a neuroDOT pad file and/or head model to do this.')
+            print('No 2D optode positions in NIRS data, please create your own 2D layout.')
+            print('Place the 2D source coordinates in info.optodes.spos2 and the 2D detector coordinates in info.optodes.dpos2.')
+            
+    elif 'SrcPos3' in nirsData['SD'] and 'DetPos3' in nirsData['SD']:
+        spos3, dpos3 = nirsData['SD']['SrcPos3'], nirsData['SD']['DetPos3']
+        if 'SrcPos2' in nirsData['SD'] and 'DetPos2' in nirsData['SD']:
+            spos2, dpos2 = nirsData['SD']['SrcPos2'], nirsData['SD']['DetPos2']
+        else:
+            print('No 2D optode positions in NIRS data, please create your own 2D layout.')
+            print('Place the 2D source coordinates in info.optodes.spos2 and the 2D detector coordinates in info.optodes.dpos2.')
+    else:
+        print('No optode coordinates in this nirs data.')
+        print('Please find the 3D SD coordinates and place the source coordinates in info.optodes.spos3 and the detector coordinates in info.optodes.dpos3.')
+        print('You may need to make a neuroDOT pad file and/or head model to do this.')
+        print('No 2D optode positions in NIRS data, please create your own 2D layout.')
+        print('Place the 2D source coordinates in info.optodes.spos2 and the 2D detector coordinates in info.optodes.dpos2.')
+
+    # Variables for generating info.optodes and info.pairs
+    lambda_ = nirsData['SD']['Lambda']
+    SD_sep = np.array([distance.euclidean(spos3[int(nirsData['SD']['MeasList'][ii][0]-1),:],
+                                         dpos3[int(nirsData['SD']['MeasList'][ii][1]-1),:])
+                      for ii in range(nirsData['SD']['MeasList'].shape[0])])
+
+    avg_SD_sep = np.mean(np.abs(SD_sep))
+    min_SD_sep = np.min(np.abs(SD_sep))
+
+    if ((avg_SD_sep >= 10) and (avg_SD_sep < 100)) or ((min_SD_sep >= 1) and (min_SD_sep < 100)):
+        mult = 1
+    elif (avg_SD_sep >= 1) and (avg_SD_sep < 10) or ((min_SD_sep >= 0.1) and (min_SD_sep < 10)):
+        mult = 10
+    elif (avg_SD_sep >= 0.1) and (avg_SD_sep < 1) or ((min_SD_sep >= 0.01) and (min_SD_sep < 1)):
+        mult = 100
+    elif (avg_SD_sep >= 0.01) and (avg_SD_sep < 0.1) or ((min_SD_sep >= 0.001) and (min_SD_sep < 0.1)):
+        mult = 1000
+    else:
+        print('Optode position units are larger than meters, data is wonky, please fix your data')
+
+    spos3 = spos3 * mult
+    dpos3 = dpos3 * mult
+
+    if spos3.shape[1] > spos3.shape[0]:
+        spos3 = spos3.T
+        dpos3 = dpos3.T
+        if spos2 is not None:
+            spos2 = spos2.T
+            dpos2 = dpos2.T
+
+    info['optodes'] = {
+        'spos3': spos3,
+        'dpos3': dpos3,
+        'plot3orientation': {'i': 'R2L', 'j': 'P2A', 'k': 'D2V'}
+    }
+
+    # Pairs
+    lambdaArray = np.array([lambda_[int(nirsData['SD']['MeasList'][ii, 3]) - 1] for ii in range(nirsData['SD']['MeasList'].shape[0])])
+    r3dArray = SD_sep
+
+    info['pairs'] = {
+        'Src': nirsData['SD']['MeasList'][:, 0].reshape(nirsData['SD']['MeasList'].shape[0],1),
+        'Det': nirsData['SD']['MeasList'][:, 1].reshape(nirsData['SD']['MeasList'].shape[0],1),
+        'NN': nirsData['SD']['MeasList'][:, 2].reshape(nirsData['SD']['MeasList'].shape[0],1),
+        'WL': nirsData['SD']['MeasList'][:, 3].reshape(nirsData['SD']['MeasList'].shape[0],1),
+        'Mod': ['CW'] * nirsData['SD']['MeasList'][:,3].shape[0],
+        'r3d': r3dArray.reshape(r3dArray.shape[0],1),
+        'lambda': lambdaArray.reshape(lambdaArray.shape[0],1)
+    }
+
+    info = ndot.calc_NN(info, 10)
+    info['pairs']['NN'] = info['pairs']['NN'].reshape(nirsData['SD']['MeasList'].shape[0],1)
+
+    info['tissue'] = {
+        'affine': np.eye(4),
+        'affine_target': 'MNI'
+    }
+
+    if spos2 is not None:
+        spos2 = spos2 * mult
+        dpos2 = dpos2 * mult
+
+        r2dArray = [distance.euclidean(spos2[nirsData['SD']['MeasList'][ii, 0] - 1], 
+                                        dpos2[nirsData['SD']['MeasList'][ii, 1] - 1])
+                    for ii in range(nirsData['SD']['MeasList'].shape[0])]
+
+        info['optodes']['spos2'] = spos2
+        info['optodes']['dpos2'] = dpos2
+
+        info['pairs']['r2d'] = r2dArray.reshape(r3dArray.shape[0],1)
+    # else:
+    #     info['pairs']['r2d'] = r3dArray.reshape(r3dArray.shape[0],1)
+
+    if save_file == 1:
+        outputfilename = output
+        ndot.savemat(outputfilename, {'data': data, 'info': info})
+
+    return data, info
 
 def Read_4dfp_Header(filename, pn):
     '''
@@ -787,6 +970,10 @@ def Read_4dfp_Header(filename, pn):
 
     return header
 
+def savemat(filename, data):
+    p = os.path.dirname(os.path.realpath(filename)) 
+    p = p + '\\' + filename + '.mat'
+    spio.savemat(p, data)
 
 def SaveVolumetricData(volume, header, filename, pn, file_type):
     '''

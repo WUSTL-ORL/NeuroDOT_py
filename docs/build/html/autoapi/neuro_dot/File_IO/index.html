@@ -512,8 +512,14 @@ document.write(`
 <tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.File_IO.nifti_4dfp" title="neuro_dot.File_IO.nifti_4dfp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nifti_4dfp</span></code></a>(header_in, img_in, mode)</p></td>
 <td><p>NIFTI_4DFP Converts between nifti and 4dfp volume and header formats.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.File_IO.Read_4dfp_Header" title="neuro_dot.File_IO.Read_4dfp_Header"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Read_4dfp_Header</span></code></a>(filename, pn)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.File_IO.nirs2ndot" title="neuro_dot.File_IO.nirs2ndot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nirs2ndot</span></code></a>(filename[, save_file, output])</p></td>
+<td><p>NIRS2NDOT reads in a .nirs file and converts it to NeuroDOT</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.File_IO.Read_4dfp_Header" title="neuro_dot.File_IO.Read_4dfp_Header"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Read_4dfp_Header</span></code></a>(filename, pn)</p></td>
 <td><p>READ_4DFP_HEADER Reads the .ifh header of a 4dfp file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.File_IO.savemat" title="neuro_dot.File_IO.savemat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">savemat</span></code></a>(filename, data)</p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.File_IO.SaveVolumetricData" title="neuro_dot.File_IO.SaveVolumetricData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SaveVolumetricData</span></code></a>(volume, header, filename, pn, file_type)</p></td>
 <td><p>SAVEVOLUMETRICDATA Saves a volumetric data file.</p></td>
@@ -624,6 +630,34 @@ formats</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.File_IO.nirs2ndot">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.File_IO.</span></span><span class="sig-name descname"><span class="pre">nirs2ndot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.File_IO.nirs2ndot" title="Permalink to this definition">#</a></dt>
+<dd><p>NIRS2NDOT reads in a .nirs file and converts it to NeuroDOT
+Compatible variables: data and info</p>
+<dl class="simple">
+<dt>Input:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">filename<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the full file name including extension</p>
+</dd>
+<dt class="field-even">data<span class="colon">:</span></dt>
+<dd class="field-even"><p>the NIRS data in the format of: N_meas x N_samples</p>
+</dd>
+<dt class="field-odd">info<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the data structure that holds information pertaining to data acquisition</p>
+</dd>
+<dt class="field-even">save_file<span class="colon">:</span></dt>
+<dd class="field-even"><p>can be set to 0 to suppress saving data and info variables to a .mat file</p>
+</dd>
+<dt class="field-odd">output<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the name of the output file to save the data and info variables to
+-By default, the output filename will match input filename</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="neuro_dot.File_IO.Read_4dfp_Header">
 <span class="sig-prename descclassname"><span class="pre">neuro_dot.File_IO.</span></span><span class="sig-name descname"><span class="pre">Read_4dfp_Header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.File_IO.Read_4dfp_Header" title="Permalink to this definition">#</a></dt>
 <dd><p>READ_4DFP_HEADER Reads the .ifh header of a 4dfp file.</p>
@@ -632,6 +666,11 @@ by “filename”, containing a number of key-value pairs. The specific
 pairs are parsed and stored as fields of the output structure “header”.</p>
 <p>See Also: LOADVOLUMETRICDATA.</p>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.File_IO.savemat">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.File_IO.</span></span><span class="sig-name descname"><span class="pre">savemat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.File_IO.savemat" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="neuro_dot.File_IO.SaveVolumetricData">
@@ -756,7 +795,9 @@ format to an .ifh file specified by “filename”.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.File_IO.LoadVolumetricData"><code class="docutils literal notranslate"><span class="pre">LoadVolumetricData()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.File_IO.Make_NativeSpace_4dfp"><code class="docutils literal notranslate"><span class="pre">Make_NativeSpace_4dfp()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.File_IO.nifti_4dfp"><code class="docutils literal notranslate"><span class="pre">nifti_4dfp()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.File_IO.nirs2ndot"><code class="docutils literal notranslate"><span class="pre">nirs2ndot()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.File_IO.Read_4dfp_Header"><code class="docutils literal notranslate"><span class="pre">Read_4dfp_Header()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.File_IO.savemat"><code class="docutils literal notranslate"><span class="pre">savemat()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.File_IO.SaveVolumetricData"><code class="docutils literal notranslate"><span class="pre">SaveVolumetricData()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.File_IO.snirf2ndot"><code class="docutils literal notranslate"><span class="pre">snirf2ndot()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.File_IO.todict"><code class="docutils literal notranslate"><span class="pre">todict()</span></code></a></li>

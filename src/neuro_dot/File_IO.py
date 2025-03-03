@@ -16,9 +16,9 @@ import neuro_dot as ndot
 
 def check_keys(dict):
     '''
-    CHECK_KEYS Checks if entries in dictionary are mat-objects. 
-    If entries are mat objects, todict is called to change them to nested dictionaries
+    CHECK_KEYS Checks if entries in dictionary are mat-objects. If entries are mat objects, todict is called to change them to nested dictionaries
     '''
+
     for key in dict:
         if isinstance(dict[key], spio.matlab.mio5_params.mat_struct):
             dict[key] = ndot.todict(dict[key])
@@ -39,8 +39,9 @@ def loadmat(filename):
     Loadmat calls the function check_keys to cure all entries
     which are still mat-objects. 
     
-    NOTE:This function does not work for .mat -v7.3 files. 
+    :NOTE:This function does not work for .mat -v7.3 files. 
     '''
+
     data = spio.loadmat(filename,struct_as_record=False, squeeze_me=True)
     return ndot.check_keys(data)
 
@@ -692,11 +693,14 @@ def nirs2ndot(filename, save_file=1, output=None):
     
     Input:
         :filename: the full file name including extension
+
         :data: the NIRS data in the format of: N_meas x N_samples
+
         :info: the data structure that holds information pertaining to data acquisition
+
         :save_file: can be set to 0 to suppress saving data and info variables to a .mat file
-        :output: the name of the output file to save the data and info variables to
-            -By default, the output filename will match input filename
+        
+        :output: the name of the output file to save the data and info variables to. If not specified, the output file will be the same as the input file name without the extension.
     '''
     # Parameters and Initialization
     if output is None:

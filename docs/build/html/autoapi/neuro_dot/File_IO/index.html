@@ -495,7 +495,7 @@ document.write(`
 <table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.File_IO.check_keys" title="neuro_dot.File_IO.check_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_keys</span></code></a>(dict)</p></td>
-<td><p>CHECK_KEYS Checks if entries in dictionary are mat-objects.</p></td>
+<td><p>CHECK_KEYS Checks if entries in dictionary are mat-objects. If entries are mat objects, todict is called to change them to nested dictionaries</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.File_IO.loadmat" title="neuro_dot.File_IO.loadmat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loadmat</span></code></a>(filename)</p></td>
 <td><p>LOADMAT Loads files with the <a href="#id1"><span class="problematic" id="id2">*</span></a>.mat extension.</p></td>
@@ -538,8 +538,7 @@ document.write(`
 <dl class="py function">
 <dt class="sig sig-object py" id="neuro_dot.File_IO.check_keys">
 <span class="sig-prename descclassname"><span class="pre">neuro_dot.File_IO.</span></span><span class="sig-name descname"><span class="pre">check_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.File_IO.check_keys" title="Permalink to this definition">#</a></dt>
-<dd><p>CHECK_KEYS Checks if entries in dictionary are mat-objects.
-If entries are mat objects, todict is called to change them to nested dictionaries</p>
+<dd><p>CHECK_KEYS Checks if entries in dictionary are mat-objects. If entries are mat objects, todict is called to change them to nested dictionaries</p>
 </dd></dl>
 
 <dl class="py function">
@@ -553,7 +552,7 @@ as it cures the problem of not properly recovering python dictionaries
 from mat files.</p>
 <p>Loadmat calls the function check_keys to cure all entries
 which are still mat-objects.</p>
-<p>NOTE:This function does not work for .mat -v7.3 files.</p>
+<p>:NOTE:This function does not work for .mat -v7.3 files.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -649,8 +648,7 @@ Compatible variables: data and info</p>
 <dd class="field-even"><p>can be set to 0 to suppress saving data and info variables to a .mat file</p>
 </dd>
 <dt class="field-odd">output<span class="colon">:</span></dt>
-<dd class="field-odd"><p>the name of the output file to save the data and info variables to
--By default, the output filename will match input filename</p>
+<dd class="field-odd"><p>the name of the output file to save the data and info variables to. If not specified, the output file will be the same as the input file name without the extension.</p>
 </dd>
 </dl>
 </dd>

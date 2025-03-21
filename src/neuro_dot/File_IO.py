@@ -707,7 +707,7 @@ def nirs2ndot(filename, save_file=1, output=None):
         output = filename.rsplit('.', 1)[0]
 
     # Data
-    temp_file = os.path.dirname(__file__) + '\\' + filename
+    temp_file =  filename
     try:
         nirsData = ndot.loadmat7p3(temp_file)
     except Exception:
@@ -730,12 +730,18 @@ def nirs2ndot(filename, save_file=1, output=None):
     info['misc'] = {'startTime': float(0)} if nirsData['t'][0] == 0 else {'startTime': float(1)}
 
     # Paradigm
-    num_stim = nirsData['s'].shape[1]
+    if np.ndim(nirsData['s']) == 1:
+        num_stim = 1
+    else:
+        num_stim = nirsData['s'].shape[1]
     num_synchs = np.sum(nirsData['s'] == 1)
     field_names = []
 
     if num_synchs > 0:
-        synchs = [np.where(nirsData['s'][:, j] == 1)[0] for j in range(num_stim)]
+        if num_stim == 1:
+             synchs = [np.where(nirsData['s'][:] == 1)[0] for j in range(num_stim)]
+        else:
+            synchs = [np.where(nirsData['s'][:, j-1] == 1)[0] for j in range(num_stim)]
         synchTot = np.sort(np.concatenate(synchs))
         synchTot_dbl = np.sort(np.concatenate(synchs)).astype(dtype=float)+1.0
         info['paradigm'] = {'synchpts': synchTot_dbl.reshape(len(synchTot),1).astype(dtype=float), 'synchtype': np.zeros((len(synchTot),1), dtype=float)}
@@ -975,9 +981,9 @@ def Read_4dfp_Header(filename, pn):
     return header
 
 def savemat(filename, data):
-    p = os.path.dirname(os.path.realpath(filename)) 
-    p = p + '\\' + filename + '.mat'
+    p = filename + '.mat'
     spio.savemat(p, data)
+
 
 def SaveVolumetricData(volume, header, filename, pn, file_type):
     '''

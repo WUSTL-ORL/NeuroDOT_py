@@ -735,6 +735,19 @@ Functions
        :header_out: header in Nifti or 4dfp format
 
 
+.. py:function:: nirs2ndot(filename, save_file=1, output=None)
+
+    NIRS2NDOT reads in a .nirs file and converts it to NeuroDOT
+    Compatible variables: data and info
+    
+    Input:
+        :filename: the full file name including extension
+        :data: the NIRS data in the format of: N_meas x N_samples
+        :info: the data structure that holds information pertaining to data acquisition
+        :save_file: can be set to 0 to suppress saving data and info variables to a .mat file
+        :output: the name of the output file to save the data and info variables to. If not specified, the output file will be the same as the input file name without the extension.
+
+
 .. py:function:: Read_4dfp_Header(filename, pn)
 
    READ_4DFP_HEADER Reads the .ifh header of a 4dfp file.

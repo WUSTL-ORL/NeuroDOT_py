@@ -10,6 +10,9 @@ import nibabel as nb
 import io as fio
 import snirf 
 from scipy.spatial import distance
+from snirf import Snirf
+import snirf as snirf
+import h5py
 
 import neuro_dot as ndot
 
@@ -686,6 +689,334 @@ def nifti_4dfp(header_in, img_in, mode):
         img_out = img_xfm
     return img_out, header_out
 
+
+def ndot2nirs(data, info):
+    """
+    Translation from NeuroDOT-compatible format to .nirs
+    This function takes in data and an info structure in NeuroDOT format
+    and converts it to the .nirs format.
+
+    Inputs:
+        'data': time series data arranged by [#channels x #samples]
+        'info': NeuroDOT formatted info structure
+
+    Outputs:
+        'nirsData': .nirs formatted data structure containing the following
+            'd': time series data arranged by [#time points x #channels]
+            'SD': structure containing the source and detector
+            information in addition to the data measurement list
+            't': time point array
+            's': time points and stimulus onsets
+            'ml': the data measurement list
+    """
+    
+    # Initialize nirsData
+    nirsData = {}
+    
+    ## Data
+    nirsData['d'] = data.T
+
+    ## SD
+    nirsData['SD'] = {}
+    if 'io' in info:
+        nirsData['SD']['nDets'] = info['io']['Nd']
+        nirsData['SD']['nSrcs'] = info['io']['Ns']
+    else:
+        nirsData['SD']['nDets'] = info['optodes']['dpos3'].shape[0]
+        nirsData['SD']['nSrcs'] = info['optodes']['spos3'].shape[0]
+        
+    nirsData['SD']['Lambda'] = np.unique(info['pairs']['lambda']).tolist()
+
+    ## Time 't'
+    if 'misc' in info and 'startTime' in info['misc'] and info['misc']['startTime'] == 0:
+        nirsData['t'] = (np.arange(nirsData['d'].shape[0]) / info['system']['framerate']).tolist()
+    else:
+        nirsData['t'] = (np.arange(1, nirsData['d'].shape[0] + 1) / info['system']['framerate']).tolist()
+
+    ## Stimulus 's'
+    if 'paradigm' in info:
+        fields = list(info['paradigm'].keys())
+        pulses = [field for field in fields if len(field) >= 5 and field.startswith('Pulse')]
+        pulses.sort()
+        num_synchs = len(pulses)
+        nirsData['s'] = np.zeros((len(nirsData['t']), num_synchs))
+        
+        for j, pulse in enumerate(pulses):
+            pulseidx = []
+            if isinstance(info['paradigm'][pulse], int):
+                info['paradigm'][pulse] = [info['paradigm'][pulse]]
+            for synch in info['paradigm'][pulse]:
+                nearest_idx = np.argmin(np.abs(np.array(nirsData['t']) - (info['paradigm']['synchpts'][synch-1] / info['system']['framerate'])))
+                pulseidx.append(nearest_idx)
+            nirsData['s'][pulseidx, j] = 1
+
+    ## Optodes
+    if 'spos2' in info['optodes']:
+        nirsData['SD']['SrcPos2'] = info['optodes']['spos2']
+    if 'spos3' in info['optodes']:
+        nirsData['SD']['SrcPos3'] = info['optodes']['spos3']
+    if 'dpos2' in info['optodes']:
+        nirsData['SD']['DetPos2'] = info['optodes']['dpos2']
+    if 'dpos3' in info['optodes']:
+        nirsData['SD']['DetPos3'] = info['optodes']['dpos3']
+
+    ## MeasList
+    nirsData['SD']['MeasList'] = np.column_stack((info['pairs']['Src'], 
+                                                  info['pairs']['Det'], 
+                                                  np.ones(len(info['pairs']['Src']), dtype=int), 
+                                                  info['pairs']['WL']))
+
+    nirsData['ml'] = nirsData['SD']['MeasList']
+
+    ## Aux
+    if 'misc' in info and 'aux' in info['misc']:
+        nirsData['aux'] = info['misc']['aux']
+    return nirsData
+
+
+def ndot2snirf(filename, output=None, full=0, type='snirf'):
+    # Parameters and Initialization
+    if output is None:
+        output = filename.split('.')[0]
+    
+    # Load NeuroDOT file
+    try:
+        with h5py.File(filename, 'r') as f:
+            v73 = 1
+    except OSError:
+        v73 = 0
+    if v73 == 0:
+        data = ndot.loadmat(filename)['data']     
+        info = ndot.loadmat(filename)['info']    
+    if v73 == 1:
+        data = ndot.loadmat7p3(filename)['data']     
+        info = ndot.loadmat7p3(filename)['info']    
+
+    # Create SNIRF Data and Metadata Structures
+    if type.lower() == 'snirf':
+        snf = Snirf()
+        snf.nirs.appendGroup()
+        snf.nirs[0].conversionProgram = 'ndot2snirf'
+        if data is not None:
+            snf.nirs[0].data.appendGroup()
+            snf.nirs[0].data[0].dataTimeSeries = data.T
+        if info is not None:
+            if info['system']['framerate']:
+                snf.nirs[0].metaDataTags.framerate = float(info['system']['framerate'])
+            if info['system']['init_framerate']:
+                snf.nirs[0].metaDataTags.init_framerate = float(info['system']['init_framerate'])
+            if 'io' in info:
+                if 'FrequencyUnit' in info['io']:
+                    snf.nirs[0].metaDataTags.FrequencyUnit = str(info['io']['FrequencyUnit'])
+                else:
+                    snf.nirs[0].metaDataTags.FrequencyUnit = 'Hz'
+                
+                if 'TimeUnit' in info['io']:
+                    snf.nirs[0].metaDataTags.TimeUnit = str(info['io']['TimeUnit'])
+                else:
+                    snf.nirs[0].metaDataTags.TimeUnit = 's'
+                if 'LengthUnit' in info['io']:
+                    snf.nirs[0].metaDataTags.LengthUnit = str(info['io']['LengthUnit'])
+                else:
+                    snf.nirs[0].metaDataTags.LengthUnit = 'mm'
+                if 'ManufacturerName' in info['io']:
+                    snf.nirs[0].metaDataTags.ManufacturerName = str(info['io']['ManufacturerName'])
+                else:
+                    snf.nirs[0].metaDataTags.ManufacturerName = 'n/a'
+                if 'Model' in info['io']:
+                    snf.nirs[0].metaDataTags.Model = str(info['io']['Model'])
+                else:
+                    snf.nirs[0].metaDataTags.Model = 'n/a'
+                if 'SubjectID' in info['io']:
+                    snf.nirs[0].metaDataTags.SubjectID = str(info['io']['SubjectID'])
+                else:
+                    snf.nirs[0].metaDataTags.SubjectID = 'n/a'
+                if 'MeasurementDate' in info['io']:
+                    snf.nirs[0].metaDataTags.MeasurementDate = str(info['io']['MeasurementDate'])
+                else:
+                    snf.nirs[0].metaDataTags.MeasurementDate = 'n/a'
+                if 'MeasurementTime' in info['io']:
+                    snf.nirs[0].metaDataTags.MeasurementTime = str(info['io']['MeasurementTime'])
+                else:
+                    snf.nirs[0].metaDataTags.MeasurementTime = 'n/a'
+                if 'unix_time' in info['io']:  
+                    snf.nirs[0].metaDataTags.UnixTime = str(info['io']['unix_time'])
+                else:
+                    snf.nirs[0].metaDataTags.UnixTime = 'n/a'
+                if 'Nt' in info['io']:
+                    snf.nirs[0].metaDataTags.Nt = int(info['io']['Nt'])
+                else:
+                    snf.nirs[0].metaDataTags.Nt = 0
+                if 'Nd' in info['io']:
+                    snf.nirs[0].metaDataTags.Nd = int(info['io']['Nd'])
+                else:
+                    snf.nirs[0].metaDataTags.Nd = len(info['optodes']['dpos3'])
+                if 'Ns' in info['io']:
+                    snf.nirs[0].metaDataTags.Ns = int(info['io']['Ns'])
+                else:
+                    snf.nirs[0].metaDataTags.Ns = len(info['optodes']['spos3'])
+                if 'Nwl' in  info['io']:
+                    snf.nirs[0].metaDataTags.Nwl = int(info['io']['Nwl'])
+                else:
+                    snf.nirs[0].metaDataTags.Nwl = max(info['pairs']['lambda'])
+            
+            T = 1/info['system']['framerate']
+            nTp = snf.nirs[0].data[0].dataTimeSeries.shape[0]
+            snf.nirs[0].data[0].time = np.arange(1, nTp+1) * T
+
+            # Set time, length, and frequency units
+            if 'misc' in info:
+                if 'time' in info['misc'] and info['misc']['time'] is not None:
+                    snf.nirs[0].data[0].time = info['misc']['time']
+                if 'TimeUnit' in info['misc'] and info['misc']['TimeUnit'] is not None:
+                    snf.nirs[0].metaDataTags.TimeUnit = info['misc']['TimeUnit']
+                if 'LengthUnit' in info['misc'] and info['misc']['LengthUnit'] is not None:
+                    snf.nirs[0].metaDataTags.LengthUnit = info['misc']['LengthUnit']
+                if 'FrequencyUnit' in info['misc'] and info['misc']['FrequencyUnit'] is not None:
+                    snf.nirs[0].metaDataTags.FrequencyUnit = info['misc']['FrequencyUnit']                    
+                if 'time' in info['misc']:
+                    snf.nirs[0].data[0].time = info['misc']['time']
+                if 'TimeUnit' in info['misc']:
+                    snf.nirs[0].metaDataTags.TimeUnit = info['misc']['TimeUnit']
+                if 'LengthUnit' in info['misc']:
+                    snf.nirs[0].metaDataTags.LengthUnit = info['misc']['LengthUnit']
+                if 'FrequencyUnit' in info['misc']:
+                    snf.nirs[0].metaDataTags.FrequencyUnit = info['misc']['FrequencyUnit']
+                snf.nirs[0].aux.appendGroup()
+                snf.nirs[0].aux[0].name = 0
+                snf.nirs[0].aux[0].dataTimeSeries = 0
+                snf.nirs[0].aux[0].time = 0
+                snf.nirs[0].aux[0].time = 0
+                snf.nirs[0].aux[0].timeOffset = 0
+                
+            
+            if 'io' in info:
+                if 'comment' in info['io']:
+                    snf.nirs[0].metaDataTags.comment = info['io']['comment']
+                if 'a' in info['io']:
+                    snf.nirs[0].metaDataTags.MeasurementDate = info['io']['a']['date']
+                elif 'date' in info['io']:
+                    snf.nirs[0].metaDataTags.MeasurementDate = info['io']['date']
+                else:
+                    snf.nirs[0].metaDataTags.MeasurementDate = 'n/a'
+                if 'enc' in info['io']:
+                    snf.nirs[0].metaDataTags.enc = info['io']['enc']
+                if 'framesize' in info['io']:
+                    snf.nirs[0].metaDataTags.framesize = info['io']['framesize']
+                if 'naux' in info['io']:
+                    snf.nirs[0].metaDataTags.naux = info['io']['naux']
+                if 'nblank' in info['io']:
+                    snf.nirs[0].metaDataTags.nblank = info['io']['nblank']
+                if 'nframe' in info['io']:
+                    snf.nirs[0].metaDataTags.nframe = info['io']['nframe']
+                if 'nmotu' in info['io']:
+                    snf.nirs[0].metaDataTags.nmotu = info['io']['nmotu']
+                if 'nsamp' in info['io']:
+                    snf.nirs[0].metaDataTags.nsamp = info['io']['nsamp']
+                if 'nts' in info['io']:
+                    snf.nirs[0].metaDataTags.nts = info['io']['nts']
+                if 'pad' in info['io']:
+                    snf.nirs[0].metaDataTags.pad = info['io']['pad']
+                if 'run' in info['io']:
+                    snf.nirs[0].metaDataTags.run = info['io']['run']
+                if 'a' in info['io'] and 'time' in info['io']['a']:
+                    snf.nirs[0].metaDataTags.MeasurementTime = info['io']['a']['time']
+                elif 'time' in info['io']:
+                    snf.nirs[0].metaDataTags.MeasurementTime = info['io']['time']
+                if 'tag' in info['io']: 
+                    snf.nirs[0].metaDataTags.tag = info['io']['tag']
+
+        # info.optodes
+        if 'optodes' in info:
+            if 'CapName' in info['optodes']:
+                snf.nirs[0].metaDataTags.CapName = info['optodes']['CapName']
+            if 'dpos2' in info['optodes']:
+                snf.nirs[0].probe.detectorPos2D = info['optodes']['dpos2']
+            if 'dpos3' in info['optodes']:
+                snf.nirs[0].probe.detectorPos3D = info['optodes']['dpos3']
+            if 'spos2' in info['optodes']:
+                snf.nirs[0].probe.sourcePos2D = info['optodes']['spos2']
+            if 'spos3' in info['optodes']:
+                snf.nirs[0].probe.sourcePos3D = info['optodes']['spos3']
+        
+        # info.pairs
+        if 'pairs' in info:
+            pairs = info['pairs']
+            if 'Src' in pairs:
+                snf.nirs[0].data[0].measurementList.sourceIndex = pairs['Src']
+            if 'Det' in pairs:
+                snf.nirs[0].data[0].measurementList.detectorIndex = pairs['Det']
+            if 'WL' in pairs:
+                snf.nirs[0].data[0].measurementList.wavelengthIndex = pairs['WL']
+            if 'Mod' in pairs:
+                snf.nirs[0].data[0].measurementList.Mod = pairs['Mod']
+            if 'lambda' in pairs:
+                snf.nirs[0].data[0].measurementList.wavelengthActual = pairs['lambda']
+                snf.nirs[0].probe.wavelengths = list(set(pairs['lambda']))
+        
+        # info.system
+        if not 'system' in info:
+            info['system'] = {'framerate': None, 'init_framerate': None, 'Padname': None}
+        if 'framerate' in info['system']:
+            T = 1 / info['system']['framerate']
+            nTp = snf.nirs[0].data[0].dataTimeSeries.shape[0]
+            timeArray = np.arange(1, nTp+1) * T
+            snf.nirs[0].data.time = timeArray
+        else:
+            snf.nirs[0].data.time = np.arange(1, len(data)+1) * 1
+        
+        if 'PadName' in info['system']:
+            snf.nirs[0].metaDataTags.PadName = info['system']['PadName']
+
+        # info.paradigm
+        if 'paradigm' in info:
+            fields = [field for field in info['paradigm']]
+            idxPulse = [field.startswith('Pulse_') for field in fields]
+            pulses = [fields[i] for i in range(len(fields)) if idxPulse[i]]
+            k = 0
+            if 'misc' in info:
+                if 'stimDuration' in info['misc']:
+                    stim_duration = info['misc']['stimDuration']
+                else:
+                    stim_duration = np.tile(1, [len(pulses),1])
+            if 'stim_duration' not in locals():
+                if 'Pulse_2' in info['paradigm'] and 'Pulse_1' in info['paradigm'] and 'Pulse_3' not in info['paradigm']:
+                    difference = np.around(np.diff(info['paradigm']['synchpts'])).astype(int)
+                    difference = difference[1:len(difference)]
+                    temp_1 = (info['paradigm']['Pulse_1'][1:]).astype(int) 
+                    temp_1 = temp_1-2
+                    stim_duration = [round(difference[0] / info['system']['framerate']), round(np.mean(difference[temp_1-1]) / info['system']['framerate'])]
+                else:
+                    difference = np.diff(info['paradigm']['synchpts'])
+                    stim_duration = []
+                    for i in range(len(pulses)):
+                        stim_duration.append(round(np.mean(difference) / info['system']['framerate']))
+            for i in range(len(pulses)):
+                k += 1
+                if 'synchtype' not in info['paradigm']:
+                    info['paradigm']['synchtype'] = np.zeros(len(info['paradigm']['synchpts']))
+                    for j in range(len(pulses)):
+                        info['paradigm']['synchtype'][info['paradigm'][pulses[j]]-1] = j
+                    info['paradigm']['synchtype'] = info['paradigm']['synchtype'].T
+                if pulses[i] in info['paradigm']:
+                    synchtimes = info['paradigm']['synchpts'] / info['system']['framerate']
+                    np_ = np.shape([(info['paradigm'][pulses[i]])-1])[-1]
+                    snf.nirs[0].stim.appendGroup()
+                    snf.nirs[0].stim[i].data = np.vstack([[np.array(synchtimes[info['paradigm'][pulses[i]]-1]).astype(int)-1], np.ones(np_) * stim_duration[i],[(info['paradigm']['synchtype'][info['paradigm'][pulses[i]]-1]).astype(int)-1]]).T
+                    snf.nirs[0].stim[i].name= str(i)
+                if 'io' in info:
+                    if 'a' in info['io'] and info['io']['a']['tag'].lower() == 'resta':
+                        info['io']['a']['tag'] = 'rest'     
+        
+        snf.nirs[0].data[0].measurementList.dataTypeIndex = np.zeros(data.shape[0], dtype=int)
+        snf.nirs[0].data[0].measurementList.dataType = np.ones(data.shape[0], dtype=int)
+    # Save Output .snirf file
+    outfname = output 
+    print('Saving to: ', outfname)
+    snf.save(f"{output}.snirf")
+    return snf
+
+
 def nirs2ndot(filename, save_file=1, output=None):
     '''
     NIRS2NDOT reads in a .nirs file and converts it to NeuroDOT
@@ -877,6 +1208,7 @@ def nirs2ndot(filename, save_file=1, output=None):
         ndot.savemat(outputfilename, {'data': data, 'info': info})
 
     return data, info
+
 
 def Read_4dfp_Header(filename, pn):
     '''

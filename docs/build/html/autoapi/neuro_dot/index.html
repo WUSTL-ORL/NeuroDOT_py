@@ -594,6 +594,12 @@ document.write(`
 <tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.nifti_4dfp" title="neuro_dot.nifti_4dfp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nifti_4dfp</span></code></a>(header_in, img_in, mode)</p></td>
 <td><p>NIFTI_4DFP Converts between nifti and 4dfp volume and header formats.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.ndot2nirs" title="neuro_dot.ndot2nirs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndot2nirs</span></code></a>(data, info)</p></td>
+<td><p>Translation from NeuroDOT-compatible format to .nirs</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#neuro_dot.ndot2snirf" title="neuro_dot.ndot2snirf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndot2snirf</span></code></a>(filename[, output, full, type])</p></td>
+<td><p></p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#neuro_dot.nirs2ndot" title="neuro_dot.nirs2ndot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nirs2ndot</span></code></a>(filename[, save_file, output])</p></td>
 <td><p>NIRS2NDOT reads in a .nirs file and converts it to NeuroDOT</p></td>
 </tr>
@@ -1581,6 +1587,34 @@ formats</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.ndot2nirs">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.</span></span><span class="sig-name descname"><span class="pre">ndot2nirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.ndot2nirs" title="Permalink to this definition">#</a></dt>
+<dd><p>Translation from NeuroDOT-compatible format to .nirs
+This function takes in data and an info structure in NeuroDOT format
+and converts it to the .nirs format.</p>
+<dl class="simple">
+<dt>Inputs:</dt><dd><p>‘data’: time series data arranged by [#channels x #samples]
+‘info’: NeuroDOT formatted info structure</p>
+</dd>
+<dt>Outputs:</dt><dd><dl class="simple">
+<dt>‘nirsData’: .nirs formatted data structure containing the following</dt><dd><p>‘d’: time series data arranged by [#time points x #channels]
+‘SD’: structure containing the source and detector
+information in addition to the data measurement list
+‘t’: time point array
+‘s’: time points and stimulus onsets
+‘ml’: the data measurement list</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="neuro_dot.ndot2snirf">
+<span class="sig-prename descclassname"><span class="pre">neuro_dot.</span></span><span class="sig-name descname"><span class="pre">ndot2snirf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'snirf'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.ndot2snirf" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="neuro_dot.nirs2ndot">
 <span class="sig-prename descclassname"><span class="pre">neuro_dot.</span></span><span class="sig-name descname"><span class="pre">nirs2ndot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#neuro_dot.nirs2ndot" title="Permalink to this definition">#</a></dt>
 <dd><p>NIRS2NDOT reads in a .nirs file and converts it to NeuroDOT
@@ -2240,6 +2274,8 @@ specify a threshold value.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.LoadVolumetricData"><code class="docutils literal notranslate"><span class="pre">LoadVolumetricData()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Make_NativeSpace_4dfp"><code class="docutils literal notranslate"><span class="pre">Make_NativeSpace_4dfp()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.nifti_4dfp"><code class="docutils literal notranslate"><span class="pre">nifti_4dfp()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.ndot2nirs"><code class="docutils literal notranslate"><span class="pre">ndot2nirs()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.ndot2snirf"><code class="docutils literal notranslate"><span class="pre">ndot2snirf()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.nirs2ndot"><code class="docutils literal notranslate"><span class="pre">nirs2ndot()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.Read_4dfp_Header"><code class="docutils literal notranslate"><span class="pre">Read_4dfp_Header()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neuro_dot.savemat"><code class="docutils literal notranslate"><span class="pre">savemat()</span></code></a></li>

@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: NeuroDOT_py
-Version: 1.0.3
+Version: 1.1.0
 Summary: An extensible Python toolbox for efficient optical brain mapping
 Author-email: "Adam T. Eggebrecht" <aeggebre@wustl.edu>, Emma Speh <espeh@wustl.edu>, Ari Segel <ari@wustl.edu>, Yash Thacker <ythacker@wustl.edu>
 Project-URL: Homepage, https://github.com/WUSTL-ORL/NeuroDOT_py

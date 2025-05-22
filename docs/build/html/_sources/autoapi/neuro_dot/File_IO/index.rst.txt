@@ -19,6 +19,8 @@ Functions
    neuro_dot.File_IO.LoadVolumetricData
    neuro_dot.File_IO.Make_NativeSpace_4dfp
    neuro_dot.File_IO.nifti_4dfp
+   neuro_dot.File_IO.ndot2nirs
+   neuro_dot.File_IO.ndot2snirf
    neuro_dot.File_IO.nirs2ndot
    neuro_dot.File_IO.Read_4dfp_Header
    neuro_dot.File_IO.savemat
@@ -115,6 +117,29 @@ Functions
                - '4': Nifti to 4dfp
    Output:
        :header_out: header in Nifti or 4dfp format
+
+
+.. py:function:: ndot2nirs(data, info)
+
+   Translation from NeuroDOT-compatible format to .nirs
+   This function takes in data and an info structure in NeuroDOT format
+   and converts it to the .nirs format.
+
+   Inputs:
+       'data': time series data arranged by [#channels x #samples]
+       'info': NeuroDOT formatted info structure
+
+   Outputs:
+       'nirsData': .nirs formatted data structure containing the following
+           'd': time series data arranged by [#time points x #channels]
+           'SD': structure containing the source and detector
+           information in addition to the data measurement list
+           't': time point array
+           's': time points and stimulus onsets
+           'ml': the data measurement list
+
+
+.. py:function:: ndot2snirf(filename, output=None, full=0, type='snirf')
 
 
 .. py:function:: nirs2ndot(filename, save_file=1, output=None)

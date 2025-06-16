@@ -142,9 +142,10 @@ def LoadVolumetricData(filename, pn, file_type):
             nii.header['qform_code'] = 2
         elif nii.header['qform_code'] == 0:
             nii.header['qform_code'] = 0
-
-        img_out, header_out = ndot.nifti_4dfp(nii.header, volume, '4') # Convert nifti format header to 4dfp format
+            
         volume = np.flip(nii.dataobj,0)
+        img_out, header_out = ndot.nifti_4dfp(nii.header, volume, '4') # Convert nifti format header to 4dfp format
+        
         header_out['original_header'] = nii.header
 
         # Convert NIFTI header to NeuroDOT style info metadata
@@ -339,7 +340,7 @@ def nifti_4dfp(header_in, img_in, mode):
                     sform[j,3] = (dim[i]-1)*sform[j,i] + sform[j,3]
                     sform[j,i] = -sform[j,i]
         orig_sform = sform
-        auto_orient_sform = np.zeros(3,4)
+        auto_orient_sform = np.zeros((3,4))
         # Re order axes to x, y, z, t
         for i in range(0,3):
             for j in range(0,3):
@@ -396,10 +397,10 @@ def nifti_4dfp(header_in, img_in, mode):
         ## auto_orient
         nan_found =0
         i = 0
-        val_flip = np.zeros(1,4)
-        in_val = np.zeros(4,1)
-        out_val = np.zeros(4,1)
-        target_length = np.zeros(4,1)
+        val_flip = np.zeros((1,4))
+        in_val = np.zeros((4,1))
+        out_val = np.zeros((4,1))
+        target_length = np.zeros((4,1))
         in_length = np.shape(img_in)
         voxels = img_in
         rData = voxels
@@ -409,7 +410,7 @@ def nifti_4dfp(header_in, img_in, mode):
 
         # Flip
         if header_in['orientation'] == 2:
-            val_flip = np.zeros(1,4)
+            val_flip = np.zeros((1,4))
         
         if header_out['dim'][4] <= 1:
             val_flip = val_flip[0:2]
@@ -420,7 +421,7 @@ def nifti_4dfp(header_in, img_in, mode):
                     img_in = np.flip(img_in, k-1)
         
         # Permute if needed
-        new_dim = np.zeros(1,3)
+        new_dim = np.zeros((1,3))
         for i in range(1,4):
             idx = np.where(target_length[i-1] == dim[0:2])
             if len(idx) > 1:
@@ -560,7 +561,7 @@ def nifti_4dfp(header_in, img_in, mode):
         # auto_orient_header
         orientation = orientation ^ (1 << int(revorder[0]))
         orientation = orientation ^ (1 << int(revorder[1]))
-        temp_sform = np.zeros(3,4)
+        temp_sform = np.zeros((3,4))
         orig_sform = sform
         for i in range(0,3):
             # Flip axes
@@ -660,10 +661,10 @@ def nifti_4dfp(header_in, img_in, mode):
         ## auto_orient
         nan_found =0
         i = 0
-        val_flip = np.zeros(1,4)
-        in_val = np.zeros(4,1)
-        out_val = np.zeros(4,1)
-        target_length = np.zeros(4,1)
+        val_flip = np.zeros((1,4))
+        in_val = np.zeros((4,1))
+        out_val = np.zeros((4,1))
+        target_length = np.zeros((4,1))
         in_length = np.shape(img_in)
         voxels = img_in
         rData = voxels
@@ -673,7 +674,7 @@ def nifti_4dfp(header_in, img_in, mode):
 
         # Flip
         if header_in['orientation'] == 2:
-            val_flip = np.zeros(4,1)
+            val_flip = np.zeros((4,1))
         
         idx_flip = np.find(val_flip > 1)
         new_order = range(1,len(in_length))

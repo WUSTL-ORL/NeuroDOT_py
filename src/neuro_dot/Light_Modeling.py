@@ -22,7 +22,6 @@ import statistics as stats
 from math import trunc
 from pickle import NONE
 from numpy import float64, matrix
-from numpy.lib.shape_base import expand_dims
 from numpy.linalg import norm
 
 import neuro_dot as ndot

@@ -23,7 +23,6 @@ import datetime as dt
 from math import trunc
 from pickle import NONE
 from numpy import float64, matrix
-from numpy.lib.shape_base import expand_dims
 from matplotlib.pyplot import colorbar, colormaps, tight_layout
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes

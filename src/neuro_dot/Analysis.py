@@ -36,7 +36,7 @@ def BlockAverage(data_in, pulse, dt, Tkeep = 0):
         data_in = np.reshape(data_in, [], Nt)
 
     ## Incorporate Tkeep  
-    data_in[:, np.argwhere(Tkeep == False)] = np.NaN
+    data_in[:, np.argwhere(Tkeep == False)] = np.nan
 
     ## Cut data into blocks.
     Nm = np.shape(data_in)[0]

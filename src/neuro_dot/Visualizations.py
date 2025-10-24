@@ -197,7 +197,7 @@ def applycmap(overlay, underlay, params):
     overlay = np.transpose(overlay.flatten())  
     mapped = np.zeros((len(overlay), 3))
     overlay[np.argwhere(np.isfinite(overlay)==False)] = 0
-    if underlay != []:
+    if len(underlay) != 0:
         underlay[np.argwhere(np.isfinite(underlay)==False)]=0
 
     if not sum(abs(overlay[overlay!=0])):
@@ -207,7 +207,7 @@ def applycmap(overlay, underlay, params):
 
         return
     
-    if underlay is None  or underlay == []:
+    if underlay is None  or len(underlay) == 0:
         params['underlay'] = 0
     else:
         params['underlay'] = 1
@@ -229,17 +229,17 @@ def applycmap(overlay, underlay, params):
     if 'DR' not in params or params['DR'] == []:
         params['DR'] = 1000
 
-    if 'Scale' not in params or params['Scale'] == []:
+    if 'Scale' not in params:
         params['Scale'] = 0.9 * max(overlay)
 
     if 'Th' not in params or params['Th'] == []:
         params['Th']['P'] = 0.25 * params['Scale']
         params['Th']['N'] = -params['Th']['P']
 
-    if 'N' not in params['Th'] or params['Th']['N'] == []:
+    if 'N' not in params['Th'] :
         params['Th']['N'] = -params['Th']['P']
 
-    if ('Cmap' not in params or params['Cmap'] == []) or ('P' in params['Cmap'] and params['Cmap']['P'] == []):
+    if ('Cmap' not in params) or ('P' in params['Cmap']):
         params['Cmap']['P'] = 'jet'
     else:
         if not isinstance(params['Cmap'], dict):
@@ -253,16 +253,16 @@ def applycmap(overlay, underlay, params):
         Cmap['P'] = Cmap['P'](range(params['DR']))
     elif params['Cmap']['P'].isnumeric():
         Cmap['P'] = params['Cmap']['P']
-    if 'flipP' in params['Cmap']  and params['Cmap']['flipP'] != []  and params['Cmap']['flipP']: # Optional colormap flip.
+    if 'flipP' in params['Cmap']   and params['Cmap']['flipP']: # Optional colormap flip.
         Cmap['P'] = np.flip(Cmap['P'], 0)
 
-    if 'N' in params['Cmap'] and params['Cmap']['N'] != []:
+    if 'N' in params['Cmap'] :
         if isinstance(params['Cmap']['N'], str):
             Cmap['N'] = eval(params['Cmap']['N'], '[', str(params['DR']), ']')
         elif params['Cmap']['N'].isnumeric():
             Cmap['N'] = params['Cmap']['N']
         
-        if 'flipN' in params['Cmap'] and params['Cmap']['flipN'] != [] and params['Cmap']['flipN']:
+        if 'flipN' in params['Cmap']  and params['Cmap']['flipN']:
             Cmap['N'] = np.flip(Cmap['N'], 0)
         
         params['PD'] = 1
@@ -621,13 +621,13 @@ def Plot_RawData_Cap_DQC(data,info_in,params = None):
     else:
         info_out = info_in.copy()
 
-    fig = plt.subplots(dpi = 30, facecolor = 'black', figsize = (40,30))
+    fig = plt.figure(dpi = 30, facecolor = 'black', figsize = (40,30))
     gs = gridspec.GridSpec(4,2, height_ratios=[5,5,2.5,2.5], width_ratios=[1,1])
-    ax1 = plt.subplot(gs[0,0], aspect = 'equal')
-    ax2 = plt.subplot(gs[0,1], aspect = 'equal')
-    ax3 = plt.subplot(gs[1,0], aspect = 'equal')
-    ax4 = plt.subplot(gs[1,1], aspect = 'equal')
-    ax5 = plt.subplot(gs[2:,:], aspect = 'equal')
+    ax1 = fig.add_subplot(gs[0,0], aspect = 'equal')
+    ax2 = fig.add_subplot(gs[0,1], aspect = 'equal')
+    ax3 = fig.add_subplot(gs[1,0], aspect = 'equal')
+    ax4 = fig.add_subplot(gs[1,1], aspect = 'equal')
+    ax5 = fig.add_subplot(gs[2:,:], aspect = 'equal')
 
     # Mean signal level at each optode
     params2 = params.copy()
@@ -2429,7 +2429,7 @@ def PlotCapGoodMeas(info, fig_axes = None,params = None):
         array1 = np.array(np.transpose(spos[info['pairs']['Src'][keep_idx]-1, :].flatten('F') ))
         array2 = np.array(np.transpose(dpos[info['pairs']['Det'][keep_idx]-1, :].flatten('F')))
         array3 = np.empty((1, (len(keep_idx)) * Ndim))
-        array3[:] = np.NaN
+        array3[:] = np.nan
 
         array = np.vstack((array1,array2,array3))
         array = array.flatten('F')
@@ -2574,7 +2574,7 @@ def PlotCapMeanLL(data, info, fig_axes = None, params = None):
     if 'dimension' not in params or not bool(params['dimension']): 
         params['dimension'] = '2D'
 
-    if ('rlimits' not in params or params['rlimits'] ==[]) and ('Nnns' not in params or not bool(params['Nnns'])): 
+    if ('rlimits' not in params or len(params['rlimits'] ==0)) and ('Nnns' not in params or len(params['Nnns'])==0): 
     # If both empty, use ALL.
         use_NNx_RxD = 'all'
         lvar = 1
@@ -3073,10 +3073,10 @@ def PlotCapPhysiologyPower(data, info, fig_axes =None,params = None):
         else:
             params['WL'] = 2
 
-    if 'Nwls' not in params or params['Nwls'] == []:
+    if 'Nwls' not in params or len(params['Nwls']) == 0:
         params['Nwls'] = np.transpose(cs)
     
-    if 'useGM' not in params or params['useGM'] == []:
+    if 'useGM' not in params:
         params['useGM'] = 0
     
     if not params['useGM'] or 'MEAS' not in info or ('MEAS' in info and 'GI' not in info['MEAS']): #   if ~params.useGM  ||  ~isfield(info, 'MEAS')  ||  (isfield(info, 'MEAS') &&  ~istablevar(info.MEAS, 'GI'))
@@ -4233,7 +4233,7 @@ def PlotSlicesTimeTrace(underlay, infoVol = None, params = None, overlay = None,
                 # flip the y-axis again because otherwise it's upside down for some reason.
                 y = np.max(axes_list[ax_index].get_ylim()) - y
                 
-                ax.lines.clear()
+                # ax.lines.clear()
                 ax.plot([x, x], [1, ch_max[v_ax] - 1], style + ch_colors[h_ax])
                 ax.plot([1, ch_max[h_ax] - 1], [y, y], style + ch_colors[v_ax])
 
@@ -4279,8 +4279,8 @@ def PlotSlicesTimeTrace(underlay, infoVol = None, params = None, overlay = None,
         else: #if no time trace data, draw a red X on the time trace subplot
             xlim = params2['fig_handle'].get_xlim()
             ylim = params2['fig_handle'].get_ylim()
-            line1 = [xlim[0], xlim[1], np.NaN, xlim[0], xlim[1]]
-            line2 = [ylim[0], ylim[1], np.NaN, ylim[1], ylim[0]]
+            line1 = [xlim[0], xlim[1], np.nan, xlim[0], xlim[1]]
+            line2 = [ylim[0], ylim[1], np.nan, ylim[1], ylim[0]]
             plt.plot(line1, line2, '-r')
 
         #title and axes labels

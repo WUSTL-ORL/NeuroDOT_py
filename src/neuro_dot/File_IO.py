@@ -142,10 +142,9 @@ def LoadVolumetricData(filename, pn, file_type):
             nii.header['qform_code'] = 2
         elif nii.header['qform_code'] == 0:
             nii.header['qform_code'] = 0
-            
+
         volume = np.flip(nii.dataobj,0)
-        img_out, header_out = ndot.nifti_4dfp(nii.header, volume, '4') # Convert nifti format header to 4dfp format
-        
+        img_out, header_out = nifti_4dfp(nii.header, volume, '4') # Convert nifti format header to 4dfp format
         header_out['original_header'] = nii.header
 
         # Convert NIFTI header to NeuroDOT style info metadata
@@ -611,7 +610,7 @@ def nifti_4dfp(header_in, img_in, mode):
             temp = 1.0
 
         # Adjugate
-        t4trans = nm.repmat([0.0], 4,4) # Line 4dfp_format.c:453
+        t4trans = np.tile(0.0, (4,4)) # Line 4dfp_format.c:453
         t4trans[3,3] = 1.0 # 4dfp_format.c:456
         for i in range(0,3): # 4dfp_format.c:480-488
             a = (i+1) % 3
@@ -661,31 +660,32 @@ def nifti_4dfp(header_in, img_in, mode):
         ## auto_orient
         nan_found =0
         i = 0
-        val_flip = np.zeros((1,4))
-        in_val = np.zeros((4,1))
-        out_val = np.zeros((4,1))
-        target_length = np.zeros((4,1))
+        val_flip = np.zeros(4)
+        in_val = np.zeros(4)
+        out_val = np.zeros(4)
+        target_length = np.zeros(4)
         in_length = np.shape(img_in)
         voxels = img_in
         rData = voxels
         for i in range(1, len(in_length)+1):
-            target_length[order(i-1)+1] = in_length(i-1)
+            target_length[order[i-1]+1] = in_length[i-1]
             val_flip[i-1] = orientation & (1 <<(i-1))
 
-        # Flip
-        if header_in['orientation'] == 2:
-            val_flip = np.zeros((4,1))
+        # Flip 
+        if orientation == 2:
+            val_flip = np.zeros(4)
+           
         
-        idx_flip = np.find(val_flip > 1)
-        new_order = range(1,len(in_length))
-        if (idx_flip > 0).any():
+        idx_flip = np.where(val_flip > 1) # BEST GUESS AT EQUIVALENT CODE
+        new_order = np.array(range(0,len(in_length)))
+        if np.any(idx_flip):
             idx_new = np.flip(idx_flip)
             new_order[idx_new] = np.flip(new_order[idx_new])
             img_xfm = np.transpose(img_in, new_order)
         else:
             img_xfm = img_in
         for k in range(1, len(val_flip) + 1):
-            if np.logical_and((orig_sform[k-1,0:2] < 0).any(), orig_sform[k-1,3] > 0):
+            if np.logical_and(np.any(orig_sform[k-1,0:2] < 0), orig_sform[k-1,3] > 0):
                 img_xfm = np.flip(img_xfm, k-1)
         img_out = img_xfm
     return img_out, header_out

@@ -1,6 +1,6 @@
 [project]
 name = "NeuroDOT_py"
-version = "1.1.0"
+version = "1.2.0"
 authors = [
   { name = "Adam T. Eggebrecht", email = "aeggebre@wustl.edu"},
   { name="Emma Speh", email="espeh@wustl.edu" },

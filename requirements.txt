@@ -2,6 +2,7 @@ deepdiff
 matplotlib
 numpy
 scipy
+h5py
 sympy
 keyboard
 plotly

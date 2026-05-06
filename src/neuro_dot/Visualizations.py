@@ -240,6 +240,7 @@ def applycmap(overlay, underlay, params):
         params['Th']['N'] = -params['Th']['P']
 
     if ('Cmap' not in params) or ('P' in params['Cmap']):
+        params['Cmap']={}
         params['Cmap']['P'] = 'jet'
     else:
         if not isinstance(params['Cmap'], dict):
@@ -964,13 +965,13 @@ def PlotLRMeshes(meshL, meshR, params):
         meshL['data']
     except KeyError:
         meshL['data'] = np.zeros((meshL['nodes'].shape[0], 1))
-    if np.logical_and('data' in meshL, meshL['data'] == []):
+    if 'data' in meshL and meshL['data'].size == 0:
         meshL['data'] = np.zeros((meshL['nodes'].shape[0], 1))
     try:
         meshR['data']
     except KeyError:
         meshR['data'] = np.zeros((meshR['nodes'].shape[0], 1))
-    if np.logical_and('data' in meshR, meshL['data'] == []):
+    if 'data' in meshR and meshL['data'].size == 0:
         meshR['data'] = np.zeros((meshR['nodes'].shape[0], 1)) 
 
     #first check to see if arrays are multidimensional/imclude multiple time points
@@ -990,7 +991,7 @@ def PlotLRMeshes(meshL, meshR, params):
         params['fig_size']
     except KeyError:
         params['fig_size'] = np.array([20*px, 200*px, 960*px, 420*px])
-    if np.logical_and('fig_size' in params, params['fig_size'] == []):
+    if 'fig_size' in params and params['fig_size'].size == 0:
         params['fig_size'] = np.array([20*px, 200*px, 960*px, 420*px])
 
     if not np.any(np.append(meshL['data'], meshR['data'])):

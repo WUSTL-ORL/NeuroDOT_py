@@ -13,6 +13,7 @@ from scipy.spatial import distance
 from snirf import Snirf
 import snirf as snirf
 import h5py
+import numpy.matlib as nm
 
 import neuro_dot as ndot
 
@@ -558,8 +559,8 @@ def nifti_4dfp(header_in, img_in, mode):
             revorder[order[i]] = i
 
         # auto_orient_header
-        orientation = orientation ^ (1 << int(revorder[0]))
-        orientation = orientation ^ (1 << int(revorder[1]))
+        orientation = orientation ^ (1 << int(revorder[0].item()))
+        orientation = orientation ^ (1 << int(revorder[1].item()))
         temp_sform = np.zeros((3,4))
         orig_sform = sform
         for i in range(0,3):
@@ -634,19 +635,19 @@ def nifti_4dfp(header_in, img_in, mode):
             center[i] = center[i] + spacing[i]
 
         ## Center 4dfp_format.c:522-527
-        center[0] = (spacing[0] * (header_in['dim'][int(revorder[0])+1]+1))-center[0]
+        center[0] = (spacing[0] * (header_in['dim'][int(revorder[0].item())+1]+1))-center[0]
         center[0] = -center[0]
         spacing[0] = -spacing[0]
 
-        center[2] = (spacing[2] * (header_in['dim'][int(revorder[2])+1]+1))-center[2]
+        center[2] = (spacing[2] * (header_in['dim'][int(revorder[2].item())+1]+1))-center[2]
         center[2] = -center[2]
         spacing[2] = -spacing[2]
 
         header_out = dict()
-        header_out['matrix_size'] = [header_in['dim'][int(revorder[0])+1],
-            header_in['dim'][int(revorder[1])+1],
-            header_in['dim'][int(revorder[2])+1],
-            header_in['dim'][int(revorder[3])]+1]
+        header_out['matrix_size'] = [header_in['dim'][int(revorder[0].item())+1],
+            header_in['dim'][int(revorder[1].item())+1],
+            header_in['dim'][int(revorder[2].item())+1],
+            header_in['dim'][int(revorder[3].item())]+1]
         header_out['acq'] = 'transverse'
         header_out['nDim'] = 4
         header_out['orientation'] = 2
@@ -668,7 +669,7 @@ def nifti_4dfp(header_in, img_in, mode):
         voxels = img_in
         rData = voxels
         for i in range(1, len(in_length)+1):
-            target_length[order[i-1]+1] = in_length[i-1]
+            target_length[order[i-1]] = in_length[i-1]
             val_flip[i-1] = orientation & (1 <<(i-1))
 
         # Flip 

@@ -8,3 +8,4 @@ plotly
 mat73
 nibabel
 snirf
+nbformat

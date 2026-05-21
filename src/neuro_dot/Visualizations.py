@@ -991,7 +991,7 @@ def PlotLRMeshes(meshL, meshR, params):
         params['fig_size']
     except KeyError:
         params['fig_size'] = np.array([20*px, 200*px, 960*px, 420*px])
-    if 'fig_size' in params and params['fig_size'].size == 0:
+    if 'fig_size' in params and np.size(params['fig_size']) == 0:
         params['fig_size'] = np.array([20*px, 200*px, 960*px, 420*px])
 
     if not np.any(np.append(meshL['data'], meshR['data'])):
@@ -3670,7 +3670,8 @@ def PlotSlices(underlay, infoVol = None, params = None, overlay = None):
                 # flip the y-axis again because otherwise it's upside down for some reason.
                 y = np.max(axes_list[ax_index].get_ylim()) - y
                 
-                ax.lines.clear()
+                for line in ax.lines:
+                    line.remove()
                 ax.plot([x, x], [1, ch_max[v_ax] - 1], style + ch_colors[h_ax])
                 ax.plot([1, ch_max[h_ax] - 1], [y, y], style + ch_colors[v_ax])
                     

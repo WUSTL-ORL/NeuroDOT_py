@@ -2769,30 +2769,29 @@ def PlotCapMeanLL(data, info, fig_axes = None, params = None):
 
     return data
 
-    def PlotCapPhysiologyPower(data, info, fig_axes =None,params = None):
-        """ 
-        PlotCapPhysiologyPower A visualization of band limited power OR
-        band-referenced SNR for each optode.
+
+def PlotCapPhysiologyPower(data, info, fig_axes =None,params = None):
+    '''
+    PLOTCAPPHYSIOLOGYPOWER A visualization of band limited power OR band-referenced SNR for each optode.
 
 
-        "params" fields that apply to this function (and their defaults):
-            fig_size    [20, 200, 1240, 420]    Default figure position vector.
-            fig_handle  (none)                  Specifies a figure to target.
-                                                If empty, spawns a new figure.
-            dimension   '2D'                    Specifies either a 2D or 3D
-                                                plot rendering.
-            rlimits     (all R2D)               Limits of pair radii displayed.
-            Nnns        (all NNs)               Number of NNs displayed.
-            Nwls        (all WLs)               Number of WLs averaged and
-                                                displayed.
-            useGM       0                       Use Good Measurements.
-            Cmap.P      'hot'                   Default color mapping.
+    Params:
+        :fig_size:    [20, 200, 1240, 420]    Default figure position vector.
+        :fig_handle:  (none)                  Specifies a figure to target.
+                                            If empty, spawns a new figure.
+        :dimension:   '2D'                    Specifies either a 2D or 3D
+                                            plot rendering.
+        :rlimits:     (all R2D)               Limits of pair radii displayed.
+        :Nnns:        (all NNs)               Number of NNs displayed.
+        :Nwls:        (all WLs)               Number of WLs averaged and
+                                            displayed.
+        :useGM:       0                       Use Good Measurements.
+        :Cmap.P:      'hot'                   Default color mapping.
 
-        Dependencies: PLOTCAPDATA, ISTABLEVAR, APPLYCMAP.
+    Dependencies: PLOTCAPDATA, ISTABLEVAR, APPLYCMAP.
 
-        See Also: PLOTCAP, PLOTCAPGOODMEAS.
-        
-        """
+    See Also: PLOTCAP, PLOTCAPGOODMEAS.
+    '''
     # Parameters and Initialization.
     if params == None:
         params = {}
@@ -2813,10 +2812,6 @@ def PlotCapMeanLL(data, info, fig_axes = None, params = None):
     else:
         fr=info['system']['framerate']
 
-    # Hardcoded params for color mapping to the units scaling used here.
-    # scale_order = 1e-2
-    # base = 1e9
-    # dr = 3
     params['mode'] = 'patch'
     params['PD'] = 1
     params['Th'] = {}
@@ -2839,13 +2834,13 @@ def PlotCapMeanLL(data, info, fig_axes = None, params = None):
         else:
             params['WL'] = 2
 
-    if 'Nwls' not in params or params['Nwls'] == []:
+    if 'Nwls' not in params or len(params['Nwls']) == 0:
         params['Nwls'] = np.transpose(cs)
     
-    if 'useGM' not in params or params['useGM'] == []:
+    if 'useGM' not in params:
         params['useGM'] = 0
     
-    if not params['useGM'] or 'MEAS' not in info or ('MEAS' in info and 'GI' not in info['MEAS']):
+    if not params['useGM'] or 'MEAS' not in info or ('MEAS' in info and 'GI' not in info['MEAS']): #   if ~params.useGM  ||  ~isfield(info, 'MEAS')  ||  (isfield(info, 'MEAS') &&  ~istablevar(info.MEAS, 'GI'))
         GM = np.ones((Nm, 1))
     else:
         GM = info['MEAS']['GI']
@@ -2858,9 +2853,8 @@ def PlotCapMeanLL(data, info, fig_axes = None, params = None):
     
     if 'type' not in params:
         params['type'] = 'SNR' # 0 for raw data, 1 for Optical Density'
-    
     if 'freqs' not in params: # Freq range to find peak
-        params['freqs'] = [0.5, 2.0] # Pulse band
+        params['freqs'] = [0.5, 2.0] #Pulse band
     elif isinstance(params['freqs'], str): 
         if params['freqs'] == 'pulse':
             params['freqs'] = [0.5, 2.0] # Pulse band
@@ -2869,15 +2863,13 @@ def PlotCapMeanLL(data, info, fig_axes = None, params = None):
 
     if 'freqsBW' not in params:
         params['freqsBW'] = [0.1, 0.35] #range from which to determine bandwidth
-
     #  N-D Input.
     if NDtf:
         data = np.reshape(data, (-1, Nt))
-
     #  Use only time in synchpts if present
-    if 'paradigm' in info:
+    if 'paradigm' in info:#isfield(info, 'paradigm')
         if 'synchpts' in info['paradigm']:
-            NsynchPts = len(info['paradigm']['synchpts'])#  set timing of data
+            NsynchPts = len(info['paradigm']['synchpts'])# % set timing of data
             if NsynchPts > 2:
                 tF = info['paradigm']['synchpts'][-1] # treat these as values rather than indices (correct for indexing when used)
                 t0 = info['paradigm']['synchpts'][1]
@@ -2894,7 +2886,7 @@ def PlotCapMeanLL(data, info, fig_axes = None, params = None):
         tF = len(data) 
         t0 = 1
 
-        #  Calculate power
+        # Calculate power
     if not params['OD']:
         data = ndot.logmean(data)[0]
 
@@ -2909,31 +2901,35 @@ def PlotCapMeanLL(data, info, fig_axes = None, params = None):
     # Since these are all indices, they don't need to add 1, and 0 and 1 are used instead of 1 and 2
     idxFCm=np.argmin(abs(ftdomain-params['freqsBW'][0]))  # Define freq indices    
     idxFCM=np.argmin(abs(ftdomain-params['freqsBW'][1]))    
-    BWfc=round((idxFCM-idxFCm)/2)                  # Define Bandwidth 
+    BWfc=round((idxFCM-idxFCm)/2)                  #% Define Bandwidth
     idxPm=np.argmin(abs(ftdomain-params['freqs'][0]))   
     idxPM=np.argmin(abs(ftdomain-params['freqs'][1]))    
     
-    idxP1=np.argmax(ftmag[keep,idxPm:idxPM+1],1) # keep idxP1 off by one until floIdx
+    idxP1=np.argmax(ftmag[keep,idxPm:idxPM+1],1)#[],2); #keep idxP1 off by one until floIdx
     idxP1=round(np.mean(idxP1))  # find mean peak freq from all mean; off by one at this point
 
     floIdx=idxPm+idxP1-BWfc+1 
-    fhiIdx=idxPm+idxP1+BWfc+1 # both floIdx and fhiIdx are off by one for indexing
-    if floIdx < 1:
-        floIdx = 1
+    fhiIdx=idxPm+idxP1+BWfc+1 #both floIdx and fhiIdx are off by one for indexing
+    if floIdx < 0: # 0-based equivalent of MATLAB 'if floIdx<1, floIdx=1'
+        floIdx = 0
+    if fhiIdx > len(ftdomain)-1:
+        fhiIdx = len(ftdomain)-1
     Pmax=np.sum(ftmag[:,floIdx:fhiIdx+1]**2,1) # sum pulse power
 
     fNoise=np.setdiff1d(np.arange(floIdx-BWfc+1,fhiIdx+BWfc+2),np.arange(floIdx+1,fhiIdx+2)) #correct indices here to avoid concatenating off by one error
-    fNoise[np.where(fNoise < 1)] = []  
-    fNoise[np.where(fNoise>len(ftdomain))] = []     
+    fNoise = fNoise[(fNoise >= 1) & (fNoise <= len(ftdomain))] # drop out-of-range bins (MATLAB: fNoise(fNoise<1)=[])
     fNoiseidx = [x - 1 for x in fNoise]
     Control=np.median(ftmag[:,fNoiseidx]**2,1)*BWfc*2 
+    # % Control=2.*BWfc.*median(ftmag(:,idxPm:end),2).^2;
 
+    # % Plevels=1e5.*Pmax./Control;           % SNR of signal
+    # % Plevels=1e0.*Pmax./Control;           % SNR of signal
     if params['type'] == 'SNR':
         Plevels = 10*np.log10(Pmax/Control) # SNR in dB
     if params['type'] == 'mag':
         Plevels = Pmax/np.amax(Pmax.flatten('F'))
 
-        # %% Populate metric for visualizations
+        #  Populate metric for visualizations
     llfo = np.zeros((Ns+Nd))
     for s in range(1,Ns+1):
         Sgood=np.logical_and(keep, np.where(info['pairs']['Src']==s,1,0))
@@ -2942,7 +2938,7 @@ def PlotCapMeanLL(data, info, fig_axes = None, params = None):
         else:
             Cvalue = 1
         llfo[s-1] = Cvalue
-    for d in range(1,Nd+1):   
+    for d in range(1,Nd+1):#1:Nd
         Dgood=np.logical_and(keep, np.where(info['pairs']['Det']==d,1,0))
         if np.sum(Dgood,axis = 0) > 0:
             Cvalue = np.mean(Plevels[Dgood]) # Average across measurements
@@ -2954,11 +2950,11 @@ def PlotCapMeanLL(data, info, fig_axes = None, params = None):
     params['Th']['P']=0
     params['Scale'] = M 
     m=0
-    
+
     SDRGB, CMAP,_ = ndot.applycmap(llfo, [], params)
     SrcRGB = SDRGB[0:Ns, :]
     DetRGB = SDRGB[Ns:, :] 
-    x,y,threeDGraph, fig_axes = ndot.PlotCapData(SrcRGB, DetRGB, info, fig_axes,params)
+    x,y,threeDGraph = ndot.PlotCapData(SrcRGB, DetRGB, info, fig_axes,params)
 
     # Add Title and colorbar.
     title = ''
@@ -2967,13 +2963,8 @@ def PlotCapMeanLL(data, info, fig_axes = None, params = None):
     fig_axes.patch.set_facecolor('black')
     
     # Axis limits 
-    if np.max(x) > 150:
-        fig_axes.set_ylim(np.min(y)-30,np.max(y)+30)
-        fig_axes.set_xlim(np.min(x)-10,np.max(x)+10)
-    else:
-        fig_axes.set_ylim(np.min(y)-30,np.max(y)+10) 
-        fig_axes.set_xlim(np.min(x)-40,np.max(x)+40)
-    
+    fig_axes.set_ylim(np.min(y)-20,np.max(y)+30)
+    fig_axes.set_xlim(np.min(x)-30,np.max(x)+30)
     fig_axes.xaxis.set_visible(False)
     fig_axes.yaxis.set_visible(False)
     
@@ -3008,7 +2999,6 @@ def PlotCapMeanLL(data, info, fig_axes = None, params = None):
     fig_axes.set_facecolor('black')
     
     return Plevels
-
 
 
 def PlotSlices_correct_orientation(m):

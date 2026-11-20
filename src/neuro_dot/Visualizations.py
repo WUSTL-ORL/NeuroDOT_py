@@ -2868,7 +2868,7 @@ def PlotCapMeanLL(data, info, fig_axes = None, params = None):
             params['freqs'] = [0.009, 0.08] # Pulse band
 
     if 'freqsBW' not in params:
-        params['freqsBW'] = [0.009, 0.08] #range from which to determine bandwidth
+        params['freqsBW'] = [0.1, 0.35] #range from which to determine bandwidth
 
     #  N-D Input.
     if NDtf:
@@ -2922,7 +2922,7 @@ def PlotCapMeanLL(data, info, fig_axes = None, params = None):
         floIdx = 1
     Pmax=np.sum(ftmag[:,floIdx:fhiIdx+1]**2,1) # sum pulse power
 
-    fNoise=np.setdiff1d(np.arange(idxPm-BWfc+1,idxPM+BWfc+2),np.arange(floIdx+1,fhiIdx+2)) #correct indices here to avoid concatenating off by one error
+    fNoise=np.setdiff1d(np.arange(floIdx-BWfc+1,fhiIdx+BWfc+2),np.arange(floIdx+1,fhiIdx+2)) #correct indices here to avoid concatenating off by one error
     fNoise[np.where(fNoise < 1)] = []  
     fNoise[np.where(fNoise>len(ftdomain))] = []     
     fNoiseidx = [x - 1 for x in fNoise]

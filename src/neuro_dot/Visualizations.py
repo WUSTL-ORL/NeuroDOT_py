@@ -749,7 +749,7 @@ def PlotFalloffData(fall_data, separations, params = None, ax = None):
     if NDtf_fall: 
         fall_data = np.reshape(fall_data,(Nt, len(fall_data)//Nt), order = 'F')
     if NDtf_sep:
-        separations = np.flatten(separations)
+        separations = np.ravel(separations)
 
     if np.shape(fall_data)[0] != len(separations):
         raise ValueError('Falloff data and separation distances do not match.')

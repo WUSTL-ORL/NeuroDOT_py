@@ -11,6 +11,20 @@ authors = [
 description =  "An extensible Python toolbox for efficient optical brain mapping"
 readme = "README.md"
 requires-python = ">=3.8"
+dependencies = [
+    "numpy>=1.21",
+    "scipy>=1.7",
+    "matplotlib>=3.5",
+    "sympy",
+    "deepdiff",
+    "keyboard",
+    "plotly",
+    "mat73",
+    "nibabel>=3.2",
+    "snirf",
+    "h5py",
+    "nbformat",
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",

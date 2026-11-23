@@ -176,10 +176,10 @@ def gethem(data, info, sel_type  = 'r2d', value = [10,16]):
             keep_R_NN = np.logical_or(keep_R_NN, (info['pairs']['NN'] == k)).astype(np.uint8)
             k = k+1
 
-    if np.logical_and(('MEAS' in info), (not 'GI' in info['MEAS'])):
-        info['MEAS']['GI'] = np.ones(shape = (Nm, 1), dtype = np.bool8)
+    if ('MEAS' in info) and ('GI' not in info['MEAS']):
+        info['MEAS']['GI'] = np.ones(shape = Nm, dtype = np.bool_)
     elif not 'MEAS' in info:
-        info['MEAS'] = { 'GI': np.ones(shape = (Nm, 1), dtype = np.bool8)}
+        info['MEAS'] = { 'GI': np.ones(shape = Nm, dtype = np.bool_)}
 
     k = 0
     while k <=1:

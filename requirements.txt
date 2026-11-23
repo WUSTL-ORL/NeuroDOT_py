@@ -9,3 +9,5 @@ mat73
 nibabel
 snirf
 nbformat
+h5py
+ipykernel

@@ -5,6 +5,7 @@ import math
 import numpy as np
 import numpy.linalg as la
 import matplotlib.pyplot as plt
+import matplotlib.axes
 import matplotlib.gridspec as gridspec
 import matplotlib.colors as colors
 import scipy.interpolate
@@ -749,7 +750,7 @@ def PlotFalloffData(fall_data, separations, params = None, ax = None):
     if NDtf_fall: 
         fall_data = np.reshape(fall_data,(Nt, len(fall_data)//Nt), order = 'F')
     if NDtf_sep:
-        separations = np.ravel(separations)
+        separations = np.flatten(separations)
 
     if np.shape(fall_data)[0] != len(separations):
         raise ValueError('Falloff data and separation distances do not match.')
@@ -4219,8 +4220,8 @@ def PlotSlicesTimeTrace(underlay, infoVol = None, params = None, overlay = None,
 
 
 
-def PlotTimeTraceData(data, time, params = None, fig_axes = None, coordinates = [1,1]): 
-    """ 
+def PlotTimeTraceData(data, time, params = None, fig_axes = None, coordinates = [1,1]):
+    """
     PLOTTIMETRACEDATA A basic time traces plotting function.
 
     PLOTTIMETRACEDATA(data, time) takes a light-level array "data" of the
@@ -4228,9 +4229,13 @@ def PlotTimeTraceData(data, time, params = None, fig_axes = None, coordinates = 
 
     PLOTTIMETRACEDATA(data, time, params) allows the user to specify
     parameters for plot creation.
-    
+
     h = PLOTTIMETRACEDATA(...) passes the handles of the plot line objects
     created.
+
+    fig_axes can be a grid of axes (e.g., from plt.subplots(nrows, ncols)),
+    with "coordinates" = [row, col] selecting the panel; a single Axes; or
+    None, which spawns a new figure.
 
     Params:
         :fig_size:    [200, 200, 560, 420]    Default figure position vector.
@@ -4241,8 +4246,40 @@ def PlotTimeTraceData(data, time, params = None, fig_axes = None, coordinates = 
         :ylimits:     'auto'                  Limits of y-axis.
         :yscale:      'linear'                Scaling of y-axis.
 
+    Shaded event periods (optional; drawn behind the traces at full plot
+    height). Turn on with event_shade = 1, then give EITHER explicit times
+    OR a paradigm structure:
+        :event_shade:   0                   Flag: 1 = draw the gray event
+                                            boxes, 0 = don't (the event
+                                            fields below are then ignored).
+        :event_onsets:  []                  Event onset times, in the same
+                                            units as "time" (e.g., seconds).
+        :event_dur:     []                  Event duration(s), same units:
+                                            a scalar (e.g., 10 for a 10 s
+                                            block) or one value per onset.
+        :paradigm:      []                  An info['paradigm'] dictionary.
+                                            Onsets are time at
+                                            synchpts[Pulse_N], with
+                                            N = params['event_pulse'].
+                                            Without event_dur, each event
+                                            lasts until the next synchpt.
+                                            "time" must be the full run's
+                                            time vector (synchpts index it).
+        :event_pulse:   2                   Which Pulse_N to shade.
+        :event_color:   [0.3, 0.3, 0.3]     Box color (RGB).
+
+    Examples:
+        # 10 s tensing blocks at known onsets (s)
+        params = {'event_shade': 1, 'event_onsets': tense_onsets, 'event_dur': 10}
+        PlotTimeTraceData(data, t, params, ax)
+
+        # Blocks straight from a NeuroDOT paradigm
+        t = np.arange(data.shape[1]) / info['system']['framerate']
+        params = {'event_shade': 1, 'paradigm': info['paradigm']}
+        PlotTimeTraceData(data, t, params, ax)
+
     See Also: PLOTTIMETRACEALLMEAS, PLOTTIMETRACEMEAN.
-    
+
     """
     ## Parameters and Initialization.
     if params == None:
@@ -4261,17 +4298,31 @@ def PlotTimeTraceData(data, time, params = None, fig_axes = None, coordinates = 
     if 'fig_size' not in params or params['fig_size'] == []:
         params['fig_size'] = [560*px, 420*px]
 
-    if 'xlimits' not in params or params['xlimits'] == []:
+    if 'xlimits' not in params or params['xlimits'] is None or len(params['xlimits']) == 0:
         params['xlimits'] = []
-    
+
     if 'xscale' not in params or params['xscale'] is None:
         params['xscale'] = 'linear'
-    
-    if 'ylimits' not in params or params['ylimits'] == [] or (all(all(data > params['ylimits'][1]))) and all(all(data<params['ylimits'][0])):
+
+    if 'ylimits' not in params or params['ylimits'] is None or len(params['ylimits']) == 0 \
+            or (np.all(data > params['ylimits'][1]) and np.all(data < params['ylimits'][0])):
         params['ylimits'] = []
 
     if 'yscale' not in params or params['yscale'] is None:
         params['yscale'] = 'linear'
+
+    if 'event_shade' not in params or params['event_shade'] is None:
+        params['event_shade'] = 0
+    if 'event_onsets' not in params:
+        params['event_onsets'] = []
+    if 'event_dur' not in params:
+        params['event_dur'] = []
+    if 'paradigm' not in params:
+        params['paradigm'] = []
+    if 'event_pulse' not in params or params['event_pulse'] is None:
+        params['event_pulse'] = 2
+    if 'event_color' not in params or params['event_color'] is None:
+        params['event_color'] = [0.3, 0.3, 0.3]
 
     if time is None:
         time = np.arange(1,Nt,1)
@@ -4279,14 +4330,25 @@ def PlotTimeTraceData(data, time, params = None, fig_axes = None, coordinates = 
     if NDtf:
         data = np.reshape(data, len(data)/Nt, Nt)
 
+    # Target axes: a grid + coordinates (as in Plot_RawData_Time_Traces_Overview),
+    # a single Axes, or a new figure.
+    if fig_axes is None:
+        fig, fig_axes = plt.subplots(figsize = params['fig_size'], facecolor = BkgdColor)
+    if isinstance(fig_axes, matplotlib.axes.Axes):
+        ax_plot = fig_axes
+        ax_list = [fig_axes]
+    else:
+        ax_plot = fig_axes[coordinates[0],coordinates[1]]
+        ax_list = fig_axes.flat
+
 #   Plot Data.
-    if data is None: 
-        data = np.zeros(time.shape) 
-        
-    for plot in data: 
-        fig_axes[coordinates[0],coordinates[1]].plot(time, plot, linewidth=0.15)
-    for ax in fig_axes.flat:
-    # Setting the background color of the plot 
+    if data is None:
+        data = np.zeros(time.shape)
+
+    for plot in data:
+        ax_plot.plot(time, plot, linewidth=0.15)
+    for ax in ax_list:
+    # Setting the background color of the plot
         ax.set_facecolor("black")
         ax.set_yscale(params['yscale'])
         ax.set_xscale(params['xscale'])
@@ -4300,6 +4362,47 @@ def PlotTimeTraceData(data, time, params = None, fig_axes = None, coordinates = 
         ax.tick_params(axis='y', colors='white')
         ax.margins(x = 0)
         ax.margins(y = 0)
+
+    ## Scaling.
+    if len(params['xlimits']) > 0:
+        ax_plot.set_xlim(params['xlimits'])
+    if len(params['ylimits']) > 0:
+        ax_plot.set_ylim(params['ylimits'])
+
+    ## Shaded event periods.
+    onsets = np.atleast_1d(np.asarray(params['event_onsets'], dtype = float)).ravel()
+    durs = np.atleast_1d(np.asarray(params['event_dur'], dtype = float)).ravel()
+    time = np.asarray(time, dtype = float).ravel()
+    if not params['event_shade']:          # flag off: no boxes
+        onsets = np.array([])
+    elif onsets.size == 0 and params['paradigm'] is not None and len(params['paradigm']) > 0:
+        # Onsets (and, if needed, durations) from a NeuroDOT paradigm dictionary.
+        # synchpts are 1-based sample numbers; Pulse_N are 1-based indices into synchpts.
+        sp = np.atleast_1d(np.asarray(params['paradigm']['synchpts'])).ravel().astype(int)
+        idx = np.atleast_1d(np.asarray(params['paradigm']['Pulse_' + str(params['event_pulse'])])).ravel().astype(int)
+        if np.any(sp[idx - 1] > len(time)):
+            raise ValueError('*** paradigm synchpts exceed the length of "time". Pass the '
+                             'full run, or use params["event_onsets"] instead. ***')
+        onsets = time[sp[idx - 1] - 1]
+        if durs.size == 0:
+            nxt = np.minimum(idx + 1, len(sp))
+            ends = time[np.minimum(sp[nxt - 1], len(time)) - 1]
+            ends[idx == len(sp)] = time[-1]
+            durs = ends - onsets
+    if onsets.size > 0:
+        if durs.size == 0:
+            raise ValueError('*** params["event_dur"] is required with params["event_onsets"]. ***')
+        if durs.size == 1:
+            durs = np.repeat(durs, onsets.size)
+        elif durs.size != onsets.size:
+            raise ValueError('*** params["event_dur"] must be a scalar or match the number of onsets. ***')
+        xl = ax_plot.get_xlim()
+        yl = ax_plot.get_ylim()
+        for k in range(onsets.size):       # full height, behind the traces
+            ax_plot.axvspan(onsets[k], onsets[k] + durs[k], facecolor = params['event_color'],
+                            edgecolor = 'none', zorder = 0)
+        ax_plot.set_xlim(xl)               # boxes must not change the limits
+        ax_plot.set_ylim(yl)
     return ax
 
 

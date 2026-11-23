@@ -105,7 +105,7 @@ def LoadVolumetricData(filename, pn, file_type):
     ## Put header into native space if not already.
         header_out = ndot.Make_NativeSpace_4dfp(header_out)
         ## Format for output.
-        volume =np.squeeze(np.reshape(volume, (int(header_out['nVx']), int(header_out['nVy']), int(header_out['nVz']), int(header_out['nVt']))))
+        volume =np.squeeze(np.reshape(volume, (int(header_out['nVx']), int(header_out['nVy']), int(header_out['nVz']), int(header_out['nVt'])), order = 'F'))
         
         if header_out['acq'] == 'transverse':
             volume = np.flip(volume, 1)
@@ -217,109 +217,77 @@ def nifti_4dfp(header_in, img_in, mode):
         :header_out: header in Nifti or 4dfp format
     '''
     if mode == 'n':
-        # Initialize default parameters
-        AXES_4DFP = [0,1,2,3]
-        order = AXES_4DFP
-        f_offset = 0
-        isFloat = 1
-        isSigned = 1
-        bperpix = 4
-        number_of_dimensions = 4
+        # Convert a 4dfp-style (NeuroDOT) header and volume to NIfTI.
+        # Port of case 'n' in NeuroDOT's nifti_4dfp.m.
+
+        ## Orientation: 2 = transverse, 3 = coronal, 4 = sagittal
+        orient = header_in.get('orientation')
+        acq = header_in.get('acq')
+        if acq == 'transverse':
+            orient = 2
+        elif acq == 'sagittal':
+            orient = 4
+        elif acq == 'coronal' and orient is None:
+            orient = 3
+        if orient is None:
+            raise ValueError("nifti_4dfp: header needs an 'acq' or 'orientation' field")
+        orient = int(orient)
+
+        order = [0, 1, 2, 3]
         timestep = 1
-        haveCenter = 1
-        scale = 1.0
-        offset = 0.0
+        if orient == 4:
+            order[0], order[2] = order[2], order[0]
+            order[0], order[1] = order[1], order[0]
+        elif orient == 3:
+            order[1], order[2] = order[2], order[1]
 
-        # Check the orientation
-        if 'acq' in header_in:
-            if header_in['acq'] == 'transverse':
-                header_in['orientation'] = 2
-            elif header_in['acq'] == 'sagittal':
-                header_in['orienation'] = 4
-        
-        # Initialize sform matrix to zeros (3x4)
-        sform = np.zeros((3,4), dtype = float)
-        for i in range(0,3): #0,1,2
-            for j in range(0,4):
-                sform[i,j] = 0.0
-        
-         
+        # Initial sform (3x4): one 1.0 per column, in the row given by order
+        sform = np.zeros((3, 4))
+        for i in range(0, 3):
+            sform[order[i], i] = 1.0
 
-        # Adjust order of dimensions depending on the orientation
-        if 'orientation' in header_in:
-            if 'acq' in header_in:
-                if header_in['acq'] == 'coronal':
-                    header_in['orientation'] = 3
-
-        if header_in['orientation'] == 4:
-            tempv = order[1]
-            order[1] = order[0]
-            order[0] = tempv
-        elif header_in['orientation'] == 3:
-            tempv = order[2]
-            order[2] = order[1]
-            order[1] = tempv
-
-         # Assign diagonal of sform to ones
-        for i in range(0,3):
-            sform[order[i],i] = 1.0     
-        dims = number_of_dimensions
-        dim = np.zeros((4,1))
         if 'nVx' in header_in:
-            header_in['matrix_size'] = [header_in['nVx'], header_in['nVy'], header_in['nVz'], header_in['nVt']]
-        dim[0] = header_in['matrix_size'][0]
-        dim[1] = header_in['matrix_size'][1]
-        dim[2] = header_in['matrix_size'][2]
-        dim[3] = header_in['matrix_size'][3]
+            matrix_size = [header_in['nVx'], header_in['nVy'], header_in['nVz'], header_in['nVt']]
+        else:
+            matrix_size = header_in['matrix_size']
+        dim = np.array([int(float(x)) for x in matrix_size[0:4]])
+        spacing = np.array([float(x) for x in header_in['mmppix'][0:3]])
+        center = np.array([float(x) for x in header_in['center'][0:3]])
 
-        spacing = np.zeros((3,1))
-        spacing[0] = header_in['mmppix'][0]
-        spacing[1] = header_in['mmppix'][1]
-        spacing[2] = header_in['mmppix'][2]
-
-        center = np.zeros((3,1))
-        center[0] = header_in['center'][0]
-        center[1] = header_in['center'][1]
-        center[2] = header_in['center'][2]
-
-        if header_in['orientation'] == 4:
+        if orient == 4:
             center[2] = -center[2]
             spacing[2] = -spacing[2]
-            center[2] = spacing[2] *(dim[2] +1)-center[2]
-        elif header_in['orientation'] == 3:
+            center[2] = spacing[2] * (dim[2] + 1) - center[2]
             center[0] = -center[0]
             spacing[0] = -spacing[0]
-            center[0] = spacing[0]*(dim[0] +1) - center[0]
+            center[0] = spacing[0] * (dim[0] + 1) - center[0]
+        elif orient == 3:
+            center[0] = -center[0]
+            spacing[0] = -spacing[0]
+            center[0] = spacing[0] * (dim[0] + 1) - center[0]
 
         # Adjust for Fortran 1-indexing
-        for i in range(0,3):
-            center[i] = center[i] - spacing[i]
-            center[i] = -center[i]
-        # Add sform to t4trans
-        t4trans = np.zeros((4,4))
-        for i in range(0,3):
-            for j in range(0,4):
-                t4trans[i,j] = sform[i,j]
-        for i in range(0,3):
-            # apply spacing
-            for j in range(0,3):
-                sform[i,j] = t4trans[i,j]*spacing[j]
-            for j in range(0,3):
-                sform[i,3] = sform[i,3] + center[j]*t4trans[i,j]
+        center = -(center - spacing)
 
-        ## Save Nifti
-        # to_lpi
+        # Apply spacing and center to the sform
+        t4trans = sform.copy()
+        for i in range(0, 3):
+            for j in range(0, 3):
+                sform[i, j] = t4trans[i, j] * spacing[j]
+            for j in range(0, 3):
+                sform[i, 3] = sform[i, 3] + center[j] * t4trans[i, j]
+
+        ## to_lpi: for each axis, find the world axis it mostly points along
         used = 0
-        for i in range(0,2):
-            max = -1.0
+        for i in range(0, 2):
+            max_val = -1.0
             k = -1
-            for j in range(0,3):
-                if np.logical_and((~(used & (1<<j))), abs(sform[j,i]) > max):
-                    max = abs(sform[j,i])
+            for j in range(0, 3):
+                if (not (used & (1 << j))) and abs(sform[j, i]) > max_val:
+                    max_val = abs(sform[j, i])
                     k = j
-            used = used | (1<<k)
+            used = used | (1 << k)
             order[i] = k
-
         if used == 3:
             order[2] = 2
         elif used == 5:
@@ -328,131 +296,90 @@ def nifti_4dfp(header_in, img_in, mode):
             order[2] = 0
 
         orientation = 0
+        for i in range(0, 3):
+            if sform[order[i], i] < 0.0:
+                orientation = orientation ^ (1 << i)
 
-        for i in range(0,3):
-            if sform[order[i],i] < 0.0:
-                orientation = orientation ^ (1<<i)
-        # auto_orient_header 
-        for i in range(0,3):
-            # Flip axes
-            if orientation & (1<<i):
-                for j in range(0,3):
-                    sform[j,3] = (dim[i]-1)*sform[j,i] + sform[j,3]
-                    sform[j,i] = -sform[j,i]
-        orig_sform = sform
-        auto_orient_sform = np.zeros((3,4))
-        # Re order axes to x, y, z, t
-        for i in range(0,3):
-            for j in range(0,3):
-                sform[i,order[j]] = sform[i,j]
+        ## auto_orient_header: flip axes that point the wrong way
+        for i in range(0, 3):
+            if orientation & (1 << i):
+                for j in range(0, 3):
+                    sform[j, 3] = (dim[i] - 1) * sform[j, i] + sform[j, 3]
+                    sform[j, i] = -sform[j, i]
+        orig_sform = sform.copy()
 
-        # Load it back into the sform
-        for i in range(0,3):
-            for j in range(0,3):
-                sform[i,j] = sform[i,j]
-        # Define revorder
-        revorder = np.zeros((4,1)) # Line 425
-        for i in range(0,4):            # Line 426
+        # Re-order axes to x, y, z
+        auto_orient_sform = np.zeros((3, 4))
+        for i in range(0, 3):
+            for j in range(0, 3):
+                auto_orient_sform[i, order[j]] = sform[i, j]
+        sform[:, 0:3] = auto_orient_sform[:, 0:3]
+
+        revorder = [0, 0, 0, 0]
+        for i in range(0, 4):
             revorder[order[i]] = i
 
-        spacing = [0.0,0.0,0.0] # Initialize spacing
-        for i in range(0,3):
-            for j in range(0,3):
-                spacing[i] = spacing[i] + sform[j,i]*sform[j,i]
-            spacing[i] = math.sqrt(spacing[i])
-        # Create output Nifti-style header
+        spacing = np.sqrt(np.sum(sform[:, 0:3] ** 2, axis = 0))
+
+        ## Create output NIfTI header
         header_out = nb.Nifti1Header()
-        header_out['dim'] = [4, 
-            dim[int(revorder[0])],
-            dim[int(revorder[1])], 
-            dim[int(revorder[2])],
-            dim[int(revorder[3])],0,0,0]
-        header_out['pixdim'] = [1.0,
-            spacing[0],
-            spacing[1], 
-            spacing[2], 
-            timestep, 
-            0,0,0]
-        header_out['srow_x'] = [sform[0,0], sform[0,1],
-            sform[0,2], sform[0,3]]
-        header_out['srow_y'] = [sform[1,0], sform[1,1],
-            sform[1,2], sform[1,3]]
-        header_out['srow_z'] = [sform[2,0], sform[2,1],
-            sform[2,2], sform[2,3]]  
+        header_out.set_data_dtype(np.float32)
+        header_out['dim'] = [4, dim[revorder[0]], dim[revorder[1]], dim[revorder[2]], dim[revorder[3]], 1, 1, 1]
+        header_out['pixdim'] = [1.0, spacing[0], spacing[1], spacing[2], timestep, 0, 0, 0]
+        header_out['srow_x'] = sform[0, :]
+        header_out['srow_y'] = sform[1, :]
+        header_out['srow_z'] = sform[2, :]
         header_out['sform_code'] = 3
-        header_out['qform_code'] = 3
-        header_out['sizeof_hdr'] = 348
+        header_out['qform_code'] = 0
         header_out['aux_file'] = ''
-        header_out['descrip'] = header_in['filename'] + '.4dfp.ifh converted with nifti_4dfp'
+        descrip = str(header_in.get('filename', '')) + '.4dfp.ifh converted with nifti_4dfp'
+        if len(descrip) > 79:
+            descrip = descrip[0:76] + '...'
+        header_out['descrip'] = descrip
         header_out['vox_offset'] = 352
         NIFTI_UNITS_MM = 2
         NIFTI_UNITS_SEC = 8
         header_out['xyzt_units'] = NIFTI_UNITS_MM + NIFTI_UNITS_SEC
-        header_out['datatype'] = 16
-        header_out['bitpix'] = 32
 
-        ## Adjust Volume
-        outmem = np.zeros(np.shape(img_in))
-
-        ## auto_orient
-        nan_found =0
-        i = 0
-        val_flip = np.zeros((1,4))
-        in_val = np.zeros((4,1))
-        out_val = np.zeros((4,1))
-        target_length = np.zeros((4,1))
+        ## Adjust volume (auto_orient)
         in_length = np.shape(img_in)
-        voxels = img_in
-        rData = voxels
-        for i in range(1, len(in_length)+1):
-            target_length[order(i-1)+1] = in_length(i-1)
-            val_flip[i-1] = orientation & (1 <<(i-1))
-
-        # Flip
-        if header_in['orientation'] == 2:
-            val_flip = np.zeros((1,4))
-        
+        val_flip = np.zeros(4)
+        for i in range(0, len(in_length)):
+            val_flip[i] = orientation & (1 << i)
+        if orient == 2:
+            val_flip = np.zeros(4)
         if header_out['dim'][4] <= 1:
-            val_flip = val_flip[0:2]
-        
-        for k in range(1, len(val_flip)+1):
-            if np.any(orig_sform[0:2,k-1] < 0):
-                if k != 4:
-                    img_in = np.flip(img_in, k-1)
-        
-        # Permute if needed
-        new_dim = np.zeros((1,3))
-        for i in range(1,4):
-            idx = np.where(target_length[i-1] == dim[0:2])
-            if len(idx) > 1:
-                idx = idx[0]
-            dim[idx] = 0
-            new_dim[i-1] = idx
-        
-        val_flip_new = np.zeros(np.shape(val_flip))
-        if not np.array_equal(new_dim, [1,2,3]):
-            img_in = np.transpose(img_in,new_dim)
-            val_flip_new[:] = val_flip[new_dim]
-            val_flip_combined = np.logical_and(val_flip, val_flip_new)
-            idx2 = np.where(val_flip_combined == 1)
-            if header_in['acq'] == 'coronal':
+            val_flip = val_flip[0:3]
+
+        for k in range(0, len(val_flip)):
+            if k != 3 and np.any(orig_sform[0:3, k] < 0):
+                img_in = np.flip(img_in, k)
+
+        # Permute into NIfTI axis order if needed. nifti_4dfp.m finds the permutation
+        # by matching axis lengths, which is ambiguous when two axes are the same
+        # size; revorder gives the same permutation without that ambiguity.
+        new_dim = revorder[0:3]
+        if new_dim != [0, 1, 2]:
+            img_in = np.transpose(img_in, new_dim + list(range(3, np.ndim(img_in))))
+            val_flip_new = val_flip[new_dim]
+            val_flip_combined = np.logical_and(val_flip[0:3], val_flip_new)
+            if acq == 'coronal':
                 img_in = np.flip(img_in, 0)
                 img_in = np.flip(img_in, 1)
                 img_in = np.flip(img_in, 2)
             else:
-                if idx2 != 4:
-                    img_in = np.flip(img_in, idx2)
-        
-        idx_flip = np.find(val_flip > 0)
-        if (idx_flip > 0).any():
-            for i in range(1, len(idx_flip + 1)):
-                if idx_flip != 4:
-                    img_xfm = np.flip(img_in, idx_flip[i-1])
-        else:
-            img_xfm = img_in
+                for ax in np.flatnonzero(val_flip_combined):
+                    img_in = np.flip(img_in, ax)
+
+        # As in nifti_4dfp.m, each pass flips img_in (not the running result),
+        # so only the last listed axis is flipped. Kept identical to MATLAB so
+        # both toolboxes write the same file; transverse data never reaches here.
+        img_xfm = img_in
+        for ax in np.flatnonzero(val_flip > 0):
+            if ax != 3:
+                img_xfm = np.flip(img_in, ax)
         img_xfm = np.flip(img_xfm, 0)
         img_out = img_xfm
-
 
     elif mode == '4':
     #  Convert from Nifti to 4dfp style header
@@ -1226,8 +1153,7 @@ def Read_4dfp_Header(filename, pn):
     header_ifh = {}
     header  ={}
     ## Open file.
-    fid = open(filename, 'rb')
-    path = Path(pn + filename)
+    path = Path(pn) / filename
     assert path.exists()
     ## Read text.    
     with path.open() as fp:
@@ -1367,9 +1293,8 @@ def SaveVolumetricData(volume, header, filename, pn, file_type):
             volume.T.tofile(fp)
 
     elif np.logical_or(file_type.lower() == 'nifti', file_type.lower() == 'nii'):
-        volume = np.flip(volume, 0) # Convert back from LAS to RAS for NIFTI.      
-        
         if 'original_header' in header: # if header was loaded as nii, and you are saving it as nifti again
+            volume = np.flip(volume, 0) # Convert back from LAS to RAS for NIFTI (undoes the flip in LoadVolumetricData).
             nii = header['original_header']
             # Required fields
             if 'Description' in nii:
